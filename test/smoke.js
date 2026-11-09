@@ -24,7 +24,7 @@ async function main() {
     "--headless", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage", "--disable-extensions",
     "--remote-debugging-port=0", `--user-data-dir=${dir}`, "about:blank"
   ], { stdio: "ignore" });
-  let ws;
+  let ws, closeBrowser;
   try {
     const portFile = path.join(dir, "DevToolsActivePort");
     for (let n = 0; !fs.existsSync(portFile) && n < 100; n++) {
@@ -55,6 +55,7 @@ async function main() {
       pending.set(callId, { resolve, reject });
       ws.send(JSON.stringify({ id: callId, method, params }));
     });
+    closeBrowser = () => send("Browser.close");
     const run = async expression => {
       const response = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true, userGesture: true });
       if (response.exceptionDetails) throw new Error(JSON.stringify(response.exceptionDetails));
@@ -78,7 +79,24 @@ async function main() {
     await run("narrator.play(['en-1-0'])");
     assert.equal(await run("narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "English MP3 must play");
     await run("narrator.play(['n-2', 'plus', 'n-3', 'question'])");
-    assert.equal(await run("narrator.audio.src.endsWith('/question.mp3') && narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "math narration playlist must finish");
+    assert.equal(await run("narrator.audio.src.startsWith('blob:') && narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "math narration must finish as one continuous clip");
+    const timing = await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(p => ({before: p.originalDuration, after: p.duration}))");
+    assert.ok(timing.after < timing.before - .5, "continuous narration must remove substantial silence");
+    console.log(`Math audio: ${timing.before.toFixed(2)}s → ${timing.after.toFixed(2)}s (including all words)`);
+    assert.equal(await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(async p => p.url === (await continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question'])).url)"), true, "replay reuses prepared audio");
+    for (const profile of ["bright", "soft", "original"]) {
+      await run(`document.querySelector('#voice-profile').value = '${profile}'; document.querySelector('#voice-profile').dispatchEvent(new Event('change'))`);
+      assert.equal(await run("localStorage.getItem('smartkid_voice')"), profile);
+      await run("narrator.play(['en-1-0'])");
+      assert.equal(await run("narrator.audio.playbackRate === VOICE_PROFILES[state.voice].rate"), true);
+      assert.equal(await run("narrator.audio.preservesPitch === VOICE_PROFILES[state.voice].preservesPitch"), true);
+    }
+    await run("narrator.play(['hello']); window.OfflineDecoder = window.OfflineAudioContext; window.OfflineAudioContext = undefined; window.LegacyOfflineDecoder = window.webkitOfflineAudioContext; window.webkitOfflineAudioContext = undefined; narrator.play(['n-2'])");
+    for (let n = 0; n < 40 && !(await run("narrator.audio.src.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1")); n++) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    assert.equal(await run("narrator.audio.src.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1"), true, "old browsers retain original MP3 playback");
+    await run("window.OfflineAudioContext = window.OfflineDecoder; window.webkitOfflineAudioContext = window.LegacyOfflineDecoder; narrator.play(['n-2'])");
     assert.equal(await run("document.querySelector('#sound-status').textContent.includes('声音已开启')"), true);
     await run("document.querySelector('#sound-button').click()");
     assert.equal(await run("narrator.enabled"), false);
@@ -159,8 +177,9 @@ async function main() {
       const lessonImage = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
       fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR, "smartkid-english.png"), Buffer.from(lessonImage.data, "base64"));
     }
-    console.log("OK: real MP3 playback, autoplay-block handling, 10 themes, 27 subject/difficulty/count flows, math solutions, 320/360/1280px layouts");
+    console.log("OK: continuous audio, reduced silence, cached replay, three voice presets, MP3 fallback, autoplay handling, 10 themes, 27 lessons, math solutions, responsive layouts");
   } finally {
+    if (closeBrowser && ws?.readyState === WebSocket.OPEN) await closeBrowser();
     ws?.close();
     chrome.kill();
     if (chrome.exitCode === null) await new Promise(resolve => chrome.once("exit", resolve));

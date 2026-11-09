@@ -32,6 +32,10 @@ h2 { font-size: 21px; }
 .sound-panel { border: 2px dashed var(--muted); border-radius: 16px; padding: 10px 14px; background: var(--paper); }
 .sound-panel button { background: transparent; padding: 0; border: 0; box-shadow: none; min-height: 32px; font-size: 15px; color: var(--ink); }
 .sound-panel p { font-size: 12px; line-height: 1.6; color: var(--muted); }
+.voice-picker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13px; font-weight: 700; margin: 8px 0; }
+.voice-picker select { font: inherit; color: var(--ink); background: #fff; border: 2px solid var(--ink); border-radius: 12px; padding: 8px 10px; min-height: 44px; max-width: 100%; }
+.voice-picker select:focus-visible { outline: 3px solid var(--accent-strong); outline-offset: 3px; }
+.sound-panel .voice-note { font-size: 11px; margin-top: 4px; }
 .screen { display: none; padding-top: 24px; }
 .screen.active { display: block; animation: arrive .25s ease; }
 .hero { display: flex; align-items: center; gap: 24px; margin: 4px 0 24px; }

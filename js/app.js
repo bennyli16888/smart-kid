@@ -18,6 +18,7 @@ function stored(key, fallback) {
 const state = {
   subject: "zh", level: 1, count: 10,
   charId: getCharacter(stored("smartkid_char", "dino")).id,
+  voice: Object.hasOwn(VOICE_PROFILES, stored("smartkid_voice", "original")) ? stored("smartkid_voice", "original") : "original",
   stars: Math.max(0, Number(stored("smartkid_stars", "0")) || 0),
   items: [], index: 0, completed: new Set(), explanationStep: 0, returnScreen: "screen-home"
 };
@@ -25,20 +26,46 @@ function save() {
   try {
     localStorage.setItem("smartkid_char", state.charId);
     localStorage.setItem("smartkid_stars", String(state.stars));
+    localStorage.setItem("smartkid_voice", state.voice);
   } catch { /* Learning still works when browser storage is unavailable. */ }
 }
 
 // Bundled MP3s do not depend on a device's installed speech voices.
 const narrator = {
-  audio: new Audio(), enabled: false, sequence: 0, cancelTrack: null,
+  audio: new Audio(), enabled: false, sequence: 0, cancelTrack: null, unlocked: false,
   stop() {
     this.sequence++;
     this.audio.pause();
     if (this.cancelTrack) this.cancelTrack();
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    if ($("#sound-status")?.textContent.startsWith("正在读")) {
+    if ($("#sound-status")?.textContent.startsWith("正在")) {
       $("#sound-status").textContent = "朗读已暂停，点“听一听”可以再听一次。";
     }
+  },
+  applyVoice() {
+    const profile = VOICE_PROFILES[state.voice];
+    this.audio.playbackRate = profile.rate;
+    this.audio.preservesPitch = profile.preservesPitch;
+    this.audio.webkitPreservesPitch = profile.preservesPitch;
+  },
+  playSource(url, timeout = 15000) {
+    return new Promise((resolve, reject) => {
+      let timer;
+      const finish = error => {
+        clearTimeout(timer);
+        this.audio.onended = null;
+        this.audio.onerror = null;
+        this.cancelTrack = null;
+        error ? reject(error) : resolve();
+      };
+      this.cancelTrack = () => finish();
+      this.audio.onended = () => finish();
+      this.audio.onerror = () => finish(new Error("audio-load"));
+      this.audio.src = url;
+      this.applyVoice();
+      timer = setTimeout(() => finish(new Error("audio-timeout")), timeout);
+      this.audio.play().catch(finish);
+    });
   },
   async play(ids) {
     this.stop();
@@ -46,27 +73,39 @@ const narrator = {
     updateSound();
     const sequence = this.sequence;
     const tracks = new Map(audioTracks().map(track => [track.id, track]));
+    $("#sound-status").textContent = "正在准备读音…";
+    if (continuousAudio.supported) {
+      try {
+        if (!this.unlocked) {
+          // Unlock the same media element inside the click, before asynchronous decoding.
+          const silence = URL.createObjectURL(encodeWave(new Float32Array(240), 24000));
+          try {
+            this.audio.src = silence;
+            await this.audio.play();
+            this.unlocked = true;
+          } finally { URL.revokeObjectURL(silence); }
+        }
+        const phrase = await continuousAudio.prepare(ids);
+        if (sequence !== this.sequence) return;
+        $("#sound-status").textContent = `正在读：${ids.map(id => tracks.get(id).text).join("")}`;
+        await this.playSource(phrase.url, Math.ceil(phrase.duration * 1000 / VOICE_PROFILES[state.voice].rate) + 15000);
+        if (sequence === this.sequence) $("#sound-status").textContent = "声音已开启。听不到时，请检查设备音量或静音模式。";
+        return;
+      } catch (error) {
+        if (sequence !== this.sequence) return;
+        if (error.name === "NotAllowedError") {
+          $("#sound-status").textContent = "浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。";
+          return;
+        }
+        // Older browsers or decoding failures retain the original MP3 playback.
+      }
+    }
     for (const id of ids) {
       if (sequence !== this.sequence) return;
       const track = tracks.get(id);
       $("#sound-status").textContent = `正在读：${track.text}`;
       try {
-        await new Promise((resolve, reject) => {
-          let timer;
-          const finish = error => {
-            clearTimeout(timer);
-            this.audio.onended = null;
-            this.audio.onerror = null;
-            this.cancelTrack = null;
-            error ? reject(error) : resolve();
-          };
-          this.cancelTrack = () => finish();
-          this.audio.onended = () => finish();
-          this.audio.onerror = () => finish(new Error("audio-load"));
-          this.audio.src = `audio/${id}.mp3`;
-          timer = setTimeout(() => finish(new Error("audio-timeout")), 15000);
-          this.audio.play().catch(finish);
-        });
+        await this.playSource(`audio/${id}.mp3`);
       } catch (error) {
         if (sequence !== this.sequence) return;
         this.audio.pause();
@@ -80,8 +119,11 @@ const narrator = {
           const utterance = new SpeechSynthesisUtterance(track.text);
           utterance.voice = voice;
           utterance.lang = track.lang;
-          utterance.rate = .8;
-          utterance.onerror = () => { $("#sound-status").textContent = "读音播放失败，请检查网络并重新加载页面。"; };
+          utterance.rate = .8 * VOICE_PROFILES[state.voice].rate;
+          utterance.pitch = VOICE_PROFILES[state.voice].preservesPitch ? 1 : VOICE_PROFILES[state.voice].rate;
+          utterance.onerror = () => {
+            if (sequence === this.sequence) $("#sound-status").textContent = "读音播放失败，请检查网络并重新加载页面。";
+          };
           window.speechSynthesis.speak(utterance);
           $("#sound-status").textContent = "音频未加载，正在使用设备读音。";
         } else {
@@ -223,6 +265,9 @@ function renderLesson() {
     $("#lesson-content").innerHTML = `${renderPicture(q.picture, q.hint)}<div class="word">${q.word}</div><p class="word-hint">${q.hint}</p>`;
   }
   if (narrator.enabled) narrator.play(questionTracks());
+  continuousAudio.preload(questionTracks());
+  const next = state.items[state.index + 1];
+  if (next) continuousAudio.preload(state.subject === "math" ? [`n-${next.a}`, next.op === "+" ? "plus" : "minus", `n-${next.b}`, "question"] : [next.audio]);
 }
 function markComplete() {
   if (state.completed.has(state.index)) return;
@@ -281,6 +326,7 @@ function renderExplanation() {
   }
   if (number === 0) $("#star-scene").textContent = "0 · 一颗也没有";
   if (narrator.enabled) narrator.play(ids);
+  continuousAudio.preload(ids);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -292,6 +338,13 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#pick-character").onclick = () => renderCharSelect("screen-home");
   $("#lesson-character").onclick = () => renderCharSelect("screen-lesson");
   $("#sound-test").onclick = () => narrator.play(["hello"]);
+  $("#voice-profile").value = state.voice;
+  $("#voice-profile").onchange = event => {
+    state.voice = event.target.value;
+    save();
+    narrator.play(["hello"]);
+  };
+  continuousAudio.preload(["hello"]);
   $("#sound-button").onclick = () => {
     if (!narrator.enabled) narrator.play(["hello"]);
     else {

@@ -6,19 +6,27 @@
   <meta name="theme-color" content="#f5fcf4">
   <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
   <title>萌学园 · 和小伙伴一起学</title>
-  <link rel="stylesheet" href="css/style.css?v=0.2">
+  <link rel="stylesheet" href="css/style.css?v=0.2.1">
 </head>
 <body>
   <main class="app">
     <header class="topbar">
       <button id="home-button" class="icon-button" aria-label="返回首页">⌂</button>
-      <span class="brand">萌学园 <small>v0.2</small></span>
+      <span class="brand">萌学园 <small>v0.2.1</small></span>
       <span class="star-badge" aria-label="获得的星星">⭐ <span id="stars">0</span></span>
       <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false">🔈</button>
     </header>
     <aside class="sound-panel">
       <button id="sound-test">🔊 点我开启 / 试听声音</button>
+      <label class="voice-picker" for="voice-profile">声音
+        <select id="voice-profile">
+          <option value="original">🎧 原声 · 自然</option>
+          <option value="bright">🐥 活泼 · 明亮轻快</option>
+          <option value="soft">🧸 软萌 · 轻柔略高</option>
+        </select>
+      </label>
       <p id="sound-status" role="status" aria-live="polite">先点上面的按钮，听听小伙伴的声音。</p>
+      <p class="voice-note">预设调整原声的速度和音高，不是真实儿童配音。切换即可试听。</p>
     </aside>
 
     <section id="screen-home" class="screen active" aria-label="学习设置">
@@ -73,6 +81,7 @@
   <script src="js/data.js?v=0.2"></script>
   <script src="js/pictures.js?v=0.2"></script>
   <script src="js/characters.js?v=0.2"></script>
-  <script src="js/app.js?v=0.2"></script>
+  <script src="js/audio.js?v=0.2.1"></script>
+  <script src="js/app.js?v=0.2.1"></script>
 </body>
 </html>
