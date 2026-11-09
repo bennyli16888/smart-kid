@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="萌学园 —— 3-6岁小朋友的语数英启蒙乐园" />
+  <title>萌学园 · 3-6岁语数英启蒙</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦖</text></svg>" />
+</head>
+<body>
+  <div id="confetti-layer" aria-hidden="true"></div>
+
+  <!-- ============ 首页 ============ -->
+  <section class="screen active" id="screen-home">
+    <header class="topbar">
+      <h1 class="logo">🌈 萌学园</h1>
+      <div class="topbar-right">
+        <span class="star-badge">⭐ <span class="star-count">0</span></span>
+        <button class="btn-sound" title="声音开关">🔊</button>
+      </div>
+    </header>
+
+    <div class="home-hero">
+      <div id="home-companion" class="companion-slot big"></div>
+      <button class="btn btn-link" id="btn-pick-char">🐾 换小伙伴（<span id="home-char-name"></span>）</button>
+    </div>
+
+    <div class="panel">
+      <p class="panel-label">👶 我今年</p>
+      <div class="btn-row" id="age-row">
+        <button class="age-btn" data-age="3">3岁</button>
+        <button class="age-btn" data-age="4">4岁</button>
+        <button class="age-btn" data-age="5">5岁</button>
+        <button class="age-btn" data-age="6">6岁</button>
+      </div>
+
+      <p class="panel-label">📚 我想学</p>
+      <div class="btn-row" id="subject-row">
+        <button class="subject-btn subject-zh" data-subject="zh">📖 语文</button>
+        <button class="subject-btn subject-math" data-subject="math">🔢 数学</button>
+        <button class="subject-btn subject-en" data-subject="en">🔤 英语</button>
+      </div>
+
+      <button class="btn btn-primary btn-big" id="btn-start">🎈 开始上课啦</button>
+    </div>
+    <p class="version">v0.1</p>
+  </section>
+
+  <!-- ============ 角色选择 ============ -->
+  <section class="screen" id="screen-chars">
+    <header class="topbar">
+      <button class="btn-back">⬅ 返回</button>
+      <h2>选一个陪伴小伙伴</h2>
+      <span></span>
+    </header>
+    <div class="char-grid" id="char-grid"></div>
+  </section>
+
+  <!-- ============ 学习菜单 ============ -->
+  <section class="screen" id="screen-menu">
+    <header class="topbar">
+      <button class="btn-back">⬅ 首页</button>
+      <h2 id="menu-title"></h2>
+      <div class="topbar-right">
+        <span class="star-badge">⭐ <span class="star-count">0</span></span>
+        <div id="menu-companion" class="companion-slot"></div>
+      </div>
+    </header>
+    <div class="mode-grid">
+      <button class="mode-btn mode-card" data-mode="card">
+        <span class="mode-icon">🃏</span><span class="mode-name">翻卡片</span><span class="mode-desc">点一点，学一学</span>
+      </button>
+      <button class="mode-btn mode-animate" data-mode="animate">
+        <span class="mode-icon">🎬</span><span class="mode-name">动画课</span><span class="mode-desc">数一数，真好玩</span>
+      </button>
+      <button class="mode-btn mode-phrase" data-mode="phrase">
+        <span class="mode-icon">💬</span><span class="mode-name">会说话</span><span class="mode-desc">日常用语跟我读</span>
+      </button>
+      <button class="mode-btn mode-quiz" data-mode="quiz">
+        <span class="mode-icon">🔍</span><span class="mode-name">找一找</span><span class="mode-desc">答对赢小星星</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ 卡片教学 ============ -->
+  <section class="screen" id="screen-card">
+    <header class="topbar">
+      <button class="btn-to-menu">⬅ 菜单</button>
+      <h2>🃏 翻卡片 <span id="card-progress" class="progress"></span></h2>
+      <div class="topbar-right">
+        <span class="star-badge">⭐ <span class="star-count">0</span></span>
+        <div id="card-companion" class="companion-slot"></div>
+      </div>
+    </header>
+    <div class="card-wrap">
+      <div id="flashcard" class="flashcard" role="button" tabindex="0" aria-label="翻卡片并听发音"></div>
+    </div>
+    <div class="btn-row center">
+      <button class="btn btn-round" id="card-prev">⬅ 上一张</button>
+      <button class="btn btn-round" id="card-next">下一张 ➡</button>
+    </div>
+    <p class="hint">👆 点卡片翻一翻，听发音</p>
+  </section>
+
+  <!-- ============ 动画小课堂 ============ -->
+  <section class="screen" id="screen-animate">
+    <header class="topbar">
+      <button class="btn-to-menu">⬅ 菜单</button>
+      <h2 id="animate-title">🎬 动画课</h2>
+      <div class="topbar-right">
+        <span class="star-badge">⭐ <span class="star-count">0</span></span>
+        <div id="animate-companion" class="companion-slot"></div>
+      </div>
+    </header>
+    <div class="animate-stage-wrap">
+      <div id="animate-stage" class="animate-stage"></div>
+      <div id="animate-count" class="animate-count"></div>
+    </div>
+    <div class="btn-row center">
+      <button class="btn btn-round" id="animate-replay">🔁 再玩一次</button>
+    </div>
+  </section>
+
+  <!-- ============ 生活用语 ============ -->
+  <section class="screen" id="screen-phrase">
+    <header class="topbar">
+      <button class="btn-to-menu">⬅ 菜单</button>
+      <h2>💬 会说话 <span id="phrase-progress" class="progress"></span></h2>
+      <div class="topbar-right">
+        <span class="star-badge">⭐ <span class="star-count">0</span></span>
+        <div id="phrase-companion" class="companion-slot"></div>
+      </div>
+    </header>
+    <div class="phrase-wrap">
+      <div id="phrase-card" class="phrase-card"></div>
+    </div>
+    <div class="btn-row center">
+      <button class="btn btn-round" id="phrase-prev">⬅ 上一句</button>
+      <button class="btn btn-round" id="phrase-next">下一句 ➡</button>
+    </div>
+  </section>
+
+  <!-- ============ 找一找小游戏 ============ -->
+  <section class="screen" id="screen-quiz">
+    <header class="topbar">
+      <button class="btn-to-menu">⬅ 菜单</button>
+      <h2>🔍 找一找 <span id="quiz-progress" class="progress"></span></h2>
+      <div class="topbar-right">
+        <span class="star-badge">⭐ <span class="star-count">0</span></span>
+        <div id="quiz-companion" class="companion-slot"></div>
+      </div>
+    </header>
+    <div class="quiz-wrap">
+      <p id="quiz-ask" class="quiz-ask"></p>
+      <button id="quiz-repeat" class="btn btn-speak">🔊 再听题目</button>
+      <div id="quiz-scene" class="quiz-scene"></div>
+      <div id="quiz-options" class="quiz-options"></div>
+    </div>
+  </section>
+
+  <script src="js/data.js"></script>
+  <script src="js/characters.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
