@@ -1,166 +1,78 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="萌学园 —— 3-6岁小朋友的语数英启蒙乐园" />
-  <title>萌学园 · 3-6岁语数英启蒙</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦖</text></svg>" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f5fcf4">
+  <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
+  <title>萌学园 · 和小伙伴一起学</title>
+  <link rel="stylesheet" href="css/style.css?v=0.2">
 </head>
 <body>
-  <div id="confetti-layer" aria-hidden="true"></div>
-
-  <!-- ============ 首页 ============ -->
-  <section class="screen active" id="screen-home">
+  <main class="app">
     <header class="topbar">
-      <h1 class="logo">🌈 萌学园</h1>
-      <div class="topbar-right">
-        <span class="star-badge">⭐ <span class="star-count">0</span></span>
-        <button class="btn-sound" title="声音开关">🔊</button>
-      </div>
+      <button id="home-button" class="icon-button" aria-label="返回首页">⌂</button>
+      <span class="brand">萌学园 <small>v0.2</small></span>
+      <span class="star-badge" aria-label="获得的星星">⭐ <span id="stars">0</span></span>
+      <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false">🔈</button>
     </header>
+    <aside class="sound-panel">
+      <button id="sound-test">🔊 点我开启 / 试听声音</button>
+      <p id="sound-status" role="status" aria-live="polite">先点上面的按钮，听听小伙伴的声音。</p>
+    </aside>
 
-    <div class="home-hero">
-      <div id="home-companion" class="companion-slot big"></div>
-      <button class="btn btn-link" id="btn-pick-char">🐾 换小伙伴（<span id="home-char-name"></span>）</button>
-    </div>
-
-    <div class="panel">
-      <p class="panel-label">👶 我今年</p>
-      <div class="btn-row" id="age-row">
-        <button class="age-btn" data-age="3">3岁</button>
-        <button class="age-btn" data-age="4">4岁</button>
-        <button class="age-btn" data-age="5">5岁</button>
-        <button class="age-btn" data-age="6">6岁</button>
+    <section id="screen-home" class="screen active" aria-label="学习设置">
+      <div class="hero">
+        <button class="companion-button" id="pick-character" aria-label="选择陪伴小伙伴"><span class="companion" data-size="160"></span><span id="character-name">小恐龙</span><small>🐾 换个小伙伴</small></button>
+        <div><p class="eyebrow" id="world-name">小恐龙的森林课堂</p><h1>今天想<br>学什么呀？</h1><p class="subtitle">慢慢学，开心最重要。</p></div>
       </div>
-
-      <p class="panel-label">📚 我想学</p>
-      <div class="btn-row" id="subject-row">
-        <button class="subject-btn subject-zh" data-subject="zh">📖 语文</button>
-        <button class="subject-btn subject-math" data-subject="math">🔢 数学</button>
-        <button class="subject-btn subject-en" data-subject="en">🔤 英语</button>
+      <div id="subject-row" class="subject-grid" role="group" aria-label="科目">
+        <button class="subject-button" data-subject="zh"><span class="subject-icon">文</span><strong>语文</strong><small>看图认字 · 听听读音</small></button>
+        <button class="subject-button" data-subject="math"><span class="subject-icon">+ −</span><strong>数学</strong><small>加一加 · 减一减</small></button>
+        <button class="subject-button" data-subject="en"><span class="subject-icon">ABC</span><strong>英语</strong><small>生活图片 · 单词读音</small></button>
       </div>
-
-      <button class="btn btn-primary btn-big" id="btn-start">🎈 开始上课啦</button>
-    </div>
-    <p class="version">v0.1</p>
-  </section>
-
-  <!-- ============ 角色选择 ============ -->
-  <section class="screen" id="screen-chars">
-    <header class="topbar">
-      <button class="btn-back">⬅ 返回</button>
-      <h2>选一个陪伴小伙伴</h2>
-      <span></span>
-    </header>
-    <div class="char-grid" id="char-grid"></div>
-  </section>
-
-  <!-- ============ 学习菜单 ============ -->
-  <section class="screen" id="screen-menu">
-    <header class="topbar">
-      <button class="btn-back">⬅ 首页</button>
-      <h2 id="menu-title"></h2>
-      <div class="topbar-right">
-        <span class="star-badge">⭐ <span class="star-count">0</span></span>
-        <div id="menu-companion" class="companion-slot"></div>
+      <div class="settings panel">
+        <h2>🌱 选个难度</h2>
+        <div id="level-row" class="choice-row" role="group" aria-label="难度"></div>
+        <h2>🎒 这次学多少？</h2>
+        <div id="count-row" class="choice-row" role="group" aria-label="题量">
+          <button data-count="10">10</button><button data-count="20">20</button><button data-count="30">30</button>
+        </div>
+        <p id="lesson-note" class="subtitle"></p>
+        <button id="start-button" class="primary wide">▶ 开始学习</button>
       </div>
-    </header>
-    <div class="mode-grid">
-      <button class="mode-btn mode-card" data-mode="card">
-        <span class="mode-icon">🃏</span><span class="mode-name">翻卡片</span><span class="mode-desc">点一点，学一学</span>
-      </button>
-      <button class="mode-btn mode-animate" data-mode="animate">
-        <span class="mode-icon">🎬</span><span class="mode-name">动画课</span><span class="mode-desc">数一数，真好玩</span>
-      </button>
-      <button class="mode-btn mode-phrase" data-mode="phrase">
-        <span class="mode-icon">💬</span><span class="mode-name">会说话</span><span class="mode-desc">日常用语跟我读</span>
-      </button>
-      <button class="mode-btn mode-quiz" data-mode="quiz">
-        <span class="mode-icon">🔍</span><span class="mode-name">找一找</span><span class="mode-desc">答对赢小星星</span>
-      </button>
-    </div>
-  </section>
+      <p class="parent-note">给家长：无需按年龄选择，从简单开始。可以随时休息，不计时、不催促。</p>
+    </section>
 
-  <!-- ============ 卡片教学 ============ -->
-  <section class="screen" id="screen-card">
-    <header class="topbar">
-      <button class="btn-to-menu">⬅ 菜单</button>
-      <h2>🃏 翻卡片 <span id="card-progress" class="progress"></span></h2>
-      <div class="topbar-right">
-        <span class="star-badge">⭐ <span class="star-count">0</span></span>
-        <div id="card-companion" class="companion-slot"></div>
-      </div>
-    </header>
-    <div class="card-wrap">
-      <div id="flashcard" class="flashcard" role="button" tabindex="0" aria-label="翻卡片并听发音"></div>
-    </div>
-    <div class="btn-row center">
-      <button class="btn btn-round" id="card-prev">⬅ 上一张</button>
-      <button class="btn btn-round" id="card-next">下一张 ➡</button>
-    </div>
-    <p class="hint">👆 点卡片翻一翻，听发音</p>
-  </section>
+    <section id="screen-chars" class="screen" aria-label="选择角色">
+      <h1>谁来陪你学？</h1><p class="subtitle">选好小伙伴，整个课堂都会换装哦。</p>
+      <div id="character-grid" class="character-grid"></div>
+    </section>
 
-  <!-- ============ 动画小课堂 ============ -->
-  <section class="screen" id="screen-animate">
-    <header class="topbar">
-      <button class="btn-to-menu">⬅ 菜单</button>
-      <h2 id="animate-title">🎬 动画课</h2>
-      <div class="topbar-right">
-        <span class="star-badge">⭐ <span class="star-count">0</span></span>
-        <div id="animate-companion" class="companion-slot"></div>
-      </div>
-    </header>
-    <div class="animate-stage-wrap">
-      <div id="animate-stage" class="animate-stage"></div>
-      <div id="animate-count" class="animate-count"></div>
-    </div>
-    <div class="btn-row center">
-      <button class="btn btn-round" id="animate-replay">🔁 再玩一次</button>
-    </div>
-  </section>
+    <section id="screen-lesson" class="screen" aria-label="学习课堂">
+      <div class="lesson-heading"><span class="companion" data-size="80"></span><div><h2 id="lesson-title"></h2><p id="lesson-progress"></p></div><button id="lesson-character" class="mini">🐾 换伙伴</button></div>
+      <progress id="progress-bar" max="10" value="1" aria-label="学习进度"></progress>
+      <article class="lesson-card panel">
+        <div id="lesson-content"></div>
+        <button id="listen-button" class="listen-button">🔊 听一听</button>
+        <div id="answers" class="answers"></div>
+        <p id="feedback" role="status" aria-live="polite"></p>
+        <button id="explain-button" class="secondary">🌟 用星星讲给我听</button>
+        <div id="explanation" class="explanation" hidden>
+          <p id="explain-text"></p><div id="star-scene" class="star-scene"></div>
+          <button id="explain-next" class="secondary">▶ 下一步</button>
+        </div>
+      </article>
+      <div class="navigation"><button id="previous-button" class="secondary">← 上一个</button><button id="next-button" class="primary">下一个 →</button></div>
+    </section>
 
-  <!-- ============ 生活用语 ============ -->
-  <section class="screen" id="screen-phrase">
-    <header class="topbar">
-      <button class="btn-to-menu">⬅ 菜单</button>
-      <h2>💬 会说话 <span id="phrase-progress" class="progress"></span></h2>
-      <div class="topbar-right">
-        <span class="star-badge">⭐ <span class="star-count">0</span></span>
-        <div id="phrase-companion" class="companion-slot"></div>
-      </div>
-    </header>
-    <div class="phrase-wrap">
-      <div id="phrase-card" class="phrase-card"></div>
-    </div>
-    <div class="btn-row center">
-      <button class="btn btn-round" id="phrase-prev">⬅ 上一句</button>
-      <button class="btn btn-round" id="phrase-next">下一句 ➡</button>
-    </div>
-  </section>
-
-  <!-- ============ 找一找小游戏 ============ -->
-  <section class="screen" id="screen-quiz">
-    <header class="topbar">
-      <button class="btn-to-menu">⬅ 菜单</button>
-      <h2>🔍 找一找 <span id="quiz-progress" class="progress"></span></h2>
-      <div class="topbar-right">
-        <span class="star-badge">⭐ <span class="star-count">0</span></span>
-        <div id="quiz-companion" class="companion-slot"></div>
-      </div>
-    </header>
-    <div class="quiz-wrap">
-      <p id="quiz-ask" class="quiz-ask"></p>
-      <button id="quiz-repeat" class="btn btn-speak">🔊 再听题目</button>
-      <div id="quiz-scene" class="quiz-scene"></div>
-      <div id="quiz-options" class="quiz-options"></div>
-    </div>
-  </section>
-
-  <script src="js/data.js"></script>
-  <script src="js/characters.js"></script>
-  <script src="js/app.js"></script>
+    <section id="screen-results" class="screen" aria-label="学习完成">
+      <div class="results panel"><span class="companion" data-size="180"></span><h1>你真棒！</h1><p id="result-message"></p><p class="subtitle">伸个懒腰，看看远处，休息一下吧。</p><button id="again-button" class="primary wide">↻ 再学一次</button><button id="finish-button" class="secondary wide">⌂ 回到首页</button></div>
+    </section>
+  </main>
+  <script src="js/data.js?v=0.2"></script>
+  <script src="js/pictures.js?v=0.2"></script>
+  <script src="js/characters.js?v=0.2"></script>
+  <script src="js/app.js?v=0.2"></script>
 </body>
 </html>

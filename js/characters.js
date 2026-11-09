@@ -21,8 +21,8 @@ const CHARACTERS = [
 function renderCharacter(ch, size, mood) {
   size = size || 120;
   mood = mood || "happy";
-  const s = ch.stroke || "none";
-  const sw = ch.stroke ? 3 : 0;
+  const s = ch.stroke || "#65516f";
+  const sw = 3;
 
   /* ---- 耳朵/头顶装饰 ---- */
   let ears = "";
@@ -125,7 +125,7 @@ function renderCharacter(ch, size, mood) {
   const tail = ch.tail ? `<path d="M 152 118 q 26 4 22 26 q -14 -10 -30 -10 z" fill="${ch.accent}"/>` : "";
 
   return `
-  <svg viewBox="0 0 200 160" width="${size}" height="${size * 0.8}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${ch.name}">
+  <svg viewBox="0 -12 200 178" width="${size}" height="${size * 0.89}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${ch.name}">
     ${tail}${ears}${body}${blush}${eyes}${mouth}
   </svg>`;
 }

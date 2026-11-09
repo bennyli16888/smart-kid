@@ -13,7 +13,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(404).end();
     return;
   }
-  res.setHeader("Content-Type", file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "text/html");
+  res.setHeader("Content-Type", file.endsWith(".mp3") ? "audio/mpeg" : file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "text/html");
   fs.createReadStream(file).pipe(res);
 });
 
@@ -56,11 +56,11 @@ async function main() {
       ws.send(JSON.stringify({ id: callId, method, params }));
     });
     const run = async expression => {
-      const response = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
+      const response = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true, userGesture: true });
       if (response.exceptionDetails) throw new Error(JSON.stringify(response.exceptionDetails));
       return response.result.value;
     };
-    const url = `http://127.0.0.1:${server.address().port}/index.html`;
+    const url = process.env.SITE_URL || `http://127.0.0.1:${server.address().port}/index.html`;
     const navigation = await send("Page.navigate", { url });
     for (let n = 0; n < 50 && !(await run("document.readyState === 'complete' && typeof renderHome === 'function'")); n++) {
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -68,47 +68,93 @@ async function main() {
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("CHARACTERS.length"), 10);
-    await run("document.querySelector('#btn-pick-char').click()");
-    assert.equal(await run("document.querySelectorAll('.char-card').length"), 10);
-    await run("document.querySelectorAll('.char-card')[1].click(); renderHome()");
-    assert.equal(await run("localStorage.getItem('smartkid_char')"), "bunny");
-
+    assert.equal(await run("narrator.enabled"), false, "do not attempt autoplay on page open");
+    await run("document.querySelector('#sound-test').click()");
+    for (let n = 0; n < 80 && !(await run("narrator.audio.currentTime > .1")); n++) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    assert.equal(await run("narrator.audio.currentTime > .1"), true, `bundled audio did not actually play: ${await run("document.querySelector('#sound-status').textContent")}`);
+    assert.equal(await run("narrator.audio.error === null"), true);
+    await run("document.querySelector('#sound-button').click()");
+    assert.equal(await run("narrator.enabled"), false);
+    assert.equal(await run("narrator.audio.paused"), true);
+    await run("window.savedPlay = narrator.audio.play; narrator.audio.play = () => Promise.reject(new DOMException('blocked', 'NotAllowedError')); document.querySelector('#sound-test').click()");
+    await new Promise(resolve => setTimeout(resolve, 100));
+    assert.equal(await run("document.querySelector('#sound-status').textContent.includes('拦截')"), true);
+    await run("narrator.audio.play = window.savedPlay; narrator.enabled = false; narrator.stop()");
+    const themes = new Set();
+    for (const id of await run("CHARACTERS.map(ch => ch.id)")) {
+      await run(`document.querySelector('#pick-character').click(); document.querySelector('[data-char="${id}"]').click()`);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      assert.equal(await run("localStorage.getItem('smartkid_char')"), id);
+      assert.equal(await run("document.documentElement.dataset.character"), id);
+      themes.add(await run("getComputedStyle(document.body).backgroundColor"));
+    }
+    assert.equal(themes.size, 10, "all companion themes must differ");
     for (const subject of ["zh", "math", "en"]) {
-      for (const age of [3, 4, 5, 6]) {
-        await run(`document.querySelector('[data-age="${age}"]').click(); document.querySelector('#subject-row [data-subject="${subject}"]').click(); document.querySelector('#btn-start').click()`);
-        assert.equal(await run("document.querySelector('#screen-menu').classList.contains('active')"), true);
-        await run("document.querySelector('[data-mode=card]').click()");
-        assert.equal(await run("document.querySelector('#card-progress').textContent.trim()"), `1 / ${await run("currentContent().cards.length")}`);
-        await run("document.querySelector('#flashcard').click(); document.querySelector('#card-next').click()");
-        assert.equal(await run("document.querySelector('#card-progress').textContent.trim().startsWith('2 /')"), true);
-        await run("renderMenu(); document.querySelector('[data-mode=animate]').click()");
-        assert.equal(await run("document.querySelectorAll('#animate-stage .anim-item').length"), 1);
-        await run("renderMenu(); document.querySelector('[data-mode=phrase]').click()");
-        assert.ok(await run("document.querySelector('#phrase-card').textContent.length") > 10);
-        await run("document.querySelector('#phrase-next').click(); renderMenu(); document.querySelector('[data-mode=quiz]').click()");
-        const before = await run("state.stars");
-        await run("document.querySelectorAll('#quiz-options button')[currentContent().quiz[0].answer].click(); document.querySelectorAll('#quiz-options button')[currentContent().quiz[0].answer].click()");
-        assert.equal(await run("state.stars"), before + 1, "double click must not award twice");
-        await run("renderHome()");
+      for (const level of [1, 2, 3]) {
+        for (const count of [10, 20, 30]) {
+          await run(`renderHome(); document.querySelector('[data-subject="${subject}"]').click(); document.querySelector('[data-level="${level}"]').click(); document.querySelector('[data-count="${count}"]').click(); document.querySelector('#start-button').click()`);
+          assert.equal(await run("state.items.length"), count);
+          assert.equal(await run("document.querySelector('#lesson-progress').textContent"), `1 / ${count}`);
+          if (subject === "math") {
+            assert.equal(await run("state.items.every(q => q.a >= 0 && q.b > 0 && q.a <= state.level * 10 && q.b <= state.level * 10 && q.answer >= 0 && q.answer <= state.level * 10 && q.answer === (q.op === '+' ? q.a + q.b : q.a - q.b))"), true);
+            assert.equal(await run("new Set(state.items.map(q => `${q.a}${q.op}${q.b}`)).size"), count, "math questions must not repeat");
+          } else {
+            assert.equal(await run("document.querySelector('#lesson-content svg').getAttribute('role')"), "img");
+            assert.equal(await run("document.querySelector('#explain-button').hidden"), true);
+          }
+          const before = await run("state.stars");
+          await run(`for(let i=0; i<${count}; i++) {
+            if(state.subject === 'math') {
+              const button = [...document.querySelectorAll('.answer')].find(b => Number(b.textContent) === currentQuestion().answer);
+              button.click(); button.click();
+            }
+            document.querySelector('#next-button').click();
+          }`);
+          assert.equal(await run("document.querySelector('#screen-results').classList.contains('active')"), true);
+          assert.equal(await run("state.stars"), before + count, "exactly one star per item");
+        }
       }
     }
-    await run("state.subject = 'math'; state.age = 3; renderAnimate(); renderMenu()");
+    await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('[data-level=\"1\"]').click(); document.querySelector('#start-button').click()");
     const stars = await run("state.stars");
-    await new Promise(resolve => setTimeout(resolve, 1400));
-    assert.equal(await run("state.stars"), stars, "leaving animation must stop rewards");
-    await run("renderAnimate()");
-    await new Promise(resolve => setTimeout(resolve, 5800));
-    assert.equal(await run("state.stars"), stars + 1, "completed animation should award one star");
-    assert.equal(await run("document.querySelectorAll('#animate-stage .anim-item').length"), 5);
+    await run("[...document.querySelectorAll('.answer')].find(b => Number(b.textContent) !== currentQuestion().answer).click()");
+    assert.equal(await run("state.stars"), stars, "wrong answer must not award stars");
+    assert.equal(await run("document.querySelector('#next-button').disabled"), true);
+    for (const q of [{ a: 2, b: 3, op: "+", answer: 5 }, { a: 5, b: 2, op: "−", answer: 3 }, { a: 1, b: 1, op: "−", answer: 0 }, { a: 0, b: 2, op: "+", answer: 2 }]) {
+      await run(`state.items[0] = ${JSON.stringify(q)}; renderLesson(); document.querySelector('#explain-button').click()`);
+      assert.equal(await run("document.querySelectorAll('.star-token').length"), q.a);
+      await run("document.querySelector('#explain-next').click()");
+      assert.equal(await run("document.querySelectorAll('.star-token.taken').length"), q.op === "−" ? q.b : 0);
+      assert.equal(await run("document.querySelectorAll('.star-token.added').length"), q.op === "+" ? q.b : 0);
+      await run("document.querySelector('#explain-next').click()");
+      assert.equal(await run("document.querySelectorAll('.star-token:not(.taken)').length"), q.answer);
+      assert.equal(await run("document.querySelector('#explain-text').textContent.includes('= ' + currentQuestion().answer)"), true);
+    }
+    await run("document.querySelector('#lesson-character').click(); document.querySelector('[data-char=bunny]').click()");
+    assert.equal(await run("document.querySelector('#screen-lesson').classList.contains('active')"), true, "changing companion must preserve lesson");
+    assert.equal(await run("document.documentElement.dataset.character"), "bunny");
+    await run("narrator.enabled = false; updateSound(); renderHome()");
     for (const width of [320, 360, 1280]) {
       await send("Emulation.setDeviceMetricsOverride", { width, height: 740, deviceScaleFactor: 2, mobile: width < 700 });
-      for (const expression of [
-        "(renderHome(), document.documentElement.scrollWidth <= window.innerWidth)",
-        "(renderMenu(), document.documentElement.scrollWidth <= window.innerWidth)",
-        "(renderQuiz(), document.documentElement.scrollWidth <= window.innerWidth)"
-      ]) assert.equal(await run(expression), true, `${width}px horizontal overflow`);
+      for (const expression of ["renderHome()", "renderCharSelect('screen-home')", "renderLesson()", "state.explanationStep = 1; renderExplanation()", "show('screen-results')"]) {
+        await run(expression);
+        assert.equal(await run("document.documentElement.scrollWidth <= window.innerWidth"), true, `${width}px horizontal overflow: ${expression}`);
+      }
     }
-    console.log("OK: 12 age/subject flows, four modes, 10 companions, star rewards, timer cleanup, 320/360/1280px layouts");
+    if (process.env.SCREENSHOT_DIR) {
+      await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+      await run("document.querySelector('#sound-status').textContent = '先点上面的按钮，听听小伙伴的声音。'; renderHome()");
+      await new Promise(resolve => setTimeout(resolve, 350));
+      const image = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
+      fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR, "smartkid-home.png"), Buffer.from(image.data, "base64"));
+      await run("state.subject='en'; state.level=1; startLesson()");
+      await new Promise(resolve => setTimeout(resolve, 350));
+      const lessonImage = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
+      fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR, "smartkid-english.png"), Buffer.from(lessonImage.data, "base64"));
+    }
+    console.log("OK: real MP3 playback, autoplay-block handling, 10 themes, 27 subject/difficulty/count flows, math solutions, 320/360/1280px layouts");
   } finally {
     ws?.close();
     chrome.kill();
