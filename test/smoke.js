@@ -75,6 +75,11 @@ async function main() {
     }
     assert.equal(await run("narrator.audio.currentTime > .1"), true, `bundled audio did not actually play: ${await run("document.querySelector('#sound-status').textContent")}`);
     assert.equal(await run("narrator.audio.error === null"), true);
+    await run("narrator.play(['en-1-0'])");
+    assert.equal(await run("narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "English MP3 must play");
+    await run("narrator.play(['n-2', 'plus', 'n-3', 'question'])");
+    assert.equal(await run("narrator.audio.src.endsWith('/question.mp3') && narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "math narration playlist must finish");
+    assert.equal(await run("document.querySelector('#sound-status').textContent.includes('声音已开启')"), true);
     await run("document.querySelector('#sound-button').click()");
     assert.equal(await run("narrator.enabled"), false);
     assert.equal(await run("narrator.audio.paused"), true);

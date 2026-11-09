@@ -255,7 +255,7 @@ function renderExplanation() {
     text = `① 先放好 ${q.a} 颗星星。点一点，每颗星星都会报数。`;
     ids = ["first", `n-${q.a}`, "stars"];
   } else if (step === 1) {
-    text = adding ? `② 再拿来 ${q.b} 颗，绿色底的是新来的。把它们合在一起！` : `② 拿走 ${q.b} 颗。打叉的星星拿走了，不用数它们。`;
+    text = adding ? `② 再拿来 ${q.b} 颗，带彩色底的是新来的。把它们合在一起！` : `② 拿走 ${q.b} 颗。打叉的星星拿走了，不用数它们。`;
     ids = [adding ? "bring" : "take", `n-${q.b}`, "stars", adding ? "together" : "left"];
   } else {
     text = `③ ${adding ? "一共有" : "还剩"} ${q.answer} 颗！${q.a} ${q.op} ${q.b} = ${q.answer}。${q.answer === 0 ? "一颗也没有了，就是 0。" : "再点星星，一起数一次。"} `;
