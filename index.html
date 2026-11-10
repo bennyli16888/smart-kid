@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f5fcf4">
   <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
   <title>萌学园 · 和小伙伴一起学</title>
-  <link rel="stylesheet" href="css/style.css?v=0.3">
+  <link rel="stylesheet" href="css/style.css?v=0.3.1">
 </head>
 <body>
   <main class="app">
@@ -16,12 +16,6 @@
       <span class="star-badge" aria-label="获得的星星">⭐ <span id="stars">0</span></span>
       <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false">🔈</button>
     </header>
-    <aside class="sound-panel">
-      <button id="sound-test">🔊 点我开启 / 试听声音</button>
-      <p id="sound-status" role="status" aria-live="polite">先点上面的按钮，听听小伙伴的声音。</p>
-      <p class="voice-note">固定合成童声，不使用变速变调预设。</p>
-    </aside>
-
     <section id="screen-home" class="screen active" aria-label="学习设置">
       <div class="hero">
         <button class="companion-button" id="pick-character" aria-label="选择陪伴小伙伴"><span class="companion" data-size="160"></span><span id="character-name">小恐龙</span><small>🐾 换个小伙伴</small></button>
@@ -94,6 +88,7 @@
       <article class="lesson-card panel">
         <div id="lesson-content"></div>
         <button id="listen-button" class="listen-button">🔊 听一听</button>
+        <p id="sound-status" class="subtitle" role="status" aria-live="polite" hidden></p>
         <div id="answers" class="answers"></div>
         <p id="feedback" role="status" aria-live="polite"></p>
         <button id="explain-button" class="secondary">🍬 用实物讲给我听</button>
@@ -114,6 +109,6 @@
   <script src="js/pictures.js?v=0.3"></script>
   <script src="js/characters.js?v=0.2"></script>
   <script src="js/audio.js?v=0.3"></script>
-  <script src="js/app.js?v=0.3"></script>
+  <script src="js/app.js?v=0.3.1"></script>
 </body>
 </html>

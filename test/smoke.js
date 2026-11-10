@@ -72,7 +72,8 @@ async function main() {
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("CHARACTERS.length"), 10);
     assert.equal(await run("narrator.enabled"), false, "do not attempt autoplay on page open");
-    await run("document.querySelector('#sound-test').click()");
+    assert.equal(await run("document.querySelector('.sound-panel, #sound-test, .voice-note')"), null, "remove the sound preview and voice description panel");
+    await run("document.querySelector('#sound-button').click()");
     for (let n = 0; n < 80 && !(await run("narrator.audio.currentTime > .1")); n++) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
@@ -105,20 +106,24 @@ async function main() {
     }
     assert.equal(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1"), true, "old browsers retain original MP3 playback");
     await run("window.OfflineAudioContext = window.OfflineDecoder; window.webkitOfflineAudioContext = window.LegacyOfflineDecoder; narrator.play(['n-2'])");
-    assert.equal(await run("document.querySelector('#sound-status').textContent.includes('声音已开启')"), true);
+    assert.equal(await run("document.querySelector('#sound-status').hidden && document.querySelector('#sound-status').textContent === ''"), true, "normal playback must not show a sound status block");
     await run("document.querySelector('#sound-button').click()");
     assert.equal(await run("narrator.enabled"), false);
     assert.equal(await run("narrator.audio.paused"), true);
-    await run("window.savedPlay = narrator.audio.play; narrator.audio.play = () => Promise.reject(new DOMException('blocked', 'NotAllowedError')); document.querySelector('#sound-test').click()");
+    assert.equal(await run("document.querySelector('#sound-status').hidden && document.querySelector('#sound-status').textContent === ''"), true, "muting must not display the removed sound-off message");
+    await run("document.querySelector('#start-button').click(); window.savedPlay = narrator.audio.play; narrator.audio.play = () => Promise.reject(new DOMException('blocked', 'NotAllowedError')); document.querySelector('#listen-button').click()");
     await new Promise(resolve => setTimeout(resolve, 100));
-    assert.equal(await run("document.querySelector('#sound-status').textContent.includes('拦截')"), true);
-    await run("narrator.audio.play = window.savedPlay; narrator.enabled = false; narrator.stop()");
+    assert.equal(await run("document.querySelector('#sound-status').getClientRects().length > 0 && document.querySelector('#sound-status').textContent.includes('拦截')"), true, "playback errors remain visible in the lesson");
+    await run("narrator.audio.play = window.savedPlay; narrator.play(questionTracks())");
+    assert.equal(await run("narrator.enabled && narrator.audio.currentTime > .1 && document.querySelector('#sound-status').hidden"), true, "listen still enables playback and clears the error after removing the preview panel");
+    await run("document.querySelector('#sound-button').click(); renderHome()");
     const themes = new Set();
     for (const id of await run("CHARACTERS.map(ch => ch.id)")) {
       await run(`document.querySelector('#pick-character').click(); document.querySelector('[data-char="${id}"]').click()`);
       await new Promise(resolve => setTimeout(resolve, 300));
       assert.equal(await run("localStorage.getItem('smartkid_char')"), id);
       assert.equal(await run("document.documentElement.dataset.character"), id);
+      assert.equal(await run("new Set([...document.querySelectorAll('.subject-button')].map(button => getComputedStyle(button).backgroundColor)).size"), 4, `${id}: all four subject cards must have distinct colors`);
       themes.add(await run("getComputedStyle(document.body).backgroundColor"));
     }
     assert.equal(themes.size, 10, "all companion themes must differ");
@@ -225,7 +230,7 @@ async function main() {
     }
     if (process.env.SCREENSHOT_DIR) {
       await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
-      await run("document.querySelector('#sound-status').textContent = '先点上面的按钮，听听小伙伴的声音。'; renderHome()");
+      await run("renderHome()");
       await new Promise(resolve => setTimeout(resolve, 350));
       const image = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
       fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR, "smartkid-home.png"), Buffer.from(image.data, "base64"));

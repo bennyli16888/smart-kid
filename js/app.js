@@ -1,15 +1,15 @@
 const $ = selector => document.querySelector(selector);
 const THEMES = {
-  dino: { paper: "#f5fcf4", grid: "#dcebd9", ink: "#354d43", muted: "#587568", accent: "#ceeab8", strong: "#5f9b6d", secondary: "#e6e5fa", highlight: "#fff0bc", world: "森林课堂", symbol: "🌿" },
-  bunny: { paper: "#fff7fb", grid: "#f6dce8", ink: "#583756", muted: "#8b5d80", accent: "#ffd2e3", strong: "#bd4b81", secondary: "#e7defa", highlight: "#fff0be", world: "花园课堂", symbol: "🌸" },
-  cat: { paper: "#fffbf2", grid: "#f1e5cd", ink: "#67462f", muted: "#8b684d", accent: "#ffe2a8", strong: "#aa722f", secondary: "#f8dce6", highlight: "#e0efcf", world: "阳光课堂", symbol: "☀️" },
-  dog: { paper: "#fcf8f1", grid: "#e9dfcf", ink: "#604530", muted: "#82644d", accent: "#f1d3ad", strong: "#9b683d", secondary: "#dce9f7", highlight: "#fff0bf", world: "小屋课堂", symbol: "🏡" },
-  bear: { paper: "#faf6f0", grid: "#e6d9ca", ink: "#594233", muted: "#7b6150", accent: "#dcc5b0", strong: "#8c6245", secondary: "#e1e7cf", highlight: "#fbe7c2", world: "蜂蜜课堂", symbol: "🍯" },
-  fox: { paper: "#fff8f2", grid: "#f5deca", ink: "#663f39", muted: "#926757", accent: "#ffd1af", strong: "#b16a43", secondary: "#e9ddf4", highlight: "#fff0c7", world: "秋叶课堂", symbol: "🍂" },
-  penguin: { paper: "#f3f8ff", grid: "#dce6f9", ink: "#35486b", muted: "#59709a", accent: "#c9ddfb", strong: "#557cb5", secondary: "#d9eef0", highlight: "#ffedc2", world: "冰雪课堂", symbol: "❄️" },
-  panda: { paper: "#f6faf5", grid: "#dce6d7", ink: "#3d4640", muted: "#68776a", accent: "#dcecc9", strong: "#62804c", secondary: "#e4e3ef", highlight: "#f3e9ce", world: "竹林课堂", symbol: "🎋" },
-  frog: { paper: "#f2fcfa", grid: "#d0ece7", ink: "#2e5350", muted: "#4b7873", accent: "#bcebdc", strong: "#36887a", secondary: "#dae6fa", highlight: "#f8f1c1", world: "池塘课堂", symbol: "🪷" },
-  lion: { paper: "#fffbec", grid: "#f3e5bf", ink: "#634c30", muted: "#8b704f", accent: "#ffe29b", strong: "#a77a2b", secondary: "#efddcf", highlight: "#e0edc6", world: "草原课堂", symbol: "🌾" }
+  dino: { paper: "#f5fcf4", grid: "#dcebd9", ink: "#354d43", muted: "#587568", accent: "#ceeab8", strong: "#5f9b6d", secondary: "#e6e5fa", highlight: "#fff0bc", song: "#f7d8df", world: "森林课堂", symbol: "🌿" },
+  bunny: { paper: "#fff7fb", grid: "#f6dce8", ink: "#583756", muted: "#8b5d80", accent: "#ffd2e3", strong: "#bd4b81", secondary: "#e7defa", highlight: "#fff0be", song: "#d3eee2", world: "花园课堂", symbol: "🌸" },
+  cat: { paper: "#fffbf2", grid: "#f1e5cd", ink: "#67462f", muted: "#8b684d", accent: "#ffe2a8", strong: "#aa722f", secondary: "#f8dce6", highlight: "#e0efcf", song: "#dce5fa", world: "阳光课堂", symbol: "☀️" },
+  dog: { paper: "#fcf8f1", grid: "#e9dfcf", ink: "#604530", muted: "#82644d", accent: "#f1d3ad", strong: "#9b683d", secondary: "#dce9f7", highlight: "#fff0bf", song: "#eadcf4", world: "小屋课堂", symbol: "🏡" },
+  bear: { paper: "#faf6f0", grid: "#e6d9ca", ink: "#594233", muted: "#7b6150", accent: "#dcc5b0", strong: "#8c6245", secondary: "#e1e7cf", highlight: "#fbe7c2", song: "#e1ddf5", world: "蜂蜜课堂", symbol: "🍯" },
+  fox: { paper: "#fff8f2", grid: "#f5deca", ink: "#663f39", muted: "#926757", accent: "#ffd1af", strong: "#b16a43", secondary: "#e9ddf4", highlight: "#fff0c7", song: "#d5eaf2", world: "秋叶课堂", symbol: "🍂" },
+  penguin: { paper: "#f3f8ff", grid: "#dce6f9", ink: "#35486b", muted: "#59709a", accent: "#c9ddfb", strong: "#557cb5", secondary: "#d9eef0", highlight: "#ffedc2", song: "#f6dce8", world: "冰雪课堂", symbol: "❄️" },
+  panda: { paper: "#f6faf5", grid: "#dce6d7", ink: "#3d4640", muted: "#68776a", accent: "#dcecc9", strong: "#62804c", secondary: "#e4e3ef", highlight: "#f3e9ce", song: "#f4dce6", world: "竹林课堂", symbol: "🎋" },
+  frog: { paper: "#f2fcfa", grid: "#d0ece7", ink: "#2e5350", muted: "#4b7873", accent: "#bcebdc", strong: "#36887a", secondary: "#dae6fa", highlight: "#f8f1c1", song: "#f7dce7", world: "池塘课堂", symbol: "🪷" },
+  lion: { paper: "#fffbec", grid: "#f3e5bf", ink: "#634c30", muted: "#8b704f", accent: "#ffe29b", strong: "#a77a2b", secondary: "#efddcf", highlight: "#e0edc6", song: "#e5ddf6", world: "草原课堂", symbol: "🌾" }
 };
 
 function stored(key, fallback) {
@@ -36,9 +36,7 @@ const narrator = {
     this.sequence++;
     this.audio.pause();
     if (this.cancelTrack) this.cancelTrack();
-    if ($("#sound-status")?.textContent.startsWith("正在")) {
-      $("#sound-status").textContent = "朗读已暂停，点“听一听”可以再听一次。";
-    }
+    setSoundError();
   },
   playSource(url, timeout = 15000) {
     return new Promise((resolve, reject) => {
@@ -63,8 +61,6 @@ const narrator = {
     this.enabled = true;
     updateSound();
     const sequence = this.sequence;
-    const tracks = new Map(audioTracks().map(track => [track.id, track]));
-    $("#sound-status").textContent = "正在准备读音…";
     if (continuousAudio.supported) {
       try {
         if (!this.unlocked) {
@@ -78,14 +74,12 @@ const narrator = {
         }
         const phrase = await continuousAudio.prepare(ids);
         if (sequence !== this.sequence) return;
-        $("#sound-status").textContent = `正在读：${ids.map(id => tracks.get(id).text).join("")}`;
         await this.playSource(phrase.url, Math.ceil(phrase.duration * 1000) + 15000);
-        if (sequence === this.sequence) $("#sound-status").textContent = "声音已开启。听不到时，请检查设备音量或静音模式。";
         return;
       } catch (error) {
         if (sequence !== this.sequence) return;
         if (error.name === "NotAllowedError") {
-          $("#sound-status").textContent = "浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。";
+          setSoundError("浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。");
           return;
         }
         // Older browsers or decoding failures retain the original MP3 playback.
@@ -93,26 +87,27 @@ const narrator = {
     }
     for (const id of ids) {
       if (sequence !== this.sequence) return;
-      const track = tracks.get(id);
-      $("#sound-status").textContent = `正在读：${track.text}`;
       try {
         await this.playSource(`audio/${id}.mp3?v=0.3`);
       } catch (error) {
         if (sequence !== this.sequence) return;
         this.audio.pause();
         if (error.name === "NotAllowedError") {
-          $("#sound-status").textContent = "浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。";
+          setSoundError("浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。");
           return;
         }
-        $("#sound-status").textContent = "读音未加载，请检查网络并刷新。文字和图片仍可使用。";
+        setSoundError("读音未加载，请检查网络并刷新。文字和图片仍可使用。");
         return;
       }
     }
-    if (sequence === this.sequence) $("#sound-status").textContent = "声音已开启。听不到时，请检查设备音量或静音模式。";
   }
 };
 narrator.audio.preload = "auto";
 
+function setSoundError(message = "") {
+  $("#sound-status").textContent = message;
+  $("#sound-status").hidden = !message;
+}
 function updateSound() {
   $("#sound-button").textContent = narrator.enabled ? "🔊" : "🔈";
   $("#sound-button").setAttribute("aria-pressed", String(narrator.enabled));
@@ -125,7 +120,7 @@ function renderCompanions(mood = "happy") {
 }
 function applyTheme() {
   const theme = THEMES[state.charId];
-  for (const key of ["paper", "grid", "ink", "muted", "accent", "secondary", "highlight"]) {
+  for (const key of ["paper", "grid", "ink", "muted", "accent", "secondary", "highlight", "song"]) {
     document.documentElement.style.setProperty(`--${key}`, theme[key]);
   }
   document.documentElement.style.setProperty("--accent-strong", theme.strong);
@@ -399,7 +394,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#finish-button").onclick = renderHome;
   $("#pick-character").onclick = () => renderCharSelect("screen-home");
   $("#lesson-character").onclick = () => renderCharSelect("screen-lesson");
-  $("#sound-test").onclick = () => { stopSong(); narrator.play(["hello"]); };
   continuousAudio.preload(["hello"]);
   $("#sound-button").onclick = () => {
     stopSong();
@@ -408,7 +402,6 @@ document.addEventListener("DOMContentLoaded", () => {
       narrator.stop();
       narrator.enabled = false;
       updateSound();
-      $("#sound-status").textContent = "声音已关闭。点“听一听”即可重新开启。";
     }
   };
   document.querySelectorAll("[data-subject]").forEach(button => {
