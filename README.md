@@ -1,4 +1,4 @@
-# 萌学园 v0.3
+# 萌学园 v0.4
 
 网页：<https://bennyli16888.github.io/smart-kid/>
 
