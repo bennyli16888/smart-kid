@@ -26,7 +26,7 @@ python3 -m http.server 8000
 
 打开 <http://localhost:8000/>。手机和电脑在同一局域网时，手机也可访问 `http://电脑局域网地址:8000/`（需允许防火墙访问）。本地直接双击 HTML 时，浏览器可能限制音频加载，推荐使用本地服务。
 
-GitHub Pages 使用 `main` 分支根目录；必须一并上传 `index.html`、`css/`、`js/` 和 `audio/`。所有资源为相对路径，支持仓库子路径。
+GitHub Pages 通过 `.github/workflows/pages.yml` 从 `main` 部署；仓库 Pages Source 需设为 **GitHub Actions**。工作流只发布 `index.html`、`css/`、`js/` 和 `audio/voices/`，并设置较长部署等待时间以容纳语音文件。所有资源为相对路径，支持仓库子路径。
 
 ## 验证
 
