@@ -6,27 +6,20 @@
   <meta name="theme-color" content="#f5fcf4">
   <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
   <title>萌学园 · 和小伙伴一起学</title>
-  <link rel="stylesheet" href="css/style.css?v=0.2.1">
+  <link rel="stylesheet" href="css/style.css?v=0.3">
 </head>
 <body>
   <main class="app">
     <header class="topbar">
       <button id="home-button" class="icon-button" aria-label="返回首页">⌂</button>
-      <span class="brand">萌学园 <small>v0.2.1</small></span>
+      <span class="brand">萌学园 <small>v0.3</small></span>
       <span class="star-badge" aria-label="获得的星星">⭐ <span id="stars">0</span></span>
       <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false">🔈</button>
     </header>
     <aside class="sound-panel">
       <button id="sound-test">🔊 点我开启 / 试听声音</button>
-      <label class="voice-picker" for="voice-profile">声音
-        <select id="voice-profile">
-          <option value="original">🎧 原声 · 自然</option>
-          <option value="bright">🐥 活泼 · 明亮轻快</option>
-          <option value="soft">🧸 软萌 · 轻柔略高</option>
-        </select>
-      </label>
       <p id="sound-status" role="status" aria-live="polite">先点上面的按钮，听听小伙伴的声音。</p>
-      <p class="voice-note">预设调整原声的速度和音高，不是真实儿童配音。切换即可试听。</p>
+      <p class="voice-note">固定合成童声，不使用变速变调预设。</p>
     </aside>
 
     <section id="screen-home" class="screen active" aria-label="学习设置">
@@ -38,16 +31,54 @@
         <button class="subject-button" data-subject="zh"><span class="subject-icon">文</span><strong>语文</strong><small>看图认字 · 听听读音</small></button>
         <button class="subject-button" data-subject="math"><span class="subject-icon">+ −</span><strong>数学</strong><small>加一加 · 减一减</small></button>
         <button class="subject-button" data-subject="en"><span class="subject-icon">ABC</span><strong>英语</strong><small>生活图片 · 单词读音</small></button>
+        <button class="subject-button" data-subject="songs"><span class="subject-icon">♫</span><strong>儿歌</strong><small>中文儿歌 · 英文儿歌</small></button>
       </div>
-      <div class="settings panel">
-        <h2>🌱 选个难度</h2>
+      <div id="learning-settings" class="settings panel">
+        <h2 id="level-heading">🌱 选个难度</h2>
         <div id="level-row" class="choice-row" role="group" aria-label="难度"></div>
+        <label id="custom-range-field" class="input-field" hidden>最大数字（1—100）
+          <input id="custom-range" type="number" min="1" max="100" step="1" value="30" inputmode="numeric">
+        </label>
+        <div id="object-settings" hidden>
+          <h2>🍬 用什么讲解？</h2>
+          <div id="object-row" class="object-grid" role="group" aria-label="讲解实物"></div>
+        </div>
         <h2>🎒 这次学多少？</h2>
         <div id="count-row" class="choice-row" role="group" aria-label="题量">
-          <button data-count="10">10</button><button data-count="20">20</button><button data-count="30">30</button>
+          <button data-count="10">10</button><button data-count="20">20</button><button data-count="custom">自定义</button>
+        </div>
+        <label id="custom-count-field" class="input-field" hidden>自定义数量（1—100）
+          <input id="custom-count" type="number" min="1" max="100" step="1" value="30" inputmode="numeric">
+        </label>
+        <div id="repeat-settings">
+          <label class="check-field"><input id="allow-repeat" type="checkbox"> 可重复巩固</label>
+          <div id="repeat-options" hidden>
+            <h2>重复比例</h2>
+            <div id="repeat-row" class="choice-row" role="group" aria-label="重复比例">
+              <button data-repeat="0.1">10%</button><button data-repeat="0.2">20%</button><button data-repeat="0.3">30%</button>
+            </div>
+            <p class="subtitle">比例指本次学习中额外重复的次数，按四舍五入计算。</p>
+          </div>
         </div>
         <p id="lesson-note" class="subtitle"></p>
+        <p id="settings-error" role="alert"></p>
         <button id="start-button" class="primary wide">▶ 开始学习</button>
+      </div>
+      <div id="song-settings" class="settings panel" hidden>
+        <h2>🎵 选一首经典儿歌</h2>
+        <div id="song-language" class="choice-row" role="group" aria-label="儿歌语言">
+          <button data-song-lang="zh">中文儿歌</button><button data-song-lang="en">英文儿歌</button>
+        </div>
+        <p class="subtitle">只收录已核实允许公开分发的演唱录音，不为凑数量加入授权不明的歌曲。录音随网站提供，无外部播放器或广告。</p>
+        <div id="song-list" class="song-list"></div>
+        <div id="song-player" hidden>
+          <h2 id="song-title"></h2>
+          <p id="song-status" class="subtitle" role="status" aria-live="polite"></p>
+          <p id="song-source" class="subtitle"></p>
+          <a id="song-link" class="source-link" target="_blank" rel="noopener noreferrer">录音来源与授权 ↗</a>
+          <a id="song-license" class="source-link" target="_blank" rel="noopener noreferrer">查看许可条款 ↗</a>
+          <button id="song-stop" class="secondary wide">■ 停止播放</button>
+        </div>
       </div>
       <p class="parent-note">给家长：无需按年龄选择，从简单开始。可以随时休息，不计时、不催促。</p>
     </section>
@@ -65,7 +96,7 @@
         <button id="listen-button" class="listen-button">🔊 听一听</button>
         <div id="answers" class="answers"></div>
         <p id="feedback" role="status" aria-live="polite"></p>
-        <button id="explain-button" class="secondary">🌟 用星星讲给我听</button>
+        <button id="explain-button" class="secondary">🍬 用实物讲给我听</button>
         <div id="explanation" class="explanation" hidden>
           <p id="explain-text"></p><div id="star-scene" class="star-scene"></div>
           <button id="explain-next" class="secondary">▶ 下一步</button>
@@ -78,10 +109,11 @@
       <div class="results panel"><span class="companion" data-size="180"></span><h1>你真棒！</h1><p id="result-message"></p><p class="subtitle">伸个懒腰，看看远处，休息一下吧。</p><button id="again-button" class="primary wide">↻ 再学一次</button><button id="finish-button" class="secondary wide">⌂ 回到首页</button></div>
     </section>
   </main>
-  <script src="js/data.js?v=0.2"></script>
-  <script src="js/pictures.js?v=0.2"></script>
+  <script src="js/data.js?v=0.3"></script>
+  <script src="js/songs.js?v=0.3"></script>
+  <script src="js/pictures.js?v=0.3"></script>
   <script src="js/characters.js?v=0.2"></script>
-  <script src="js/audio.js?v=0.2.1"></script>
-  <script src="js/app.js?v=0.2.1"></script>
+  <script src="js/audio.js?v=0.3"></script>
+  <script src="js/app.js?v=0.3"></script>
 </body>
 </html>

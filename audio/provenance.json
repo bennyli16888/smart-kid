@@ -1,0 +1,1833 @@
+{
+  "design_model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+  "narration_model": "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
+  "model_license": "Apache-2.0",
+  "model_source": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-0.6B-Base",
+  "voice_description": "一个虚构的儿童学习伙伴的合成童声，清亮活泼、友善温暖，自然的儿童音色，语气有好奇心和鼓励感，发音清楚，语速适中，情绪起伏自然，不夸张、不尖锐。标准普通话和清晰的英语。不模仿任何真实人物。",
+  "reference_text": "你好！我是你的学习小伙伴。一起快乐地学中文，数一数，再试一次。Hello! Let's learn and play together!",
+  "note": "Original synthetic voice; no recording of a real person was used.",
+  "tracks": {
+    "hello": {
+      "text": "你好！我是你的学习小伙伴。声音准备好啦！",
+      "lang": "zh-CN",
+      "sha256": "8331a238f1be6fbc5248af9f2af20427c1e4874b072b8e83f0aeff482a9ce6c8"
+    },
+    "en-1-3": {
+      "text": "egg",
+      "lang": "en",
+      "sha256": "68c117ff3522eeb88203f3e2204a0c9885cb556de820059d6ca80a8efba9a3fb"
+    },
+    "en-1-6": {
+      "text": "cat",
+      "lang": "en",
+      "sha256": "5debb2be085b261d6d525421d67628324e84de559fda7290a2cbe0516b356852"
+    },
+    "en-1-7": {
+      "text": "dog",
+      "lang": "en",
+      "sha256": "940c314124d9aaf1ecade31268869fd2f2590715a461b70567687a8c73cebd85"
+    },
+    "en-1-10": {
+      "text": "This is the sun.",
+      "spoken_text": "This is the sun.",
+      "lang": "en",
+      "sha256": "5fe6664003b4da1ae395201e8e711e2662753d3c1cd847326d77fce2d6b91ce8"
+    },
+    "en-1-17": {
+      "text": "This is a car.",
+      "spoken_text": "This is a car.",
+      "lang": "en",
+      "sha256": "adc6446ea7f1e060a628ff75d38636991709d12577cc861f2ba7896dc182f607"
+    },
+    "en-1-18": {
+      "text": "cup",
+      "lang": "en",
+      "sha256": "fca7c613db3785df3e826e363ce6b1d20eb91478ecf111933b5452b12778d8d2"
+    },
+    "en-1-19": {
+      "text": "This is a bed.",
+      "spoken_text": "This is a bed.",
+      "lang": "en",
+      "sha256": "4c86d27349b4bd8cbb82a88caf7affb9c47b93e973b5aa730289af1272f307a5"
+    },
+    "en-1-20": {
+      "text": "hat",
+      "lang": "en",
+      "sha256": "38a965e8e32f2148f85c4b5f30bef74ce975bf83d40160cebd1cc385ba2e5e9f"
+    },
+    "en-1-25": {
+      "text": "cow",
+      "lang": "en",
+      "sha256": "4ea38f4163ad555fe9fc25c04514eab5bf3d04928a140100654b736ebaee21c7"
+    },
+    "en-2-2": {
+      "text": "This is a car.",
+      "spoken_text": "This is a car.",
+      "lang": "en",
+      "sha256": "d1402c1c58f226d1801171490b2de4a20aef1f216ae87bb498ca5107ae11295c"
+    },
+    "en-2-3": {
+      "text": "cup",
+      "lang": "en",
+      "sha256": "42c2862dd4e61619d3f947a2bb648a03dc4e91c6e8029493458217cf45638c52"
+    },
+    "en-2-4": {
+      "text": "This is a bed.",
+      "spoken_text": "This is a bed.",
+      "lang": "en",
+      "sha256": "2b85082c51453c96c865979d32500717263264b5c8f50ae5066f69415bfbac3e"
+    },
+    "en-2-5": {
+      "text": "This is the sun.",
+      "spoken_text": "This is the sun.",
+      "lang": "en",
+      "sha256": "625596e3c5f7883cdf983cabdf181a6528cd19c7c09d0ccb49b926a8b816f2db"
+    },
+    "en-2-24": {
+      "text": "eye",
+      "lang": "en",
+      "sha256": "0c2992a61d5843390af42e65e7c0126dbeb1ebeb19543bb7e9e7e4a9e1163122"
+    },
+    "en-3-2": {
+      "text": "hat",
+      "lang": "en",
+      "sha256": "bb8d522e45486aeb49373714a7cb770f7fa66214503ad1eac27db7d90bb1c0dd"
+    },
+    "en-1-2": {
+      "text": "milk",
+      "lang": "en",
+      "sha256": "1770f2ee8ef0b0e9de9cf40a8aa20e2656b018e616876f2421c10570e2453d74"
+    },
+    "en-1-8": {
+      "text": "fish",
+      "lang": "en",
+      "sha256": "8778cc1fda4a4f5f42c3a656a014cc2c1a3693296e46dbcdd6015f2683b49e05"
+    },
+    "en-1-9": {
+      "text": "bird",
+      "spoken_text": "bird.",
+      "lang": "en",
+      "sha256": "a5b90beba2b0ce536095c3e85e0ec8dd58907581bfe19226944e1790c1646040"
+    },
+    "en-1-11": {
+      "text": "moon",
+      "lang": "en",
+      "sha256": "66674e3c12cb03f27a3635ecd9d223e84162252f4eed7b459b6af9af97162f81"
+    },
+    "en-1-12": {
+      "text": "star",
+      "lang": "en",
+      "sha256": "40e277060a4eed4675c0fbf89407ac0f0f727c33b28da0aafe52812de70eddf7"
+    },
+    "n-0": {
+      "text": "0",
+      "spoken_text": "零。",
+      "lang": "zh-CN",
+      "sha256": "0aba62f162521cd65c620af2bb69aaa42515607bf72a001d20e60ca2eca1d6ea"
+    },
+    "en-1-13": {
+      "text": "This is a tree.",
+      "spoken_text": "This is a tree.",
+      "lang": "en",
+      "sha256": "788bcb994ef0b9aa50280503129317aa3ca4109236cd764ee92112ae7446fda0"
+    },
+    "en-1-15": {
+      "text": "ball",
+      "spoken_text": "ball.",
+      "lang": "en",
+      "sha256": "c3917532ca5bc7ce774d1d6ad719ec7d903b37a1b381f4541567c2125ddc9bff"
+    },
+    "en-1-16": {
+      "text": "book",
+      "spoken_text": "book",
+      "lang": "en",
+      "sha256": "d6a1bbed9e62a4f915b44198bfb11e2466dc1aa537bb1f2020fcdbc3ea1a7cb8"
+    },
+    "en-1-29": {
+      "text": "rice",
+      "spoken_text": "rice",
+      "lang": "en",
+      "sha256": "a90556b78b416408df98c0438ae90ddea19dc3a209b6b3d2c550e3dbe15cdf2d"
+    },
+    "en-2-0": {
+      "text": "ball",
+      "spoken_text": "ball.",
+      "lang": "en",
+      "sha256": "df68ac3f002c865c308e500354660a8f1c62efe4b7efffa305b0d4779c934f74"
+    },
+    "en-2-1": {
+      "text": "book",
+      "spoken_text": "book",
+      "lang": "en",
+      "sha256": "2da6f69b6f2d470377e349f21c603e4425639338e4f575ba9953ffcd6e0be9f8"
+    },
+    "en-2-6": {
+      "text": "moon",
+      "spoken_text": "moon.",
+      "lang": "en",
+      "sha256": "fd4c46f0039eb525cd926f2b351160a9eb97f41bf489708ea9e6f3b100e21289"
+    },
+    "en-2-7": {
+      "text": "star",
+      "spoken_text": "star",
+      "lang": "en",
+      "sha256": "a1430f240065819c9b45b4bf48f6b5aca41c848d58e4d867805a499becc38d1c"
+    },
+    "en-2-9": {
+      "text": "This is a tree.",
+      "spoken_text": "This is a tree.",
+      "lang": "en",
+      "sha256": "be206a835a10de3f735ac300c289b08ddc2647fca6b064764189eb2d7481373a"
+    },
+    "en-2-11": {
+      "text": "rain",
+      "spoken_text": "rain",
+      "lang": "en",
+      "sha256": "b3ab69a00583950505788178d3bb2ea4b4dbca14162a8590a78a634eccd5cf65"
+    },
+    "en-2-13": {
+      "text": "This is a door.",
+      "spoken_text": "This is a door.",
+      "lang": "en",
+      "sha256": "2c00f67ef6c4c6c0b3d062f11fb82726efc3bc46b6e74d91844cdb4a5605174a"
+    },
+    "en-2-20": {
+      "text": "This is a pear.",
+      "spoken_text": "This is a pear.",
+      "lang": "en",
+      "sha256": "91b44a17a1e93ab17e0123d9a799328df30c90e13db22003b12e33e78d181ebe"
+    },
+    "en-2-23": {
+      "text": "hand",
+      "spoken_text": "hand",
+      "lang": "en",
+      "sha256": "be3450471cd55f950d721054aca0771eb531e71e63929fecf37b732a7c773111"
+    },
+    "en-2-26": {
+      "text": "fire",
+      "spoken_text": "fire",
+      "lang": "en",
+      "sha256": "0cb868712cd4cb3fa4095bdb2eeb4d376f238f00c129282c16c425e434d77b9d"
+    },
+    "en-3-5": {
+      "text": "This is a door.",
+      "spoken_text": "This is a door.",
+      "lang": "en",
+      "sha256": "b2aa38de99a76f04361134674ced30083c665c4ff0d054ad8b03ca2bf87e0120"
+    },
+    "en-3-8": {
+      "text": "rain",
+      "spoken_text": "rain",
+      "lang": "en",
+      "sha256": "7b44df670a2fde79f323c5df93ad2f1a9743fa0144046bfe01e406ab511048cf"
+    },
+    "en-1-0": {
+      "text": "apple",
+      "spoken_text": "apple",
+      "lang": "en",
+      "sha256": "f950abd4758d3242a3cb85e2218d2b266d9118c797c3127fc83531d0f45724e2"
+    },
+    "en-1-4": {
+      "text": "water",
+      "spoken_text": "water",
+      "lang": "en",
+      "sha256": "a996681fe3fabe6f552adec38d8ab37965c4b4161db5e53f7894779462f3a617"
+    },
+    "en-1-5": {
+      "text": "This is bread.",
+      "spoken_text": "This is bread.",
+      "lang": "en",
+      "sha256": "6167d61c2e216b170441f0d25c13bc997ed454a2d653c46b7a405c4a69bb89c9"
+    },
+    "en-1-21": {
+      "text": "shoes",
+      "spoken_text": "shoes",
+      "lang": "en",
+      "sha256": "cbece7aaeba4576d734224c9e5d2e90ad7969f3070eac619d94e5db59270d345"
+    },
+    "en-1-22": {
+      "text": "This is a shirt.",
+      "spoken_text": "This is a shirt.",
+      "lang": "en",
+      "sha256": "84e087c2c2f1d2940a9f4b0a36ac92f138a64163359639ce0a1cd72b417ed7a0"
+    },
+    "en-1-24": {
+      "text": "sheep",
+      "spoken_text": "sheep",
+      "lang": "en",
+      "sha256": "4b26994bf66604ba92b50dc2af5c08db91104030bad115efd4217b14be597935"
+    },
+    "en-1-26": {
+      "text": "horse",
+      "spoken_text": "horse",
+      "lang": "en",
+      "sha256": "514c2833ed042cd60a0d1f617db60b5417ee7c88f01c5a1bc89943030bffbaf4"
+    },
+    "en-2-14": {
+      "text": "chair",
+      "spoken_text": "chair",
+      "lang": "en",
+      "sha256": "b9ee1403e14d267136722c033ab9bd31e4757ccdbb1b102375f1f0bea4ef09c7"
+    },
+    "en-2-15": {
+      "text": "table",
+      "spoken_text": "table",
+      "lang": "en",
+      "sha256": "e13c5d57a75a68912f13ac14db51539fa471a96a021a028b5512ef24f50a6654"
+    },
+    "en-2-16": {
+      "text": "clock",
+      "spoken_text": "clock",
+      "lang": "en",
+      "sha256": "75f5fb6c5b18b61428ff4fd1663be4cd2594c78f1b0753fdc94e9d003dfd79ca"
+    },
+    "en-2-21": {
+      "text": "peach",
+      "spoken_text": "peach",
+      "lang": "en",
+      "sha256": "2403ebe91b3bdbc344d4c4f0b2af2af42898c14da8f19d5765ed0521d8c4a6f8"
+    },
+    "en-2-25": {
+      "text": "This is my mouth.",
+      "spoken_text": "This is my mouth.",
+      "lang": "en",
+      "sha256": "57d1db6a95b1ee9bc7a429e127ff867b247f87dc3bd94653324358baf193afa8"
+    },
+    "en-2-27": {
+      "text": "candy",
+      "spoken_text": "candy",
+      "lang": "en",
+      "sha256": "a83a9bba1895336465adff00eaf6679f5c0eedeb6ea0b6ce895e6182ea80bf12"
+    },
+    "en-2-29": {
+      "text": "sheep",
+      "spoken_text": "sheep",
+      "lang": "en",
+      "sha256": "ceddd5c97dcac6251d05035de65909f754a1fcc906a206ed9e6586c2ddf6cd9a"
+    },
+    "en-3-0": {
+      "text": "shoes",
+      "spoken_text": "shoes",
+      "lang": "en",
+      "sha256": "644df18c1dbdb11a73011bc28f8b2a3af60727466244ef3cef954cc756af2f5b"
+    },
+    "en-3-1": {
+      "text": "This is a shirt.",
+      "spoken_text": "This is a shirt.",
+      "lang": "en",
+      "sha256": "84e087c2c2f1d2940a9f4b0a36ac92f138a64163359639ce0a1cd72b417ed7a0"
+    },
+    "en-3-3": {
+      "text": "chair",
+      "spoken_text": "chair",
+      "lang": "en",
+      "sha256": "02610edec6670d79e39f51a16bc24d03d5c82686550833f1ffb10323b63e405e"
+    },
+    "en-3-4": {
+      "text": "table",
+      "spoken_text": "table",
+      "lang": "en",
+      "sha256": "00ec696e7eb2e104c94347ddf0fea5e76540402efeb4649cd6b6897c2f3bc87c"
+    },
+    "en-3-6": {
+      "text": "clock",
+      "spoken_text": "clock",
+      "lang": "en",
+      "sha256": "5fe9d5669e92847e413531ac696d5784a893cc54c28255638a51f8ce6f513c64"
+    },
+    "en-1-1": {
+      "text": "banana",
+      "spoken_text": "banana",
+      "lang": "en",
+      "sha256": "c8d6ede8d2a31bc85bb5cd226c10dea99574dd4a3c584586ec7abffff17625c7"
+    },
+    "en-1-14": {
+      "text": "flower",
+      "spoken_text": "flower",
+      "lang": "en",
+      "sha256": "1d9dd5e1bd58e4d636f701eacb33689c1bd31a4c792d41db6df1575565dd9881"
+    },
+    "en-1-23": {
+      "text": "rabbit",
+      "spoken_text": "rabbit",
+      "lang": "en",
+      "sha256": "b858fa7f492e8782fac9c7d6692e26682b690eecb0a109fe67deef6ce9276b4b"
+    },
+    "en-1-27": {
+      "text": "orange",
+      "spoken_text": "orange",
+      "lang": "en",
+      "sha256": "bbd61a01ff1ad247c9ad472b1d4131fab2663132aea38fd89549748a6cf4bd3e"
+    },
+    "en-1-28": {
+      "text": "grapes",
+      "spoken_text": "grapes",
+      "lang": "en",
+      "sha256": "16f0427209ceff066c85088726eb56b19f2409fcc5e5d7914c8563370286ec7d"
+    },
+    "en-2-8": {
+      "text": "flower",
+      "spoken_text": "flower",
+      "lang": "en",
+      "sha256": "98d8671c558ee3ff380723da3c2b2fe911754c2c44107049fbd0c1eeaddc3ac0"
+    },
+    "en-2-22": {
+      "text": "cherry",
+      "spoken_text": "cherry",
+      "lang": "en",
+      "sha256": "aa8372f99d54da8bea5e56b353ec47f449f7aa457de9b68d2a7cad5b4db0ee0d"
+    },
+    "en-2-28": {
+      "text": "rabbit",
+      "spoken_text": "rabbit",
+      "lang": "en",
+      "sha256": "0ab9902ac7fac605948c7263aecf664082424a31de594549d0ef35a554ffbfca"
+    },
+    "en-2-10": {
+      "text": "mountain",
+      "spoken_text": "mountain",
+      "lang": "en",
+      "sha256": "fc31e1fc6be95f35235b1c287fe7361cf7f29d52fb02e4ad2fbf614a99aa4e62"
+    },
+    "en-2-12": {
+      "text": "umbrella",
+      "spoken_text": "umbrella",
+      "lang": "en",
+      "sha256": "49c99eb438b10aaa95b615a695bc7e37a81da418f550db0bec38f6612fd99829"
+    },
+    "en-3-9": {
+      "text": "umbrella",
+      "spoken_text": "umbrella",
+      "lang": "en",
+      "sha256": "7cfef0d6be9c250d5a37b90fa76949abb448132d3245017be88c454ddf225cb0"
+    },
+    "en-3-17": {
+      "text": "sit down",
+      "spoken_text": "sit down",
+      "lang": "en",
+      "sha256": "fac68100a4a90de8bc76dc561684641fa81616abfb514d6d3dee44c31b0429c7"
+    },
+    "en-3-14": {
+      "text": "play ball",
+      "spoken_text": "play ball",
+      "lang": "en",
+      "sha256": "498770ba86a531102a432011f1f87c4666394c4957e88a42392472aad9c73924"
+    },
+    "en-3-15": {
+      "text": "go to bed",
+      "spoken_text": "go to bed",
+      "lang": "en",
+      "sha256": "36710d8fde0dc57b9a59999b74f3f47f11efa803d32bc75168c738d078ed2bee"
+    },
+    "en-2-17": {
+      "text": "toothbrush",
+      "spoken_text": "toothbrush",
+      "lang": "en",
+      "sha256": "0aa8c0f89680d3f66e6319cdf0994c0ad3786104f734120e6e6493ab8fa93187"
+    },
+    "en-2-18": {
+      "text": "watermelon",
+      "spoken_text": "watermelon",
+      "lang": "en",
+      "sha256": "ef777017407de87309213d095ff47c6a4ed7dc779fdeeaba7be66b9f3935df36"
+    },
+    "en-2-19": {
+      "text": "strawberry",
+      "spoken_text": "strawberry",
+      "lang": "en",
+      "sha256": "646e6aef0739e2dec12360d4a399d690ddd80b6462840702ed8841d0bc930c03"
+    },
+    "en-3-7": {
+      "text": "toothbrush",
+      "spoken_text": "toothbrush",
+      "lang": "en",
+      "sha256": "a3d04579b9872df0370fa57d56933ed24f7b5202da0b26c459889b9d7fe3d07e"
+    },
+    "en-3-11": {
+      "text": "wash hands",
+      "spoken_text": "wash hands",
+      "lang": "en",
+      "sha256": "a778d333be295a8ed955cf65fa5617d922b422bd87619d717dc69aa4c8ed9211"
+    },
+    "en-3-20": {
+      "text": "good night",
+      "spoken_text": "good night",
+      "lang": "en",
+      "sha256": "32163cdcf048b5d19df20821fdb99b2f4f6850f6b1449b2607b2d55fc9ce17c8"
+    },
+    "en-3-23": {
+      "text": "a big tree",
+      "spoken_text": "a big tree",
+      "lang": "en",
+      "sha256": "f2e5c027b66ab9dd18420aa729460904c89d4c0395fc2960ee9a67a8bbf347aa"
+    },
+    "en-3-29": {
+      "text": "drink milk",
+      "spoken_text": "drink milk",
+      "lang": "en",
+      "sha256": "d14edef69d42a042016dbb953ea2e20897028b4e6c6b9e9ee6a3f2d5961ab9a7"
+    },
+    "en-3-10": {
+      "text": "drink water",
+      "spoken_text": "drink water",
+      "lang": "en",
+      "sha256": "5722cbe58e0f4cf8748c29a9ee84a33accb37f7af88f154f6f9979a953fb677e"
+    },
+    "en-3-12": {
+      "text": "read a book",
+      "spoken_text": "read a book",
+      "lang": "en",
+      "sha256": "8efd44c89f8fdc306627be8b507ee5cf8d456a5ced402a53476a1eabb5799ffa"
+    },
+    "en-3-18": {
+      "text": "brush teeth",
+      "spoken_text": "brush teeth",
+      "lang": "en",
+      "sha256": "266ce40eb5d5b0da05cc4b20f5b14ad1f741bb6f7a34ff8576b29f1c5d99f374"
+    },
+    "en-3-27": {
+      "text": "a happy cat",
+      "spoken_text": "a happy cat",
+      "lang": "en",
+      "sha256": "3493c8d301436d356c09f28a8594e11d56b48401b3620d1f6c9e9c1d71f2db75"
+    },
+    "en-3-13": {
+      "text": "eat an apple",
+      "spoken_text": "eat an apple",
+      "lang": "en",
+      "sha256": "7a054392a2387a9fe4f19e86b6bc335a6fdfc04478be54c6d68f1568bd8814ce"
+    },
+    "en-3-19": {
+      "text": "good morning",
+      "spoken_text": "good morning",
+      "lang": "en",
+      "sha256": "27c64e38b46d6f4a9c34a6639297cf5a36759ba5f7cfed42c4d631af195f3197"
+    },
+    "en-3-21": {
+      "text": "put on a hat",
+      "spoken_text": "put on a hat.",
+      "lang": "en",
+      "sha256": "a48210b541e696a3205f0b70ecd88713a8bc35ceba32828f96f1856d4463570b"
+    },
+    "en-3-24": {
+      "text": "a red flower",
+      "spoken_text": "a red flower",
+      "lang": "en",
+      "sha256": "2bf91d470bf52848cf286f3e1baf3563b2cd788e8bdcd72d284db77f6f84cc1c"
+    },
+    "en-3-26": {
+      "text": "a small fish",
+      "spoken_text": "a small fish",
+      "lang": "en",
+      "sha256": "ef32355b9f160cf7d0eb3b2e34cf796390184057c53efc97d00f88c3daf6cf9c"
+    },
+    "en-3-16": {
+      "text": "open the door",
+      "spoken_text": "open the door",
+      "lang": "en",
+      "sha256": "c979ac03cb1d534790f51e9c70d55377f5c1b2e5e0e1214cb7ff8df436148b1f"
+    },
+    "en-3-22": {
+      "text": "a little bird",
+      "spoken_text": "a little bird",
+      "lang": "en",
+      "sha256": "51eebb977f485e7d4a95ebbf149f2185abd1e6b5fbdf5865aed98883ed58ea8b"
+    },
+    "en-3-25": {
+      "text": "a yellow banana",
+      "spoken_text": "a yellow banana",
+      "lang": "en",
+      "sha256": "c0fe12cd32f301888c91e9a228ac27adbce57a5bdd77101f663edfa081fc98e7"
+    },
+    "en-3-28": {
+      "text": "count the stars",
+      "spoken_text": "count the stars.",
+      "lang": "en",
+      "sha256": "81e96de57e735b11069e0ddb031618a72055ed1431632ecb0d484494388b6488"
+    },
+    "zh-1-0": {
+      "text": "日",
+      "spoken_text": "日。",
+      "lang": "zh-CN",
+      "sha256": "e2f2ecd50a4ab54447b8405a415df13750fc40e8104ffd562ee94982fdcbf497"
+    },
+    "zh-1-1": {
+      "text": "月",
+      "spoken_text": "月",
+      "lang": "zh-CN",
+      "sha256": "5ecd77abfbb72bba3db1efbff096887b2e053cd170e39f56bca4042afb1a5c4b"
+    },
+    "zh-1-2": {
+      "text": "水",
+      "spoken_text": "水",
+      "lang": "zh-CN",
+      "sha256": "bf3c4515ba2042ab6c70fc04833630e115c57b58f7375f3135dfd5dc3a392f65"
+    },
+    "zh-1-3": {
+      "text": "火",
+      "spoken_text": "火",
+      "lang": "zh-CN",
+      "sha256": "48bbf4324ebaf18167e60da6cc8fa6cb7bf0d537f2fd2b0c40cc97f85a2df4f5"
+    },
+    "zh-1-4": {
+      "text": "山",
+      "spoken_text": "山。",
+      "lang": "zh-CN",
+      "sha256": "bfda572ca872e201a6206a70a4f0555bdcb7a994d3d1e1259d3c8783050c5922"
+    },
+    "zh-1-5": {
+      "text": "人",
+      "spoken_text": "人",
+      "lang": "zh-CN",
+      "sha256": "bceac885cb604c8f0b47c21ecee721786756d822a002f2e506e74cb1d1fcded7"
+    },
+    "zh-1-6": {
+      "text": "口，开口的口。",
+      "spoken_text": "口，开口的口。",
+      "lang": "zh-CN",
+      "sha256": "a304cc5903200046b42131a88b633ff07b3caa5d8df38dfef51f8db0cc828b50"
+    },
+    "zh-1-7": {
+      "text": "手",
+      "spoken_text": "手。",
+      "lang": "zh-CN",
+      "sha256": "e4446dbac8485414617a59b748c8b60a5c155aea378275c6f47540372451691a"
+    },
+    "zh-1-8": {
+      "text": "目",
+      "spoken_text": "目",
+      "lang": "zh-CN",
+      "sha256": "83cbe912811ef6473be2355dd2a6c5c665c57f4b74481a334f92c33542505bab"
+    },
+    "zh-1-9": {
+      "text": "木",
+      "spoken_text": "木",
+      "lang": "zh-CN",
+      "sha256": "6e90ba3411ed625038fcad104598a509eff6ea347a2ca1e4add8d6d63600d525"
+    },
+    "zh-1-10": {
+      "text": "天",
+      "spoken_text": "天",
+      "lang": "zh-CN",
+      "sha256": "95e4806b8b08e80eae8ebd13bea249ce4a19565e177acb45213627f6d4648ee5"
+    },
+    "zh-1-11": {
+      "text": "雨",
+      "spoken_text": "雨。",
+      "lang": "zh-CN",
+      "sha256": "ff83e8d1cd1ecaf0fd7c87eba36e19019e2d873135ec10c29c7fc886dea648ad"
+    },
+    "zh-1-12": {
+      "text": "花",
+      "spoken_text": "花",
+      "lang": "zh-CN",
+      "sha256": "4306ef3568f109301dede7d9c2c55733f9c791c287303ff51876b54d4038a3f7"
+    },
+    "zh-1-13": {
+      "text": "鸟",
+      "spoken_text": "鸟",
+      "lang": "zh-CN",
+      "sha256": "ec6a1966d97315c6a356458cd07ec50f7fb5856598d08ae5d31bba4ab4978330"
+    },
+    "zh-1-14": {
+      "text": "鱼，小鱼的鱼。",
+      "spoken_text": "鱼，小鱼的鱼。",
+      "lang": "zh-CN",
+      "sha256": "ed5c6f6884f3d3762b6cd62dbb8072d482d626fc5ba9b1c3b4ca1bceb8922f5b"
+    },
+    "zh-1-15": {
+      "text": "猫",
+      "spoken_text": "猫",
+      "lang": "zh-CN",
+      "sha256": "2a77fb2afc235c479a48a2ad43c7e293212cfad382361ef2f743bb1ea813c4fe"
+    },
+    "zh-1-16": {
+      "text": "狗",
+      "spoken_text": "狗",
+      "lang": "zh-CN",
+      "sha256": "85d706f5e354b672a90e38c9463ac6155c32c87b53d8a6439bbb6dcbcdcdf3cd"
+    },
+    "zh-1-17": {
+      "text": "车",
+      "spoken_text": "车",
+      "lang": "zh-CN",
+      "sha256": "e71dcd10167af8894f3a8da39b568d666d92bd7b7849d19554778e2dd4d67ab2"
+    },
+    "zh-1-18": {
+      "text": "书",
+      "spoken_text": "书",
+      "lang": "zh-CN",
+      "sha256": "1cfccc8b957c7f29096c3dc3f386386d1eef63c332d13575b4bc83b53177c6f9"
+    },
+    "zh-1-19": {
+      "text": "门",
+      "spoken_text": "门",
+      "lang": "zh-CN",
+      "sha256": "efc8ba81017c849d087c87832e688e868f73cf8c01d146554267eebc63ff787e"
+    },
+    "zh-1-20": {
+      "text": "衣",
+      "spoken_text": "衣",
+      "lang": "zh-CN",
+      "sha256": "696593a90c8d92dcda1dd4eb1f8c8e19b95041f73515b94c0363af1d48e6e193"
+    },
+    "zh-1-21": {
+      "text": "床",
+      "spoken_text": "床",
+      "lang": "zh-CN",
+      "sha256": "7c1129526b4b5b10a26f448c7c05977c256ae35c7a612b3628525d01d8551e2c"
+    },
+    "zh-1-22": {
+      "text": "杯",
+      "spoken_text": "杯",
+      "lang": "zh-CN",
+      "sha256": "8d2b6bacd1cdc267e64a7cd4d9efb5762142670cbb93d732b6f5f805cd3d0702"
+    },
+    "zh-1-23": {
+      "text": "球",
+      "spoken_text": "球",
+      "lang": "zh-CN",
+      "sha256": "d108027fddcc5d47f937794c8fd86b8f9101721afc4cad43778c5886628687aa"
+    },
+    "zh-1-24": {
+      "text": "羊",
+      "spoken_text": "羊",
+      "lang": "zh-CN",
+      "sha256": "3d2fa95d306ecebff6c53a553c9907e5ed598bcb398ab2d9a4a8f39486d252f6"
+    },
+    "zh-1-25": {
+      "text": "牛",
+      "spoken_text": "牛",
+      "lang": "zh-CN",
+      "sha256": "1efe920c228fd81084ea113c262a48e49d2c859e7e5a9564dce86eed401c84ab"
+    },
+    "zh-1-26": {
+      "text": "马",
+      "spoken_text": "马",
+      "lang": "zh-CN",
+      "sha256": "1e78e225bd43ce72d97f62ace990ed2a7b62ef65721bca5836487ce68b2307a5"
+    },
+    "zh-1-27": {
+      "text": "兔",
+      "spoken_text": "兔",
+      "lang": "zh-CN",
+      "sha256": "bce053713b3e0702d15a42b1b258fde0253494255b62b0b293a4f257498dcad4"
+    },
+    "zh-1-28": {
+      "text": "米，大米的米。",
+      "spoken_text": "米，大米的米。",
+      "lang": "zh-CN",
+      "sha256": "270ba5da5cb3f4253a3bfaca6a6963888b7cfdd017ea5c76bff81c1574af0922"
+    },
+    "zh-1-29": {
+      "text": "伞",
+      "spoken_text": "伞",
+      "lang": "zh-CN",
+      "sha256": "fc50238bb28ac10eac3f407fdb485e902bf87b4266bd389f7cd1b0151f8a2df3"
+    },
+    "n-1": {
+      "text": "1",
+      "spoken_text": "一。",
+      "lang": "zh-CN",
+      "sha256": "eaa288d948199d69bda6cf9bd3e8d1e9fb0a175448a77e49d690ea7bf7ee3125"
+    },
+    "n-2": {
+      "text": "2",
+      "spoken_text": "二。",
+      "lang": "zh-CN",
+      "sha256": "7615b078e08618fd6e6ecf8e29ab2772e89a6ab8540cd3cf010b39aec2471e14"
+    },
+    "n-3": {
+      "text": "3",
+      "spoken_text": "三。",
+      "lang": "zh-CN",
+      "sha256": "dc45ab24a7518a527cd4bcead2fa35a9168b3460ee7834efe74253459fc5aed6"
+    },
+    "n-4": {
+      "text": "4",
+      "spoken_text": "四。",
+      "lang": "zh-CN",
+      "sha256": "40d1aeca6d0cd7decbac8d57315aa791e0047608ef89f91de7ec1331d1b330dc"
+    },
+    "n-5": {
+      "text": "5",
+      "spoken_text": "五。",
+      "lang": "zh-CN",
+      "sha256": "b7b8403750a590ec0cf7f2610b26909b62b3a639ad8ea737b6486abea7a4385c"
+    },
+    "n-6": {
+      "text": "6",
+      "spoken_text": "六。",
+      "lang": "zh-CN",
+      "sha256": "61ca77ce5f207ca470f197a943a81faf817bf2be4e795b67ac63f548fdb91e9a"
+    },
+    "n-7": {
+      "text": "7",
+      "spoken_text": "七。",
+      "lang": "zh-CN",
+      "sha256": "4066b0dc3a50b13fbdc31d806089984c8d5435121e7b69e97226bb159027e6f4"
+    },
+    "n-8": {
+      "text": "8",
+      "spoken_text": "八。",
+      "lang": "zh-CN",
+      "sha256": "d63bf41d042a316a4b8e4760c82e6d6ab2a792ac8952e31ce0f348df1070db57"
+    },
+    "n-9": {
+      "text": "9",
+      "spoken_text": "九。",
+      "lang": "zh-CN",
+      "sha256": "1d04dd660eea02b454ce480c7474d71e4a2af62b73f6b8fca5513449214cf1b0"
+    },
+    "plus": {
+      "text": "加",
+      "spoken_text": "加",
+      "lang": "zh-CN",
+      "sha256": "de7ba81d9e0f7b12bf4f3044491a2de35a515f6e6e219cae4c58c66f9d305ca2"
+    },
+    "minus": {
+      "text": "减去",
+      "spoken_text": "减去。",
+      "lang": "zh-CN",
+      "sha256": "2a2eddd1ed38e0399659022e18714cb2e0351563bb95a3822395700ce3966cc6"
+    },
+    "zh-2-0": {
+      "text": "苹果",
+      "spoken_text": "苹果",
+      "lang": "zh-CN",
+      "sha256": "2eb5f7612a965586ebbf4743afc68c3e96eee698e6446f308319fc0796519727"
+    },
+    "zh-2-1": {
+      "text": "香蕉",
+      "spoken_text": "香蕉",
+      "lang": "zh-CN",
+      "sha256": "749a8d85dc11bb1c088cac92f2101e772120931fc4a5df10946cc2d404a42b1f"
+    },
+    "zh-2-2": {
+      "text": "小猫",
+      "spoken_text": "小猫",
+      "lang": "zh-CN",
+      "sha256": "f6497b568b8dfe98d1c3c5f4506d04b6c7dee6b74a01dd60883a7b73f2f76c80"
+    },
+    "zh-2-3": {
+      "text": "小狗",
+      "spoken_text": "小狗",
+      "lang": "zh-CN",
+      "sha256": "ae796ee9d42f42a0fe6307f397b0003f8d60ea5dcf56883b94d7834cc9cbf1ca"
+    },
+    "zh-2-4": {
+      "text": "小鱼",
+      "spoken_text": "小鱼",
+      "lang": "zh-CN",
+      "sha256": "9f402fa97cc4b77d63a910b79d7c626d7fdd9e8f5f40a08c74d4dcf20e6dd8ba"
+    },
+    "zh-2-5": {
+      "text": "小鸟",
+      "spoken_text": "小鸟",
+      "lang": "zh-CN",
+      "sha256": "e645a63e37f84d37d422982b13177c5b90fe70e86939bd7d1bf8863b0d1f4b5d"
+    },
+    "zh-2-6": {
+      "text": "花朵",
+      "spoken_text": "花朵",
+      "lang": "zh-CN",
+      "sha256": "bb72b1391703874eb72a53e93d86a426c45ed517b7414ca0ce43b41605615abe"
+    },
+    "zh-2-7": {
+      "text": "星星",
+      "spoken_text": "星星",
+      "lang": "zh-CN",
+      "sha256": "769d7ee27b9382a6a509a2cde1ac134507b4a0ad90a1405a6fd574ef28aa6eb9"
+    },
+    "zh-2-8": {
+      "text": "汽车",
+      "spoken_text": "汽车",
+      "lang": "zh-CN",
+      "sha256": "0f584723cb3dcf1d90508ddc5b8cdc9f6d88cb7e3e7e15025445b827709a2bc7"
+    },
+    "zh-2-9": {
+      "text": "书本",
+      "spoken_text": "书本。",
+      "lang": "zh-CN",
+      "sha256": "7f6e65532dcac4adae23ccd4fb263803cada11222f9e2a6bb02d11ccb1b6184f"
+    },
+    "zh-2-10": {
+      "text": "牛奶",
+      "spoken_text": "牛奶",
+      "lang": "zh-CN",
+      "sha256": "7f25a7a56d322abe663e6a0a34c43210ef44945f4ce900dfa6aeecf31d26e3d7"
+    },
+    "zh-2-11": {
+      "text": "鸡蛋",
+      "spoken_text": "鸡蛋",
+      "lang": "zh-CN",
+      "sha256": "8d82bbdc4c467c223d43e1fcc9322c2cb6b5aafdf2c8ac3d77a1c822ae39d246"
+    },
+    "zh-2-12": {
+      "text": "面包",
+      "spoken_text": "面包",
+      "lang": "zh-CN",
+      "sha256": "989cada58a871cd7cd0875f0657ec261a9e517428ccdb6f08dc06d17659ec76c"
+    },
+    "zh-2-13": {
+      "text": "皮球",
+      "spoken_text": "皮球",
+      "lang": "zh-CN",
+      "sha256": "c35108b9534bf00c4188fe5a0e0ae6762723d69ade682f5dbe37bcf57d94adf1"
+    },
+    "zh-2-14": {
+      "text": "杯子",
+      "spoken_text": "杯子",
+      "lang": "zh-CN",
+      "sha256": "bf94134d35754cf3f391d0eb9f56ebb18a99d7384c47096ad4ba235dd8c5bc95"
+    },
+    "zh-2-15": {
+      "text": "月亮",
+      "spoken_text": "月亮。",
+      "lang": "zh-CN",
+      "sha256": "e3fff8bdf82287c85b616a54d509547f2de0b0955814755978034cbadf85a314"
+    },
+    "zh-2-16": {
+      "text": "太阳",
+      "spoken_text": "太阳",
+      "lang": "zh-CN",
+      "sha256": "abd47efc413f4209df62ff48f62fe8ddd1d3e38b9245cd9f3a9c231811405a4c"
+    },
+    "zh-2-17": {
+      "text": "大树",
+      "spoken_text": "大树",
+      "lang": "zh-CN",
+      "sha256": "febd17bb13860d8d3102447055eb7aff011cf6e7a068f4579ee6558b8da5c9f5"
+    },
+    "zh-2-18": {
+      "text": "雨伞",
+      "spoken_text": "雨伞",
+      "lang": "zh-CN",
+      "sha256": "4fe015edf778c0246f13738cd99541a9dc0daa76f48fb4df2e604bfd27cd2ecb"
+    },
+    "zh-2-19": {
+      "text": "帽子",
+      "spoken_text": "帽子",
+      "lang": "zh-CN",
+      "sha256": "b89344ba0ac714192ff4a8353112d46b36a9c6e4bdff82f000436329d8355d11"
+    },
+    "zh-2-20": {
+      "text": "椅子",
+      "spoken_text": "椅子",
+      "lang": "zh-CN",
+      "sha256": "01746de041f68300a14f2413222cd86f31e70d27541f25f4cc5c0c2430fcec85"
+    },
+    "zh-2-21": {
+      "text": "桌子",
+      "spoken_text": "桌子",
+      "lang": "zh-CN",
+      "sha256": "e233cb6dd46c88c27ea89ba81a2d3afa809f35ec5efbba0284bc957788a13118"
+    },
+    "zh-2-22": {
+      "text": "时钟",
+      "spoken_text": "时钟",
+      "lang": "zh-CN",
+      "sha256": "e7aad546e1de0961b9a3372a2d99abd1f5fb1ed83b8c527b2f22d9f7f4945279"
+    },
+    "zh-2-23": {
+      "text": "牙刷",
+      "spoken_text": "牙刷",
+      "lang": "zh-CN",
+      "sha256": "a2c1347de4f8daf969b0d80b961874a2065cb75bdbcf0971a2029cc8a4bd014e"
+    },
+    "zh-2-24": {
+      "text": "小羊",
+      "spoken_text": "小羊",
+      "lang": "zh-CN",
+      "sha256": "f6d013910b27c95aec8ae3c3214d70fb4772a3f2936a624aea9bcaec9dc15b23"
+    },
+    "zh-2-25": {
+      "text": "小兔",
+      "spoken_text": "小兔",
+      "lang": "zh-CN",
+      "sha256": "40b3c564646b1ec9d634ac03b9b05fdee167de9121dbb11ba704059985466152"
+    },
+    "zh-2-26": {
+      "text": "西瓜",
+      "spoken_text": "西瓜",
+      "lang": "zh-CN",
+      "sha256": "b2e77cfd6a36055b7119738d972ea7cbc7326ab4d9b7ee83172126a2669c8a9d"
+    },
+    "zh-2-27": {
+      "text": "草莓",
+      "spoken_text": "草莓",
+      "lang": "zh-CN",
+      "sha256": "7da5c7232a6b8ebdbeb6a2b0ad95eddc2eaa57e2fd11ff9c635b7c10c26a3d71"
+    },
+    "zh-2-28": {
+      "text": "橙子",
+      "spoken_text": "橙子",
+      "lang": "zh-CN",
+      "sha256": "f5c9bf448a656a1786047c957fc1e6e945e30c5b983e6ea469d7c841f6fd2367"
+    },
+    "zh-2-29": {
+      "text": "葡萄",
+      "spoken_text": "葡萄",
+      "lang": "zh-CN",
+      "sha256": "e3ddf56582a6939abde40c9f00988fb45dd82df236937a38cfcd871aceda1426"
+    },
+    "zh-3-0": {
+      "text": "喝水",
+      "spoken_text": "喝水",
+      "lang": "zh-CN",
+      "sha256": "11dde355c8efd2450785df3861a6487d4a14965e29b606cff8bf58d5157bd670"
+    },
+    "zh-3-1": {
+      "text": "吃饭",
+      "spoken_text": "吃饭",
+      "lang": "zh-CN",
+      "sha256": "dfedda0a198bd3aaae62a2f7b77a76cfb7cc5fd1f2f963759d3ec0880c651754"
+    },
+    "zh-3-2": {
+      "text": "洗手",
+      "spoken_text": "洗手",
+      "lang": "zh-CN",
+      "sha256": "bfe2b4e00042c6f3ce0af0ec711eeb9bae0fd7a5cf7ed2d8c0f09b1f660cb51a"
+    },
+    "zh-3-3": {
+      "text": "穿衣",
+      "spoken_text": "穿衣",
+      "lang": "zh-CN",
+      "sha256": "715f0220bac758a3960cda05ff042b7732faf92c1bf26c32dc84e26bcf298d26"
+    },
+    "zh-3-4": {
+      "text": "穿鞋",
+      "spoken_text": "穿鞋",
+      "lang": "zh-CN",
+      "sha256": "60198561ab5404a3fb4496bd576f439322e7d54954989f97ea9f13144544158d"
+    },
+    "zh-3-5": {
+      "text": "开门",
+      "spoken_text": "开门",
+      "lang": "zh-CN",
+      "sha256": "90a64ed0f6973ea6ebe45db9e1a92cdbad4a79e7df76aa34ea48820526eb51f2"
+    },
+    "zh-3-6": {
+      "text": "刷牙",
+      "spoken_text": "刷牙",
+      "lang": "zh-CN",
+      "sha256": "8c81178f5599a235df7b8d0999a9a387df0c57c9cca42441644544c246c9cbce"
+    },
+    "zh-3-7": {
+      "text": "睡觉",
+      "spoken_text": "睡觉",
+      "lang": "zh-CN",
+      "sha256": "6213d863b379a0618d3adc3a73ae4d52d1f6de4c7ec4a57e6b7c2d26edb6700a"
+    },
+    "zh-3-8": {
+      "text": "下雨",
+      "spoken_text": "下雨。",
+      "lang": "zh-CN",
+      "sha256": "9e71193f6bd7c8c96be6671c310a41acbd51a729b630131de672b8bced934ab7"
+    },
+    "zh-3-10": {
+      "text": "看书",
+      "spoken_text": "看书",
+      "lang": "zh-CN",
+      "sha256": "f63dd73297af9f8e9b91747bd91ac6b586d32f2ab17e104ba6ff354118f81fa0"
+    },
+    "zh-3-11": {
+      "text": "踢球",
+      "spoken_text": "踢球",
+      "lang": "zh-CN",
+      "sha256": "7cb247b3eac2189de43a4c89be73df0cbde241aae69e1b9f224832e6c2979ae8"
+    },
+    "zh-3-12": {
+      "text": "赏花",
+      "spoken_text": "赏花",
+      "lang": "zh-CN",
+      "sha256": "bbb6e5749f142f31bf1af7aed9ac68ccfe133614b656d3bd6622ecf48a1f5b19"
+    },
+    "zh-3-24": {
+      "text": "关门",
+      "spoken_text": "关门",
+      "lang": "zh-CN",
+      "sha256": "5b0f7310893d7e9a02eb1524deddc5f411cab82165df7b85d90e1220f590484e"
+    },
+    "zh-3-27": {
+      "text": "浇花",
+      "spoken_text": "浇花",
+      "lang": "zh-CN",
+      "sha256": "fe12aa886deb8225b9ba02ef30f484d932fdea5640c1e14eda62895a65a4d46e"
+    },
+    "n-10": {
+      "text": "10",
+      "spoken_text": "十。",
+      "lang": "zh-CN",
+      "sha256": "71f0bbc525b11275b5a80a93222be0dbe5d90b13d60113488ad62c86718e745b"
+    },
+    "n-11": {
+      "text": "11",
+      "spoken_text": "十一。",
+      "lang": "zh-CN",
+      "sha256": "1026eee12b3123a06f6050c37359595fb41695925c608d72c22e2f0459bfc367"
+    },
+    "n-12": {
+      "text": "12",
+      "spoken_text": "十二。",
+      "lang": "zh-CN",
+      "sha256": "95c01545679cdc50a7584bd28c943cabe29231eaa862e2f127aee4e81d96ab16"
+    },
+    "n-13": {
+      "text": "13",
+      "spoken_text": "十三。",
+      "lang": "zh-CN",
+      "sha256": "e3457f51aaacbc9708285eb3872add9a9658a987b182f85ffd6c443506a9d798"
+    },
+    "n-14": {
+      "text": "14",
+      "spoken_text": "十四。",
+      "lang": "zh-CN",
+      "sha256": "1990accfafa142fab12bf07119773e3a5851b72e59a16fba027d8f4ec5801aa2"
+    },
+    "n-15": {
+      "text": "15",
+      "spoken_text": "十五。",
+      "lang": "zh-CN",
+      "sha256": "ec2c4028ae84a8a14e93e1152e4cf13a572b0ea9fc91570bf59b43b420710103"
+    },
+    "n-16": {
+      "text": "16",
+      "spoken_text": "十六。",
+      "lang": "zh-CN",
+      "sha256": "dc050a01c2a1aa2e12b99f75016c84152d7af9814fa14ce46339cb5fb540f932"
+    },
+    "n-17": {
+      "text": "17",
+      "spoken_text": "十七。",
+      "lang": "zh-CN",
+      "sha256": "2bde4303753d3ff75a814262aae1521c699851a4cf1213348449d91d6f371859"
+    },
+    "n-18": {
+      "text": "18",
+      "spoken_text": "十八。",
+      "lang": "zh-CN",
+      "sha256": "20a3fa8fe781b43a1ce19d49ea045479b03ac85b43eeb38d18d451cd23cfeacd"
+    },
+    "n-19": {
+      "text": "19",
+      "spoken_text": "十九。",
+      "lang": "zh-CN",
+      "sha256": "e9de4aeb6babb77cb4e72d96aa2f8a0382003e102b36e9a02fb94dfbf19cd671"
+    },
+    "n-20": {
+      "text": "20",
+      "spoken_text": "二十。",
+      "lang": "zh-CN",
+      "sha256": "49296b3869e123a73d1c1260324fcdd0908074cc4719c95d4510d2ff600aec9f"
+    },
+    "n-21": {
+      "text": "21",
+      "spoken_text": "二十一。",
+      "lang": "zh-CN",
+      "sha256": "69759f03e0491138b7eeeb08db0ae7a29878856ff6b0eaf4828ce0f63d12f508"
+    },
+    "n-22": {
+      "text": "22",
+      "spoken_text": "二十二。",
+      "lang": "zh-CN",
+      "sha256": "21cef130fe95b572a01f7607ef5ca24d7ae233aee0fbce29cb2c54cd92097d3b"
+    },
+    "n-23": {
+      "text": "23",
+      "spoken_text": "二十三。",
+      "lang": "zh-CN",
+      "sha256": "65b8a1ff565c4fe3c40db2f9656c4d020dd7649771e741b5a6469a0856bc6e2e"
+    },
+    "n-24": {
+      "text": "24",
+      "spoken_text": "二十四。",
+      "lang": "zh-CN",
+      "sha256": "4b5b2128aa4b1f0fd04fd8dc65e120b6d414d2ab99381b920a94177687cd0486"
+    },
+    "n-25": {
+      "text": "25",
+      "spoken_text": "二十五。",
+      "lang": "zh-CN",
+      "sha256": "a49c2ea83ec5f2ea7c8a0bfe015cdfedc3e45161ccdffbcada0e9471440c136f"
+    },
+    "n-26": {
+      "text": "26",
+      "spoken_text": "二十六。",
+      "lang": "zh-CN",
+      "sha256": "9688bcbfca3ca2907053afde2b39d7534bf9ea1b7d8362f3b051d92b41de0144"
+    },
+    "n-27": {
+      "text": "27",
+      "spoken_text": "二十七。",
+      "lang": "zh-CN",
+      "sha256": "8b22beff49c05a9bc8e2f7949ecfd2890d3098edc4ac7f0be532220daceb818c"
+    },
+    "n-28": {
+      "text": "28",
+      "spoken_text": "二十八。",
+      "lang": "zh-CN",
+      "sha256": "b32b2797c12a400a2e09004cb5bc67d545774945c9d3ae170c3cf483653e8ef0"
+    },
+    "n-29": {
+      "text": "29",
+      "spoken_text": "二十九。",
+      "lang": "zh-CN",
+      "sha256": "c83b9c43c196ea174c139a07f136deff00516e37bcc0f8befc59ded66425fa24"
+    },
+    "n-30": {
+      "text": "30",
+      "spoken_text": "三十。",
+      "lang": "zh-CN",
+      "sha256": "59f5cbf18f6baab28d7b594000f57943f7dfe0676266b2df95f72c0e79ddfbaa"
+    },
+    "n-31": {
+      "text": "31",
+      "spoken_text": "三十一。",
+      "lang": "zh-CN",
+      "sha256": "4b80861d7532257a3f84d52436ae9b78be53a9e6c2574754e8818173b3759b1b"
+    },
+    "n-32": {
+      "text": "32",
+      "spoken_text": "三十二。",
+      "lang": "zh-CN",
+      "sha256": "bab7f48eda3b215b36ed438245cc358dbe3add8b1e087610d5d7b64801016c35"
+    },
+    "n-33": {
+      "text": "33",
+      "spoken_text": "三十三。",
+      "lang": "zh-CN",
+      "sha256": "0a15a57859c67fbde42b38216ea5c6f98fd9cae4d4a54ecbf91d606fa7e5205f"
+    },
+    "n-34": {
+      "text": "34",
+      "spoken_text": "三十四。",
+      "lang": "zh-CN",
+      "sha256": "d66254d7ee15dd71a6d1730b3c3e8d50532b0a2b1b46e88cf6206e9ac89f07ac"
+    },
+    "n-35": {
+      "text": "35",
+      "spoken_text": "三十五。",
+      "lang": "zh-CN",
+      "sha256": "42416f1c7ee85e7ed2f0533c5c46cedf47e97f8d2aab135a4ee4b4ad99e5a44a"
+    },
+    "n-36": {
+      "text": "36",
+      "spoken_text": "三十六。",
+      "lang": "zh-CN",
+      "sha256": "55869396d9809a98f998a2a48ce052c692eafd51c16c481d96e245b86f2a59c7"
+    },
+    "n-37": {
+      "text": "37",
+      "spoken_text": "三十七。",
+      "lang": "zh-CN",
+      "sha256": "2f57c393ef5cb00fc1797aeaf0398f1224175e1eb367f63dd4b6c7ca90024d6c"
+    },
+    "n-38": {
+      "text": "38",
+      "spoken_text": "三十八。",
+      "lang": "zh-CN",
+      "sha256": "3f4962701b0deffce2a395f78def8b36f2ef383386d5954b14902e28608a8259"
+    },
+    "n-39": {
+      "text": "39",
+      "spoken_text": "三十九。",
+      "lang": "zh-CN",
+      "sha256": "3dd1644b2ea3991cb31dcfbe64d47842d1de388ea66fc4a146ec93884eb0f375"
+    },
+    "n-40": {
+      "text": "40",
+      "spoken_text": "四十。",
+      "lang": "zh-CN",
+      "sha256": "eab03278ed7a358cf9398de7e259d4c1d1e17197f40c5e6067ef1bbf46ee20d9"
+    },
+    "n-41": {
+      "text": "41",
+      "spoken_text": "四十一。",
+      "lang": "zh-CN",
+      "sha256": "d2b39084dbc7d7c68db4b2a873ff1c8852259d0e7f620ab0cdd1697b8c100665"
+    },
+    "n-42": {
+      "text": "42",
+      "spoken_text": "四十二。",
+      "lang": "zh-CN",
+      "sha256": "fb2d479f9bcec4c99f2e2830821780f7affe3ac640864f66909f5e27208d2cd2"
+    },
+    "n-43": {
+      "text": "43",
+      "spoken_text": "四十三。",
+      "lang": "zh-CN",
+      "sha256": "974cdd74457ffc6e3efb7cfd86813e95891998c0c384a152b5b3f56aff3c09ad"
+    },
+    "n-44": {
+      "text": "44",
+      "spoken_text": "四十四。",
+      "lang": "zh-CN",
+      "sha256": "5ad9b2379343193c9db1a30d73c569f12d1e1d5d23076c7209d4b7a5a45a635d"
+    },
+    "n-45": {
+      "text": "45",
+      "spoken_text": "四十五。",
+      "lang": "zh-CN",
+      "sha256": "545460bbf03e1da345d7bf1d86c4ecf26dc24aadaa7a905c57236866d217a053"
+    },
+    "n-46": {
+      "text": "46",
+      "spoken_text": "四十六。",
+      "lang": "zh-CN",
+      "sha256": "e41f9ba6df2475387ffb3e21e27dbce3248fb6a1547e0203735988f021b9d4c4"
+    },
+    "n-47": {
+      "text": "47",
+      "spoken_text": "四十七。",
+      "lang": "zh-CN",
+      "sha256": "836019c0de92e2eee4182ff117c212a27fd13beb566bbf67a8da98149bee177f"
+    },
+    "n-48": {
+      "text": "48",
+      "spoken_text": "四十八。",
+      "lang": "zh-CN",
+      "sha256": "3c31169ea74f655aa1ed1ac12b84cf7703500dda019b452ac091ba7c5b0c4d49"
+    },
+    "n-49": {
+      "text": "49",
+      "spoken_text": "四十九。",
+      "lang": "zh-CN",
+      "sha256": "2e9b3a5e4623f7d8d3130d36846a0e211d72cad7278dab7fdc4c014ed948ad1e"
+    },
+    "n-50": {
+      "text": "50",
+      "spoken_text": "五十。",
+      "lang": "zh-CN",
+      "sha256": "587ab7b37323f801e48d2f61eb0f5b0f81ffd651ce03ed6bdf97c689700213d9"
+    },
+    "n-51": {
+      "text": "51",
+      "spoken_text": "五十一。",
+      "lang": "zh-CN",
+      "sha256": "22b1e13313444062d3fff6af145d515503713d9571ee4726c7ffde4853d76b39"
+    },
+    "n-52": {
+      "text": "52",
+      "spoken_text": "五十二。",
+      "lang": "zh-CN",
+      "sha256": "9b0e5b666c205fae45b319889f7b14fc70b96e9cdbce27547f59e52ab45e4e92"
+    },
+    "n-53": {
+      "text": "53",
+      "spoken_text": "五十三。",
+      "lang": "zh-CN",
+      "sha256": "b937fb287817a0932522c8b20dcbaa5af8c1a1bd27437596bb00cbf07aaa8a21"
+    },
+    "n-54": {
+      "text": "54",
+      "spoken_text": "五十四。",
+      "lang": "zh-CN",
+      "sha256": "edfb329990ad065868565e90b49fc459c00a71de7d2db31fede6ccfe516dff52"
+    },
+    "n-55": {
+      "text": "55",
+      "spoken_text": "五十五。",
+      "lang": "zh-CN",
+      "sha256": "ccff15039f923776fcac8e9517cd2d8f4b365731e19575354de3f60b6eddce4f"
+    },
+    "n-56": {
+      "text": "56",
+      "spoken_text": "五十六。",
+      "lang": "zh-CN",
+      "sha256": "8e4490cb1f1d42b7bf4754d228f9eb3dcfaff4ea23915bce84111a5a4bed6895"
+    },
+    "n-57": {
+      "text": "57",
+      "spoken_text": "五十七。",
+      "lang": "zh-CN",
+      "sha256": "ce9c25a0e61ab43efde8d9438e2c45627350a3e43fc0377276184b7440181aee"
+    },
+    "n-58": {
+      "text": "58",
+      "spoken_text": "五十八。",
+      "lang": "zh-CN",
+      "sha256": "4fbe546c8bdd2bd443268ef2b58fa0271802a149c77dee8be4f4ec96f9a02ac6"
+    },
+    "n-59": {
+      "text": "59",
+      "spoken_text": "五十九。",
+      "lang": "zh-CN",
+      "sha256": "750a992187d396b849a1f5ba830d411b2b679ff1d2bbabc60e32e71047129c20"
+    },
+    "n-60": {
+      "text": "60",
+      "spoken_text": "六十。",
+      "lang": "zh-CN",
+      "sha256": "b53da7f31b5fb579721bc56f7d662d5abae261684f38b33bbb5c78f5d0c8f000"
+    },
+    "n-61": {
+      "text": "61",
+      "spoken_text": "六十一。",
+      "lang": "zh-CN",
+      "sha256": "56f2fbbfc98bcf033e96c551338c3c4b671cad430c11e0459d47afef1ebbebb8"
+    },
+    "n-62": {
+      "text": "62",
+      "spoken_text": "六十二。",
+      "lang": "zh-CN",
+      "sha256": "b3316d627e36b3693bb588f3e7095bd206f5c3c49c22f3b269c7ac1aed7d45b1"
+    },
+    "n-63": {
+      "text": "63",
+      "spoken_text": "六十三。",
+      "lang": "zh-CN",
+      "sha256": "a5da9c450bcc6ea56467862addf5b6f512026c9b9983acf879ac67d3670ce016"
+    },
+    "n-64": {
+      "text": "64",
+      "spoken_text": "六十四。",
+      "lang": "zh-CN",
+      "sha256": "4a6a511482e60017668787a240d3fd6495481eff374663d9cd0e1422d8d157b9"
+    },
+    "n-65": {
+      "text": "65",
+      "spoken_text": "六十五。",
+      "lang": "zh-CN",
+      "sha256": "3a5e912a5288de970379a505eabfbc9c3802d49d7e60e9f34f7628a1d3029205"
+    },
+    "n-66": {
+      "text": "66",
+      "spoken_text": "六十六。",
+      "lang": "zh-CN",
+      "sha256": "9008a2b6e6d620d718bb4c45ea54e512fcbb7d0f75f2d6bb1f1e60f0bf100fc0"
+    },
+    "n-67": {
+      "text": "67",
+      "spoken_text": "六十七。",
+      "lang": "zh-CN",
+      "sha256": "32c131f31330483b0ac7c4a370e2f9d0cb474d4a2627902b320ca2cf12404551"
+    },
+    "n-68": {
+      "text": "68",
+      "spoken_text": "六十八。",
+      "lang": "zh-CN",
+      "sha256": "efa41e77066c403c9c5ea6d682929dd83cc4b404b560839944cccefdf03a5efc"
+    },
+    "n-69": {
+      "text": "69",
+      "spoken_text": "六十九。",
+      "lang": "zh-CN",
+      "sha256": "82a40ca16e147cc42907b974216ead937a0fd995c28ed67ed70e7ae310d59175"
+    },
+    "n-70": {
+      "text": "70",
+      "spoken_text": "七十。",
+      "lang": "zh-CN",
+      "sha256": "662a275b1bb273113452b47f0df7c00fb8632c9c5e2085108f7973860058a1cb"
+    },
+    "n-71": {
+      "text": "71",
+      "spoken_text": "七十一。",
+      "lang": "zh-CN",
+      "sha256": "98a7d0f157b58c7c5f52d09eb29e4484af1ecca5834287beb633db3a147597cb"
+    },
+    "n-72": {
+      "text": "72",
+      "spoken_text": "七十二。",
+      "lang": "zh-CN",
+      "sha256": "abe8c7f7bb3f72b084f1567ab7c5cbfcf4d669253f70fdbcd1bfa45700f889ba"
+    },
+    "n-73": {
+      "text": "73",
+      "spoken_text": "七十三。",
+      "lang": "zh-CN",
+      "sha256": "c5834f3ad120b3ecb0bbcfa8793b23f62adf1295e26ce16021997a6ad3fbe113"
+    },
+    "n-74": {
+      "text": "74",
+      "spoken_text": "七十四。",
+      "lang": "zh-CN",
+      "sha256": "0205df17871c9e1bbf62f03dae6cf60e6ae061038a9d0c35aaf8206fd358c017"
+    },
+    "n-75": {
+      "text": "75",
+      "spoken_text": "七十五。",
+      "lang": "zh-CN",
+      "sha256": "019c6d0f705daec2712393f7d8c66a9f154e2cb4d65eb8876f190b1bbbe146e0"
+    },
+    "n-76": {
+      "text": "76",
+      "spoken_text": "七十六。",
+      "lang": "zh-CN",
+      "sha256": "43045331cc8ad9004b7eb89864f4889d3d4a4f88f0dd2ddd265d8db589cf6d44"
+    },
+    "n-77": {
+      "text": "77",
+      "spoken_text": "七十七。",
+      "lang": "zh-CN",
+      "sha256": "981eb4b3c4e5ed4a52f1b5ae93044696c385869e3f38544332ecef37239dfa4f"
+    },
+    "n-78": {
+      "text": "78",
+      "spoken_text": "七十八。",
+      "lang": "zh-CN",
+      "sha256": "e03d715c3b66bbf64d8bf8138285386d11d3a22082da79fc0e953d3945b0450d"
+    },
+    "n-79": {
+      "text": "79",
+      "spoken_text": "七十九。",
+      "lang": "zh-CN",
+      "sha256": "5444303f2f3c720d454ebd108948701ad6dd2cc247c3b58035e05d10db523d9d"
+    },
+    "n-80": {
+      "text": "80",
+      "spoken_text": "八十。",
+      "lang": "zh-CN",
+      "sha256": "0740c6154aee42349a6f31dd302b0bbbfc60496bb17c98031929e919ca6ca546"
+    },
+    "n-81": {
+      "text": "81",
+      "spoken_text": "八十一。",
+      "lang": "zh-CN",
+      "sha256": "53437b4fb73416e876f9ab1c01d20b33c45a377fd3b26b603c58872aaff20db2"
+    },
+    "n-82": {
+      "text": "82",
+      "spoken_text": "八十二。",
+      "lang": "zh-CN",
+      "sha256": "65d7d195f24ad53fceb561e013d362f45287faaa4b967b957963ec80dd117b61"
+    },
+    "n-83": {
+      "text": "83",
+      "spoken_text": "八十三。",
+      "lang": "zh-CN",
+      "sha256": "3534ccbfe3741712bff946b91e148b3f19572d6dcb34c79bacad9b5c4a68fe9e"
+    },
+    "n-84": {
+      "text": "84",
+      "spoken_text": "八十四。",
+      "lang": "zh-CN",
+      "sha256": "e1e506355e12342d9a0b4218e69abe7324b6c6e31ac5b036039edd713c9c3dcf"
+    },
+    "n-85": {
+      "text": "85",
+      "spoken_text": "八十五。",
+      "lang": "zh-CN",
+      "sha256": "44b04098fc6a4f0815316b9607e6a9df48d86081d415ee7d0473b5c852291593"
+    },
+    "n-86": {
+      "text": "86",
+      "spoken_text": "八十六。",
+      "lang": "zh-CN",
+      "sha256": "525ff0c8f1caa38e53dca4c0da922257c7da4b5e9fbd144db0f91562a032ef3a"
+    },
+    "n-87": {
+      "text": "87",
+      "spoken_text": "八十七。",
+      "lang": "zh-CN",
+      "sha256": "48d0d64eb9bf643e8bbcdf3bf5a9432d9af5f08a4f7115d8b59b66a2ae23d301"
+    },
+    "n-88": {
+      "text": "88",
+      "spoken_text": "八十八。",
+      "lang": "zh-CN",
+      "sha256": "8c10647b1b0fbcb5266f59eb57e4cea528caf40f6d297138ce017c7b9d2df2ef"
+    },
+    "n-89": {
+      "text": "89",
+      "spoken_text": "八十九。",
+      "lang": "zh-CN",
+      "sha256": "b4dfaa94ef497470329f2744e514db04d37b4f5595b7b645e75e76eda9da276b"
+    },
+    "n-90": {
+      "text": "90",
+      "spoken_text": "九十。",
+      "lang": "zh-CN",
+      "sha256": "3d9d373993168484007e856d42f6ac840a8e3c07d5351bfef69db4ef1b05361f"
+    },
+    "n-91": {
+      "text": "91",
+      "spoken_text": "九十一。",
+      "lang": "zh-CN",
+      "sha256": "2922a288c610cb164ce2a834cc1c9c46352da4b6869b5b8a4476c758e3cd7058"
+    },
+    "n-92": {
+      "text": "92",
+      "spoken_text": "九十二。",
+      "lang": "zh-CN",
+      "sha256": "c16155dff81210dd3fef3fc41fbd510e61e55d40eb8255d64f5f4c56ce542c3d"
+    },
+    "n-93": {
+      "text": "93",
+      "spoken_text": "九十三。",
+      "lang": "zh-CN",
+      "sha256": "3d03feab9c506742fc62c60874fc50da49dcdc626fd67e37c0c188d1c256420e"
+    },
+    "n-94": {
+      "text": "94",
+      "spoken_text": "九十四。",
+      "lang": "zh-CN",
+      "sha256": "bdcfb45f088a98fc06c646fae77d9edf98f0ba7557b7f082581e3670cc3ae1ef"
+    },
+    "n-95": {
+      "text": "95",
+      "spoken_text": "九十五。",
+      "lang": "zh-CN",
+      "sha256": "1fdbbe769a8efb73f595fdb752b88f25822007eef80ce47bceb50f6de77ae260"
+    },
+    "n-96": {
+      "text": "96",
+      "spoken_text": "九十六。",
+      "lang": "zh-CN",
+      "sha256": "f45e6169e0be62a2bfb8e9c151bc2b08e0eef6dd397c2e0db087aab1dfdf0dc9"
+    },
+    "n-97": {
+      "text": "97",
+      "spoken_text": "九十七。",
+      "lang": "zh-CN",
+      "sha256": "fe08bca0e957de08a4b028ee8e0f23497e243608919e9de7b786f785a030df42"
+    },
+    "n-98": {
+      "text": "98",
+      "spoken_text": "九十八。",
+      "lang": "zh-CN",
+      "sha256": "1ec2a27ad6c5cb5d08649f033d3cb71a9f3d1767c6352d36167a7f0c79c648ee"
+    },
+    "n-99": {
+      "text": "99",
+      "spoken_text": "九十九。",
+      "lang": "zh-CN",
+      "sha256": "717ef6adee585603dc0dee1f1ce7129249bed29a16ae69be12beeb4f712fb013"
+    },
+    "equals": {
+      "text": "等于",
+      "spoken_text": "等于",
+      "lang": "zh-CN",
+      "sha256": "f2ed4ac05fd4ca8143e4e7e5f5d6975442d313a1c43df0e03235f0f31ba4483d"
+    },
+    "take": {
+      "text": "拿走",
+      "spoken_text": "拿走",
+      "lang": "zh-CN",
+      "sha256": "1768bddb22ddaea2b9b49954e4a92e54cfe5964a45c4803c1aa47efb2d7b68bd"
+    },
+    "remains": {
+      "text": "还剩",
+      "spoken_text": "还剩",
+      "lang": "zh-CN",
+      "sha256": "7deb09844cea58949bde1544e64db190ec92125183a3cabc958daeaf90732fec"
+    },
+    "zh-3-9": {
+      "text": "早上好",
+      "spoken_text": "早上好",
+      "lang": "zh-CN",
+      "sha256": "8499c653d3c2b59ea2700708c9c95709d4f2f664192401026a29827ad52f43a3"
+    },
+    "zh-3-13": {
+      "text": "看月亮",
+      "spoken_text": "看月亮",
+      "lang": "zh-CN",
+      "sha256": "65f26d2804969bb8f9d066d4baf68041b0c43d487c06fabe06c9cd0bdb2c0fe5"
+    },
+    "zh-3-14": {
+      "text": "数星星",
+      "spoken_text": "数星星",
+      "lang": "zh-CN",
+      "sha256": "f9927538265e1570ba132989a1224eaada95a7f3ecf1e2f7949a5d3bc2417ed0"
+    },
+    "zh-3-15": {
+      "text": "戴帽子",
+      "spoken_text": "戴帽子",
+      "lang": "zh-CN",
+      "sha256": "412cb923794a8607a99692747ee4d4d3e5f584167c2a7417c3d10045a11fb6fc"
+    },
+    "zh-3-16": {
+      "text": "撑雨伞",
+      "spoken_text": "撑雨伞",
+      "lang": "zh-CN",
+      "sha256": "1c40ee03547096d3dbbd48df48e9c3369c8d082fcbf3099b5e29e3311b7541a4"
+    },
+    "zh-3-17": {
+      "text": "喝牛奶",
+      "spoken_text": "喝牛奶",
+      "lang": "zh-CN",
+      "sha256": "d7a7a325e75dfd0d44dc9128e8510619b1e6b7e5f9ebe800ee6158f52d3fa745"
+    },
+    "zh-3-18": {
+      "text": "吃苹果",
+      "spoken_text": "吃苹果",
+      "lang": "zh-CN",
+      "sha256": "5e2eb2f6a00d58c21b744ff76a687d849ceef5b60dda0ca1f89fc2c5f64359b2"
+    },
+    "zh-3-19": {
+      "text": "剥香蕉",
+      "spoken_text": "剥香蕉。",
+      "lang": "zh-CN",
+      "sha256": "7a5ef097a4759cc5cbf01cc90c67762da4c6dd049ab3f67fccc6041954d11883"
+    },
+    "zh-3-20": {
+      "text": "看小鸟",
+      "spoken_text": "看小鸟",
+      "lang": "zh-CN",
+      "sha256": "161bbe06ff216415ce08ab7aff8f41bb342ebee3880c1e8c1d19e3d62a5561ad"
+    },
+    "zh-3-21": {
+      "text": "喂小鱼",
+      "spoken_text": "喂小鱼",
+      "lang": "zh-CN",
+      "sha256": "0c60c5424aa91b29f955f847b4c315c107a68392e90ac6f7fa6b098c18c6dcd4"
+    },
+    "zh-3-22": {
+      "text": "坐椅子",
+      "spoken_text": "坐椅子",
+      "lang": "zh-CN",
+      "sha256": "c978dd47d4ad84f71127d62d85d78a7fb59a682381d270d642eb1ca662ea3b63"
+    },
+    "zh-3-23": {
+      "text": "擦桌子",
+      "spoken_text": "擦桌子",
+      "lang": "zh-CN",
+      "sha256": "9557d238431f28765aedd8e301751bf743902cb71139b863cfe640aa48f94fa7"
+    },
+    "zh-3-25": {
+      "text": "吃面包",
+      "spoken_text": "吃面包",
+      "lang": "zh-CN",
+      "sha256": "5a13d2e703925802dc8d0b0ba5f44a8a495403d616ca33712a3a32b38848358c"
+    },
+    "zh-3-26": {
+      "text": "吃鸡蛋",
+      "spoken_text": "吃鸡蛋",
+      "lang": "zh-CN",
+      "sha256": "4ffbb3b453f30cd6c27a30bee37f2140599a67ef4fce6a48db7ef2da283b1caf"
+    },
+    "zh-3-28": {
+      "text": "看时钟",
+      "spoken_text": "看时钟",
+      "lang": "zh-CN",
+      "sha256": "967905c58e813038be77a85801ecfee937e0aa4ce5ff3663a96c727dd90aeb86"
+    },
+    "zh-3-29": {
+      "text": "抱小猫",
+      "spoken_text": "抱小猫",
+      "lang": "zh-CN",
+      "sha256": "03c558f63ff112cc6064bac19595fc5dec1c9b567e9a77d329c9a666839eee7a"
+    },
+    "n-100": {
+      "text": "100",
+      "spoken_text": "一百。",
+      "lang": "zh-CN",
+      "sha256": "3e85d9d892bac296d321a8786da8b66ffa1e757153b21f2c16d664c95767d595"
+    },
+    "object-pear": {
+      "text": "个梨。",
+      "spoken_text": "个梨。",
+      "lang": "zh-CN",
+      "sha256": "be97ff91c35f0d4cefedabc80276d84e03df8909986d517e9a84e955364f9391"
+    },
+    "first": {
+      "text": "先放好",
+      "spoken_text": "先放好",
+      "lang": "zh-CN",
+      "sha256": "bcf0bd9f9e0b532b14b49f9b7ffd4504db5f610ae9345d4a5099317679a7fa61"
+    },
+    "bring": {
+      "text": "再拿来",
+      "spoken_text": "再拿来",
+      "lang": "zh-CN",
+      "sha256": "5a9725a587124a2e1352a344c7b26faa7d28895106d5f51604ccf5215ba94802"
+    },
+    "total": {
+      "text": "一共有",
+      "spoken_text": "一共有",
+      "lang": "zh-CN",
+      "sha256": "cec826f9674aa285283a80576a643fab0aaf7be66a46e23dc85c47b98b7c15c6"
+    },
+    "object-banana": {
+      "text": "根香蕉。",
+      "spoken_text": "根香蕉。",
+      "lang": "zh-CN",
+      "sha256": "3af72f085c48a52490093452a3342bd030cb41c911bf65aec1fa68000d80eb98"
+    },
+    "object-apple": {
+      "text": "个苹果。",
+      "spoken_text": "个苹果。",
+      "lang": "zh-CN",
+      "sha256": "e938cdfaefb4f318077f50bdbb308f44b17fd85235fdbf9d63b3d5d4655215ea"
+    },
+    "object-orange": {
+      "text": "个橙子。",
+      "spoken_text": "个橙子。",
+      "lang": "zh-CN",
+      "sha256": "7f485aac0f3d5c0b6d9d36f81a6f7de5df1bfda43990c5e880137b3a7a535291"
+    },
+    "object-strawberry": {
+      "text": "颗草莓。",
+      "spoken_text": "颗草莓。",
+      "lang": "zh-CN",
+      "sha256": "b33bfaaa5477e6516a0fc371d5831b6dec631998fbaa98965037f4d16275644a"
+    },
+    "object-grapes": {
+      "text": "串葡萄。",
+      "spoken_text": "串葡萄。",
+      "lang": "zh-CN",
+      "sha256": "24e9eeab2b5b53ed6652dbe510d509086be74104e0a7303ed9aa50c890e6cc85"
+    },
+    "object-peach": {
+      "text": "个桃子。",
+      "spoken_text": "个桃子。",
+      "lang": "zh-CN",
+      "sha256": "ed3d5acc36058ac6fd2f8171d382255ec5861fa271cb26c6867032c832e3198e"
+    },
+    "object-watermelon": {
+      "text": "块西瓜。",
+      "spoken_text": "块西瓜。",
+      "lang": "zh-CN",
+      "sha256": "f2dbbc30342a4bc02c7550dda8ff32bbc1f4c392adeb7f9da3eade145f3306cd"
+    },
+    "object-cherry": {
+      "text": "对樱桃。",
+      "spoken_text": "对樱桃。",
+      "lang": "zh-CN",
+      "sha256": "dadd4554f5bac17310b3f14d8d979bee90b06c16e97fd6d3894f2ed282c4e1d0"
+    },
+    "question": {
+      "text": "等于几呢？",
+      "spoken_text": "等于几呢？",
+      "lang": "zh-CN",
+      "sha256": "65bef3708d1161b2e8c5b082e2759f889857140d48eabb523f1c146038d7e658"
+    },
+    "object-candy": {
+      "text": "颗五彩糖果。",
+      "spoken_text": "颗五彩糖果。",
+      "lang": "zh-CN",
+      "sha256": "70855e188d042a37731a0ecc873e339d79f64d45b4f7a05eb89f76108281a80f"
+    },
+    "left": {
+      "text": "看看还剩下多少？",
+      "spoken_text": "看看还剩下多少？",
+      "lang": "zh-CN",
+      "sha256": "4d51d81e1049c467fd8241e6b8234c702ebf4d0677071ca96a0d0d1ef5f51ad3"
+    },
+    "praise": {
+      "text": "答对啦！太棒了！",
+      "spoken_text": "答对啦！太棒了！",
+      "lang": "zh-CN",
+      "sha256": "eab03812ede7d3a241d79518ddce392077a82e1a3eecc44cdc56abd3fef78a29"
+    },
+    "together": {
+      "text": "放在一起，一个一个数。",
+      "spoken_text": "放在一起，一个一个数。",
+      "lang": "zh-CN",
+      "sha256": "61a576bc7e4444ff42860dcb259cd0a47d36f02f3c117ae951ea52d0712a1cb3"
+    },
+    "retry": {
+      "text": "没关系。我们数一数，再试一次。",
+      "spoken_text": "没关系。我们数一数，再试一次。",
+      "lang": "zh-CN",
+      "sha256": "9b832390fa79665784cda9212f2dad753efeb58773f5109b7ba5d3c91650dd3d"
+    },
+    "done": {
+      "text": "学完啦！休息一下，抱抱小伙伴吧。",
+      "spoken_text": "学完啦！休息一下，抱抱小伙伴吧。",
+      "lang": "zh-CN",
+      "sha256": "4274d955c8273f06b40a3ef3c7e0fc14f42f0824c9dcb2b569b293e92d9db88d"
+    }
+  }
+}

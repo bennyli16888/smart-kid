@@ -1,4 +1,6 @@
 function renderPicture(id, label) {
+  const symbols = { sheep: "🐑", cow: "🐄", horse: "🐎", rabbit: "🐇", rice: "🍚", watermelon: "🍉", strawberry: "🍓", orange: "🍊", grapes: "🍇", pear: "🍐", peach: "🍑", cherry: "🍒", candy: "🍬" };
+  if (symbols[id]) return `<svg class="word-picture" viewBox="0 0 200 200" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg"><text x="100" y="140" text-anchor="middle" font-size="115">${symbols[id]}</text></svg>`;
   const drawings = {
     apple: '<path fill="#ff7d8a" d="M100 65C60 37 34 70 44 119s45 56 56 39c13 17 47 10 57-39s-16-82-57-54Z"/><path d="M100 65V39" stroke="#84613f"/><path fill="#88d5a3" d="M101 48q8-31 36-25-4 29-36 25"/>',
     banana: '<path fill="#ffdc70" d="M53 50c-17 56 9 110 60 113 26 1 41-17 40-37-40 15-69-6-79-47L68 46Z"/><path d="M58 58c-10 43 16 91 61 93" fill="none"/>',

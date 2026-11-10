@@ -1,9 +1,3 @@
-const VOICE_PROFILES = {
-  original: { rate: 1, preservesPitch: true },
-  bright: { rate: 1.16, preservesPitch: false },
-  soft: { rate: 1.07, preservesPitch: false }
-};
-
 function trimRecording(buffer) {
   const samples = buffer.getChannelData(0);
   const windowSize = Math.max(1, Math.round(buffer.sampleRate * .01));
@@ -50,7 +44,7 @@ const continuousAudio = {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 15000);
         try {
-          const response = await fetch(`audio/${id}.mp3`, { signal: controller.signal });
+          const response = await fetch(`audio/${id}.mp3?v=0.3`, { signal: controller.signal });
           if (!response.ok) throw new Error("audio-load");
           const Decoder = window.OfflineAudioContext || window.webkitOfflineAudioContext;
           const decoder = new Decoder(1, 1, this.sampleRate);

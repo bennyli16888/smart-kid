@@ -23,15 +23,17 @@ async function main() {
   const chrome = spawn("chromium-browser", [
     "--headless", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage", "--disable-extensions",
     "--remote-debugging-port=0", `--user-data-dir=${dir}`, "about:blank"
-  ], { stdio: "ignore" });
+  ], { stdio: ["ignore", "ignore", "pipe"] });
+  let browserLog = "";
+  chrome.stderr.on("data", data => { browserLog += data; });
   let ws, closeBrowser;
   try {
     const portFile = path.join(dir, "DevToolsActivePort");
-    for (let n = 0; !fs.existsSync(portFile) && n < 100; n++) {
-      if (chrome.exitCode !== null) throw new Error("Chromium exited before starting");
+    for (let n = 0; !fs.existsSync(portFile) && n < 300; n++) {
+      if (chrome.exitCode !== null) throw new Error(`Chromium exited before starting: ${browserLog}`);
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    assert.ok(fs.existsSync(portFile), "Chromium did not start");
+    assert.ok(fs.existsSync(portFile), `Chromium did not start: ${browserLog}`);
     const port = fs.readFileSync(portFile, "utf8").split("\n")[0];
     const tabs = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
     const tab = tabs.find(item => item.type === "page" && item.url === "about:blank") || tabs.find(item => item.type === "page");
@@ -81,21 +83,27 @@ async function main() {
     await run("narrator.play(['n-2', 'plus', 'n-3', 'question'])");
     assert.equal(await run("narrator.audio.src.startsWith('blob:') && narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "math narration must finish as one continuous clip");
     const timing = await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(p => ({before: p.originalDuration, after: p.duration}))");
-    assert.ok(timing.after < timing.before - .5, "continuous narration must remove substantial silence");
+    assert.ok(timing.after <= timing.before + .1, "continuous narration must not introduce long pauses");
     console.log(`Math audio: ${timing.before.toFixed(2)}s → ${timing.after.toFixed(2)}s (including all words)`);
     assert.equal(await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(async p => p.url === (await continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question'])).url)"), true, "replay reuses prepared audio");
-    for (const profile of ["bright", "soft", "original"]) {
-      await run(`document.querySelector('#voice-profile').value = '${profile}'; document.querySelector('#voice-profile').dispatchEvent(new Event('change'))`);
-      assert.equal(await run("localStorage.getItem('smartkid_voice')"), profile);
-      await run("narrator.play(['en-1-0'])");
-      assert.equal(await run("narrator.audio.playbackRate === VOICE_PROFILES[state.voice].rate"), true);
-      assert.equal(await run("narrator.audio.preservesPitch === VOICE_PROFILES[state.voice].preservesPitch"), true);
-    }
+    assert.equal(await run("document.querySelector('#voice-profile')"), null);
+    assert.equal(await run("narrator.audio.playbackRate"), 1, "fixed voice must not be pitch-shifted or sped up");
+    const invalidRecordings = await run(`(async () => {
+      const invalid = [];
+      for (const track of audioTracks()) {
+        try {
+          const recording = await continuousAudio.recording(track.id);
+          if (recording.samples.length < 2400 || !recording.samples.some(sample => Math.abs(sample) > .01)) invalid.push(track.id);
+        } catch { invalid.push(track.id); }
+      }
+      return invalid;
+    })()`);
+    assert.deepEqual(invalidRecordings, [], "every generated narration asset must decode and contain audible samples");
     await run("narrator.play(['hello']); window.OfflineDecoder = window.OfflineAudioContext; window.OfflineAudioContext = undefined; window.LegacyOfflineDecoder = window.webkitOfflineAudioContext; window.webkitOfflineAudioContext = undefined; narrator.play(['n-2'])");
-    for (let n = 0; n < 40 && !(await run("narrator.audio.src.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1")); n++) {
+    for (let n = 0; n < 40 && !(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1")); n++) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    assert.equal(await run("narrator.audio.src.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1"), true, "old browsers retain original MP3 playback");
+    assert.equal(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1"), true, "old browsers retain original MP3 playback");
     await run("window.OfflineAudioContext = window.OfflineDecoder; window.webkitOfflineAudioContext = window.LegacyOfflineDecoder; narrator.play(['n-2'])");
     assert.equal(await run("document.querySelector('#sound-status').textContent.includes('声音已开启')"), true);
     await run("document.querySelector('#sound-button').click()");
@@ -117,13 +125,14 @@ async function main() {
     for (const subject of ["zh", "math", "en"]) {
       for (const level of [1, 2, 3]) {
         for (const count of [10, 20, 30]) {
-          await run(`renderHome(); document.querySelector('[data-subject="${subject}"]').click(); document.querySelector('[data-level="${level}"]').click(); document.querySelector('[data-count="${count}"]').click(); document.querySelector('#start-button').click()`);
+          await run(`renderHome(); document.querySelector('[data-subject="${subject}"]').click(); document.querySelector('[data-level="${level}"]').click(); document.querySelector('[data-count="${count === 30 ? "custom" : count}"]').click(); document.querySelector('#custom-count').value = '30'; document.querySelector('#start-button').click()`);
           assert.equal(await run("state.items.length"), count);
           assert.equal(await run("document.querySelector('#lesson-progress').textContent"), `1 / ${count}`);
           if (subject === "math") {
             assert.equal(await run("state.items.every(q => q.a >= 0 && q.b > 0 && q.a <= state.level * 10 && q.b <= state.level * 10 && q.answer >= 0 && q.answer <= state.level * 10 && q.answer === (q.op === '+' ? q.a + q.b : q.a - q.b))"), true);
             assert.equal(await run("new Set(state.items.map(q => `${q.a}${q.op}${q.b}`)).size"), count, "math questions must not repeat");
           } else {
+            assert.equal(await run("new Set(state.items.map(item => item.word)).size"), count, "words must not repeat by default");
             assert.equal(await run("document.querySelector('#lesson-content svg').getAttribute('role')"), "img");
             assert.equal(await run("document.querySelector('#explain-button').hidden"), true);
           }
@@ -140,6 +149,54 @@ async function main() {
         }
       }
     }
+    await run("renderHome(); document.querySelector('[data-subject=zh]').click(); document.querySelector('[data-count=custom]').click(); document.querySelector('#custom-count').value = '31'; document.querySelector('#start-button').click()");
+    assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
+    assert.equal(await run("document.querySelector('#settings-error').textContent.includes('30')"), true, "oversized unique lessons must be explained, not silently repeated");
+    await run("document.querySelector('#allow-repeat').click()");
+    assert.equal(await run("document.querySelector('#repeat-options').hidden"), false);
+    await run("document.querySelector('[data-repeat=\"0.3\"]').click(); document.querySelector('#custom-count').value = '40'; document.querySelector('#start-button').click()");
+    assert.equal(await run("state.items.length"), 40);
+    assert.equal(await run("new Set(state.items.map(item => item.word)).size"), 28);
+    await run("renderHome(); document.querySelector('#allow-repeat').click()");
+    assert.equal(await run("document.querySelector('#repeat-options').hidden"), true);
+    await run("document.querySelector('[data-subject=math]').click(); document.querySelector('[data-level=\"3\"]').click(); document.querySelector('#custom-range').value = '37'; document.querySelector('#custom-count').value = '17'; document.querySelector('#start-button').click()");
+    assert.equal(await run("state.items.length"), 17);
+    assert.equal(await run("state.limit"), 37);
+    assert.equal(await run("state.items.every(q => q.a <= 37 && q.b <= 37 && q.answer <= 37 && q.answer >= 0)"), true);
+    for (const value of ["0", "101", "2.5", ""]) {
+      await run(`renderHome(); document.querySelector('#custom-range').value = '${value}'; document.querySelector('#start-button').click()`);
+      assert.equal(await run("document.querySelector('#screen-home').classList.contains('active') && document.querySelector('#settings-error').textContent.includes('整数')"), true);
+    }
+    await run("document.querySelector('#custom-range').value = '1'; document.querySelector('#custom-count').value = '3'; document.querySelector('#start-button').click()");
+    assert.equal(await run("document.querySelector('#settings-error').textContent.includes('只有 2')"), true);
+    for (const object of await run("COUNTING_OBJECTS.map(item => ({id:item.id, name:item.name, emoji:item.emoji}))")) {
+      await run(`document.querySelector('#custom-range').value = '37'; document.querySelector('#custom-count').value = '10'; document.querySelector('[data-object="${object.id}"]').click(); document.querySelector('#start-button').click(); state.items[0] = {a:2,b:3,op:'+',answer:5}; renderLesson(); document.querySelector('#explain-button').click()`);
+      assert.equal(await run(`document.querySelector('#explain-text').textContent.includes('${object.name}')`), true);
+      assert.equal(await run(`[...document.querySelectorAll('.star-token')].every(b => b.textContent.includes('${object.emoji}'))`), true);
+      await run("renderHome()");
+    }
+    await run("document.querySelector('[data-subject=songs]').click()");
+    assert.equal(await run("document.querySelector('#learning-settings').hidden"), true);
+    assert.equal(await run("document.querySelector('#song-list').textContent.includes('暂未找到')"), true);
+    await run("document.querySelector('[data-song-lang=en]').click()");
+    assert.equal(await run("document.querySelectorAll('#song-list button').length"), 3);
+    for (let index = 0; index < 3; index++) {
+      await run(`document.querySelectorAll('#song-list button')[${index}].click()`);
+      for (let n = 0; n < 50 && !(await run("songAudio.currentTime > .1 && !songAudio.paused")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      assert.equal(await run("songAudio.currentTime > .1 && songAudio.error === null && !songAudio.paused"), true, "licensed song must actually play");
+      assert.equal(await run("document.querySelector('#song-source').textContent.includes(SONGS.en[" + index + "].license)"), true);
+      assert.equal(await run("document.querySelector('#song-license').href === SONGS.en[" + index + "].licenseUrl"), true);
+    }
+    await run("document.querySelector('#sound-button').click()");
+    assert.equal(await run("songAudio.paused && !narrator.enabled && narrator.audio.paused"), true, "global mute must stop songs without starting narration");
+    await run("document.querySelectorAll('#song-list button')[0].click(); document.querySelector('#song-stop').click()");
+    assert.equal(await run("songAudio.paused"), true);
+    await run("document.querySelectorAll('#song-list button')[0].click(); document.querySelector('[data-subject=math]').click()");
+    assert.equal(await run("songAudio.paused"), true, "changing subject must stop songs");
+    await run("document.querySelector('[data-subject=songs]').click(); document.querySelectorAll('#song-list button')[0].click(); document.querySelector('#home-button').click()");
+    assert.equal(await run("songAudio.paused"), true, "home navigation must stop songs");
     await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('[data-level=\"1\"]').click(); document.querySelector('#start-button').click()");
     const stars = await run("state.stars");
     await run("[...document.querySelectorAll('.answer')].find(b => Number(b.textContent) !== currentQuestion().answer).click()");
@@ -161,7 +218,7 @@ async function main() {
     await run("narrator.enabled = false; updateSound(); renderHome()");
     for (const width of [320, 360, 1280]) {
       await send("Emulation.setDeviceMetricsOverride", { width, height: 740, deviceScaleFactor: 2, mobile: width < 700 });
-      for (const expression of ["renderHome()", "renderCharSelect('screen-home')", "renderLesson()", "state.explanationStep = 1; renderExplanation()", "show('screen-results')"]) {
+      for (const expression of ["renderHome()", "state.subject = 'songs'; renderHome(); state.songLang = 'en'; renderSongs()", "state.subject = 'math'; renderHome()", "renderCharSelect('screen-home')", "renderLesson()", "state.explanationStep = 1; renderExplanation()", "show('screen-results')"]) {
         await run(expression);
         assert.equal(await run("document.documentElement.scrollWidth <= window.innerWidth"), true, `${width}px horizontal overflow: ${expression}`);
       }
@@ -177,12 +234,14 @@ async function main() {
       const lessonImage = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
       fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR, "smartkid-english.png"), Buffer.from(lessonImage.data, "base64"));
     }
-    console.log("OK: continuous audio, reduced silence, cached replay, three voice presets, MP3 fallback, autoplay handling, 10 themes, 27 lessons, math solutions, responsive layouts");
+    console.log("OK: fixed narration, continuous audio, cached replay, MP3 fallback, autoplay handling, 10 themes, custom lessons/ranges/repeats, 10 explanation objects, licensed song playback, responsive layouts");
   } finally {
     if (closeBrowser && ws?.readyState === WebSocket.OPEN) await closeBrowser();
     ws?.close();
-    chrome.kill();
-    if (chrome.exitCode === null) await new Promise(resolve => chrome.once("exit", resolve));
+    if (chrome.exitCode === null) await new Promise(resolve => {
+      const timer = setTimeout(() => chrome.kill(), 5000);
+      chrome.once("exit", () => { clearTimeout(timer); resolve(); });
+    });
     server.close();
     fs.rmSync(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
   }

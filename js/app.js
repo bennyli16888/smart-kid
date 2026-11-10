@@ -16,9 +16,9 @@ function stored(key, fallback) {
   try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
 }
 const state = {
-  subject: "zh", level: 1, count: 10,
+  subject: "zh", level: 1, count: 10, countMode: "10", repeat: false, ratio: .1,
+  limit: 10, objectId: "candy", songLang: "zh",
   charId: getCharacter(stored("smartkid_char", "dino")).id,
-  voice: Object.hasOwn(VOICE_PROFILES, stored("smartkid_voice", "original")) ? stored("smartkid_voice", "original") : "original",
   stars: Math.max(0, Number(stored("smartkid_stars", "0")) || 0),
   items: [], index: 0, completed: new Set(), explanationStep: 0, returnScreen: "screen-home"
 };
@@ -26,7 +26,6 @@ function save() {
   try {
     localStorage.setItem("smartkid_char", state.charId);
     localStorage.setItem("smartkid_stars", String(state.stars));
-    localStorage.setItem("smartkid_voice", state.voice);
   } catch { /* Learning still works when browser storage is unavailable. */ }
 }
 
@@ -37,16 +36,9 @@ const narrator = {
     this.sequence++;
     this.audio.pause();
     if (this.cancelTrack) this.cancelTrack();
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     if ($("#sound-status")?.textContent.startsWith("正在")) {
       $("#sound-status").textContent = "朗读已暂停，点“听一听”可以再听一次。";
     }
-  },
-  applyVoice() {
-    const profile = VOICE_PROFILES[state.voice];
-    this.audio.playbackRate = profile.rate;
-    this.audio.preservesPitch = profile.preservesPitch;
-    this.audio.webkitPreservesPitch = profile.preservesPitch;
   },
   playSource(url, timeout = 15000) {
     return new Promise((resolve, reject) => {
@@ -62,7 +54,6 @@ const narrator = {
       this.audio.onended = () => finish();
       this.audio.onerror = () => finish(new Error("audio-load"));
       this.audio.src = url;
-      this.applyVoice();
       timer = setTimeout(() => finish(new Error("audio-timeout")), timeout);
       this.audio.play().catch(finish);
     });
@@ -88,7 +79,7 @@ const narrator = {
         const phrase = await continuousAudio.prepare(ids);
         if (sequence !== this.sequence) return;
         $("#sound-status").textContent = `正在读：${ids.map(id => tracks.get(id).text).join("")}`;
-        await this.playSource(phrase.url, Math.ceil(phrase.duration * 1000 / VOICE_PROFILES[state.voice].rate) + 15000);
+        await this.playSource(phrase.url, Math.ceil(phrase.duration * 1000) + 15000);
         if (sequence === this.sequence) $("#sound-status").textContent = "声音已开启。听不到时，请检查设备音量或静音模式。";
         return;
       } catch (error) {
@@ -105,7 +96,7 @@ const narrator = {
       const track = tracks.get(id);
       $("#sound-status").textContent = `正在读：${track.text}`;
       try {
-        await this.playSource(`audio/${id}.mp3`);
+        await this.playSource(`audio/${id}.mp3?v=0.3`);
       } catch (error) {
         if (sequence !== this.sequence) return;
         this.audio.pause();
@@ -113,22 +104,7 @@ const narrator = {
           $("#sound-status").textContent = "浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。";
           return;
         }
-        const voices = "speechSynthesis" in window ? window.speechSynthesis.getVoices() : [];
-        const voice = voices.find(v => v.lang.toLowerCase().startsWith(track.lang.startsWith("zh") ? "zh" : "en"));
-        if (voice && ids.length === 1) {
-          const utterance = new SpeechSynthesisUtterance(track.text);
-          utterance.voice = voice;
-          utterance.lang = track.lang;
-          utterance.rate = .8 * VOICE_PROFILES[state.voice].rate;
-          utterance.pitch = VOICE_PROFILES[state.voice].preservesPitch ? 1 : VOICE_PROFILES[state.voice].rate;
-          utterance.onerror = () => {
-            if (sequence === this.sequence) $("#sound-status").textContent = "读音播放失败，请检查网络并重新加载页面。";
-          };
-          window.speechSynthesis.speak(utterance);
-          $("#sound-status").textContent = "音频未加载，正在使用设备读音。";
-        } else {
-          $("#sound-status").textContent = "读音未加载，请检查网络并刷新。文字和图片仍可使用。";
-        }
+        $("#sound-status").textContent = "读音未加载，请检查网络并刷新。文字和图片仍可使用。";
         return;
       }
     }
@@ -161,6 +137,7 @@ function applyTheme() {
 }
 function show(screenId) {
   narrator.stop();
+  stopSong();
   document.querySelectorAll(".screen").forEach(el => el.classList.toggle("active", el.id === screenId));
   window.scrollTo({ top: 0, behavior: "instant" });
 }
@@ -175,6 +152,14 @@ function renderSettings() {
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
+  const songs = state.subject === "songs";
+  $("#learning-settings").hidden = songs;
+  $("#song-settings").hidden = !songs;
+  $("#settings-error").textContent = "";
+  if (songs) { renderSongs(); return; }
+  const math = state.subject === "math";
+  $("#level-heading").textContent = math ? "🔢 数字范围" : "🌱 选个难度";
+  $("#level-row").setAttribute("aria-label", math ? "数字范围" : "难度");
   $("#level-row").innerHTML = SUBJECTS[state.subject].levels.map((name, index) =>
     `<button data-level="${index + 1}" aria-pressed="${state.level === index + 1}" class="${state.level === index + 1 ? "selected" : ""}">${name}</button>`
   ).join("");
@@ -182,14 +167,78 @@ function renderSettings() {
     button.onclick = () => { state.level = Number(button.dataset.level); renderSettings(); };
   });
   document.querySelectorAll("[data-count]").forEach(button => {
-    const selected = Number(button.dataset.count) === state.count;
+    const selected = button.dataset.count === state.countMode;
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
-    button.textContent = `${button.dataset.count} ${state.subject === "math" ? "题" : "次"}`;
+    button.textContent = button.dataset.count === "custom" ? "自定义" : `${button.dataset.count} ${math ? "题" : "个"}`;
   });
-  $("#lesson-note").textContent = state.subject === "math"
-    ? `生成 ${state.count} 道不同的加减法。不会做？小伙伴用星星讲解。`
-    : `每个难度有 10 个字词，学习 ${state.count} 次；20、30 次会重复巩固。`;
+  $("#custom-range-field").hidden = !math || state.level !== 3;
+  $("#custom-count-field").hidden = state.countMode !== "custom";
+  $("#object-settings").hidden = !math;
+  $("#repeat-settings").hidden = math;
+  $("#allow-repeat").checked = state.repeat;
+  $("#repeat-options").hidden = !state.repeat;
+  document.querySelectorAll("[data-repeat]").forEach(button => {
+    const selected = Number(button.dataset.repeat) === state.ratio;
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  $("#object-row").innerHTML = COUNTING_OBJECTS.map(item =>
+    `<button data-object="${item.id}" aria-pressed="${item.id === state.objectId}" class="${item.id === state.objectId ? "selected" : ""}"><span>${item.emoji}</span>${item.name}</button>`
+  ).join("");
+  $("#object-row").querySelectorAll("button").forEach(button => {
+    button.onclick = () => { state.objectId = button.dataset.object; renderSettings(); };
+  });
+  $("#lesson-note").textContent = math
+    ? "数字和结果均不超过所选范围，没有负数。每次生成不同题目，可用喜欢的实物分步讲解。"
+    : `本难度有 ${WORDS[state.subject][state.level - 1].length} 个字词，${state.subject === "zh" ? "语文" : "英语"}共 90 个。${state.repeat ? `重复比例 ${Math.round(state.ratio * 100)}%，其余为不同字词。` : "默认不重复；数量超过材料时会提示，不会偷偷重复。"} `;
+}
+const songAudio = new Audio();
+songAudio.preload = "none";
+let songSequence = 0;
+function stopSong() {
+  songSequence++;
+  songAudio.pause();
+}
+function renderSongs() {
+  stopSong();
+  $("#song-player").hidden = true;
+  const songs = SONGS[state.songLang];
+  document.querySelectorAll("[data-song-lang]").forEach(button => {
+    const lang = button.dataset.songLang;
+    button.textContent = `${lang === "zh" ? "中文儿歌" : "英文儿歌"} · ${SONGS[lang].length}首`;
+    button.classList.toggle("selected", lang === state.songLang);
+    button.setAttribute("aria-pressed", String(lang === state.songLang));
+  });
+  $("#song-list").innerHTML = "";
+  if (!songs.length) {
+    $("#song-list").textContent = "暂未找到可核实公开分发授权的中文经典儿歌演唱录音，先不收录。";
+  }
+  songs.forEach((song, index) => {
+    const button = document.createElement("button");
+    button.textContent = `${index + 1}. ${song.title}`;
+    button.onclick = async () => {
+      narrator.stop();
+      stopSong();
+      const sequence = songSequence;
+      narrator.enabled = true;
+      updateSound();
+      $("#song-player").hidden = false;
+      $("#song-title").textContent = song.title;
+      $("#song-source").textContent = `${song.author} · ${song.license} · ${song.changes}`;
+      $("#song-link").href = song.source;
+      $("#song-license").href = song.licenseUrl;
+      $("#song-status").textContent = "正在准备儿歌…";
+      songAudio.src = song.file;
+      try {
+        await songAudio.play();
+        if (sequence === songSequence && !songAudio.paused) $("#song-status").textContent = "正在播放，点击停止可暂停。";
+      } catch {
+        if (sequence === songSequence) $("#song-status").textContent = "儿歌未能播放，请重试并检查音量、网络；也可查看来源页面。";
+      }
+    };
+    $("#song-list").appendChild(button);
+  });
 }
 function renderCharSelect(returnScreen) {
   state.returnScreen = returnScreen;
@@ -207,7 +256,16 @@ function renderCharSelect(returnScreen) {
   show("screen-chars");
 }
 function startLesson() {
-  state.items = generateLesson(state.subject, state.level, state.count);
+  state.count = state.countMode === "custom" ? Number($("#custom-count").value) : Number(state.countMode);
+  state.limit = state.level === 3 ? Number($("#custom-range").value) : state.level * 10;
+  try {
+    state.items = generateLesson(state.subject, state.level, state.count, {
+      repeat: state.repeat, ratio: state.ratio, limit: state.limit
+    });
+  } catch (error) {
+    $("#settings-error").textContent = error.message;
+    return;
+  }
   state.index = 0;
   state.completed = new Set();
   renderLesson();
@@ -220,7 +278,7 @@ function questionTracks() {
 function renderLesson() {
   show("screen-lesson");
   renderCompanions();
-  $("#lesson-title").textContent = `${SUBJECTS[state.subject].name} · ${SUBJECTS[state.subject].levels[state.level - 1]}`;
+  $("#lesson-title").textContent = `${SUBJECTS[state.subject].name} · ${state.subject === "math" ? `${state.limit}以内` : SUBJECTS[state.subject].levels[state.level - 1]}`;
   $("#lesson-progress").textContent = `${state.index + 1} / ${state.items.length}`;
   $("#progress-bar").max = state.items.length;
   $("#progress-bar").value = state.index + 1;
@@ -231,11 +289,13 @@ function renderLesson() {
   $("#answers").innerHTML = "";
   const q = currentQuestion();
   const math = state.subject === "math";
+  const object = COUNTING_OBJECTS.find(item => item.id === state.objectId);
   $("#explain-button").hidden = !math;
+  $("#explain-button").textContent = `${object.emoji} 用${object.name}讲给我听`;
   $("#next-button").disabled = math && !state.completed.has(state.index);
   if (math) {
     $("#lesson-content").innerHTML = `<p class="eyebrow">小伙伴陪你加一加、减一减</p><div class="equation">${q.a} ${q.op} ${q.b} = ?</div><p class="subtitle">${q.op === "+" ? "拿来一些，合在一起。" : "拿走一些，看看还剩多少。"}</p>`;
-    answerChoices(q, state.level * 10).forEach(answer => {
+    answerChoices(q, state.limit).forEach(answer => {
       const button = document.createElement("button");
       button.className = "answer";
       button.textContent = answer;
@@ -255,7 +315,7 @@ function renderLesson() {
           if (narrator.enabled) narrator.play(["praise"]);
         } else {
           button.classList.add("wrong");
-          $("#feedback").textContent = "🌱 没关系，点下面的星星解法，数一数再试。";
+          $("#feedback").textContent = `🌱 没关系，点下面的${object.name}解法，数一数再试。`;
           if (narrator.enabled) narrator.play(["retry"]);
         }
       };
@@ -295,16 +355,18 @@ function renderExplanation() {
   const q = currentQuestion();
   const step = state.explanationStep;
   const adding = q.op === "+";
+  const object = COUNTING_OBJECTS.find(item => item.id === state.objectId);
+  const objectTrack = `object-${object.id}`;
   let text, ids;
   if (step === 0) {
-    text = `① 先放好 ${q.a} 颗星星。点一点，每颗星星都会报数。`;
-    ids = ["first", `n-${q.a}`, "stars"];
+    text = `① 先放好 ${q.a} ${object.unit}${object.name}。点一点，每${object.unit}都会报数。`;
+    ids = ["first", `n-${q.a}`, objectTrack];
   } else if (step === 1) {
-    text = adding ? `② 再拿来 ${q.b} 颗，带彩色底的是新来的。把它们合在一起！` : `② 拿走 ${q.b} 颗。打叉的星星拿走了，不用数它们。`;
-    ids = [adding ? "bring" : "take", `n-${q.b}`, "stars", adding ? "together" : "left"];
+    text = adding ? `② 再拿来 ${q.b} ${object.unit}${object.name}，带彩色底的是新来的。把它们合在一起！` : `② 拿走 ${q.b} ${object.unit}${object.name}。打叉的已经拿走，不用数它们。`;
+    ids = [adding ? "bring" : "take", `n-${q.b}`, objectTrack, adding ? "together" : "left"];
   } else {
-    text = `③ ${adding ? "一共有" : "还剩"} ${q.answer} 颗！${q.a} ${q.op} ${q.b} = ${q.answer}。${q.answer === 0 ? "一颗也没有了，就是 0。" : "再点星星，一起数一次。"} `;
-    ids = [adding ? "total" : "remains", `n-${q.answer}`, "stars", `n-${q.a}`, adding ? "plus" : "minus", `n-${q.b}`, "equals", `n-${q.answer}`];
+    text = `③ ${adding ? "一共有" : "还剩"} ${q.answer} ${object.unit}${object.name}！${q.a} ${q.op} ${q.b} = ${q.answer}。${q.answer === 0 ? "一个也没有了，就是 0。" : "再点一点，一起数一次。"} `;
+    ids = [adding ? "total" : "remains", `n-${q.answer}`, objectTrack, `n-${q.a}`, adding ? "plus" : "minus", `n-${q.b}`, "equals", `n-${q.answer}`];
   }
   $("#explanation").hidden = false;
   $("#explain-text").textContent = text;
@@ -315,16 +377,16 @@ function renderExplanation() {
     const taken = step > 0 && !adding && i >= q.answer;
     const button = document.createElement("button");
     button.className = `star-token${taken ? " taken" : ""}${step > 0 && adding && i >= q.a ? " added" : ""}`;
-    button.innerHTML = `⭐<small>${i + 1}</small>`;
+    button.innerHTML = `${object.emoji}<small>${i + 1}</small>`;
     button.disabled = taken;
-    button.setAttribute("aria-label", taken ? "已拿走的星星" : `第 ${i + 1} 颗星星`);
+    button.setAttribute("aria-label", taken ? `已拿走的${object.name}` : `第 ${i + 1} ${object.unit}${object.name}`);
     button.onclick = () => {
       button.classList.add("counted");
       narrator.play([`n-${i + 1}`]);
     };
     $("#star-scene").appendChild(button);
   }
-  if (number === 0) $("#star-scene").textContent = "0 · 一颗也没有";
+  if (number === 0) $("#star-scene").textContent = "0 · 一个也没有";
   if (narrator.enabled) narrator.play(ids);
   continuousAudio.preload(ids);
 }
@@ -337,15 +399,10 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#finish-button").onclick = renderHome;
   $("#pick-character").onclick = () => renderCharSelect("screen-home");
   $("#lesson-character").onclick = () => renderCharSelect("screen-lesson");
-  $("#sound-test").onclick = () => narrator.play(["hello"]);
-  $("#voice-profile").value = state.voice;
-  $("#voice-profile").onchange = event => {
-    state.voice = event.target.value;
-    save();
-    narrator.play(["hello"]);
-  };
+  $("#sound-test").onclick = () => { stopSong(); narrator.play(["hello"]); };
   continuousAudio.preload(["hello"]);
   $("#sound-button").onclick = () => {
+    stopSong();
     if (!narrator.enabled) narrator.play(["hello"]);
     else {
       narrator.stop();
@@ -355,11 +412,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   document.querySelectorAll("[data-subject]").forEach(button => {
-    button.onclick = () => { state.subject = button.dataset.subject; renderSettings(); };
+    button.onclick = () => { stopSong(); state.subject = button.dataset.subject; renderSettings(); };
   });
   document.querySelectorAll("[data-count]").forEach(button => {
-    button.onclick = () => { state.count = Number(button.dataset.count); renderSettings(); };
+    button.onclick = () => { state.countMode = button.dataset.count; renderSettings(); };
   });
+  $("#allow-repeat").onchange = event => { state.repeat = event.target.checked; renderSettings(); };
+  document.querySelectorAll("[data-repeat]").forEach(button => {
+    button.onclick = () => { state.ratio = Number(button.dataset.repeat); renderSettings(); };
+  });
+  document.querySelectorAll("[data-song-lang]").forEach(button => {
+    button.onclick = () => { state.songLang = button.dataset.songLang; renderSongs(); };
+  });
+  $("#song-stop").onclick = () => { stopSong(); $("#song-status").textContent = "儿歌已暂停，点曲目可重新播放。"; };
+  songAudio.onended = () => { $("#song-status").textContent = "这首儿歌唱完啦！"; };
+  songAudio.onerror = () => { $("#song-status").textContent = "儿歌加载失败，请检查网络或查看来源页面。"; };
   $("#start-button").onclick = startLesson;
   $("#again-button").onclick = startLesson;
   $("#listen-button").onclick = () => narrator.play(questionTracks());
@@ -372,5 +439,5 @@ document.addEventListener("DOMContentLoaded", () => {
     state.explanationStep = (state.explanationStep + 1) % 3;
     renderExplanation();
   };
-  document.addEventListener("visibilitychange", () => { if (document.hidden) narrator.stop(); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { narrator.stop(); stopSong(); } });
 });
