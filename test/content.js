@@ -3,7 +3,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 const assert = require("node:assert/strict");
 const context = vm.createContext({});
-for (const file of ["data", "pictures", "songs"]) vm.runInContext(fs.readFileSync(path.join(__dirname, `../js/${file}.js`), "utf8"), context);
+for (const file of ["data", "pictures"]) vm.runInContext(fs.readFileSync(path.join(__dirname, `../js/${file}.js`), "utf8"), context);
 const evaluate = expression => vm.runInContext(expression, context);
 for (const level of [1, 2, 3]) {
   const pool = evaluate(`mathPool(${level * 10})`);
@@ -57,8 +57,4 @@ for (const track of evaluate("audioTracks()")) {
   assert.equal(entry?.text, track.text, `locally generated narration required: ${track.id}`);
   assert.equal(entry.sha256, require("node:crypto").createHash("sha256").update(bytes).digest("hex"), track.id);
 }
-for (const song of evaluate("Object.values(SONGS).flat()")) {
-  assert.ok(fs.statSync(path.join(__dirname, "..", song.file)).size > 10000);
-  assert.ok(song.author && song.license && song.licenseUrl && song.source && song.checked && song.changes);
-}
-console.log("OK: arithmetic bounds, expanded vocabulary, exact repeat ratios, custom sizes/ranges, generated narration provenance, licensed song assets");
+console.log("OK: arithmetic bounds, expanded vocabulary, exact repeat ratios, custom sizes/ranges, generated narration provenance");

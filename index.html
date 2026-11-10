@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f5fcf4">
   <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
   <title>萌学园 · 和小伙伴一起学</title>
-  <link rel="stylesheet" href="css/style.css?v=0.3.1">
+  <link rel="stylesheet" href="css/style.css?v=0.3.2">
 </head>
 <body>
   <main class="app">
@@ -25,7 +25,6 @@
         <button class="subject-button" data-subject="zh"><span class="subject-icon">文</span><strong>语文</strong><small>看图认字 · 听听读音</small></button>
         <button class="subject-button" data-subject="math"><span class="subject-icon">+ −</span><strong>数学</strong><small>加一加 · 减一减</small></button>
         <button class="subject-button" data-subject="en"><span class="subject-icon">ABC</span><strong>英语</strong><small>生活图片 · 单词读音</small></button>
-        <button class="subject-button" data-subject="songs"><span class="subject-icon">♫</span><strong>儿歌</strong><small>中文儿歌 · 英文儿歌</small></button>
       </div>
       <div id="learning-settings" class="settings panel">
         <h2 id="level-heading">🌱 选个难度</h2>
@@ -33,10 +32,6 @@
         <label id="custom-range-field" class="input-field" hidden>最大数字（1—100）
           <input id="custom-range" type="number" min="1" max="100" step="1" value="30" inputmode="numeric">
         </label>
-        <div id="object-settings" hidden>
-          <h2>🍬 用什么讲解？</h2>
-          <div id="object-row" class="object-grid" role="group" aria-label="讲解实物"></div>
-        </div>
         <h2>🎒 这次学多少？</h2>
         <div id="count-row" class="choice-row" role="group" aria-label="题量">
           <button data-count="10">10</button><button data-count="20">20</button><button data-count="custom">自定义</button>
@@ -58,22 +53,6 @@
         <p id="settings-error" role="alert"></p>
         <button id="start-button" class="primary wide">▶ 开始学习</button>
       </div>
-      <div id="song-settings" class="settings panel" hidden>
-        <h2>🎵 选一首经典儿歌</h2>
-        <div id="song-language" class="choice-row" role="group" aria-label="儿歌语言">
-          <button data-song-lang="zh">中文儿歌</button><button data-song-lang="en">英文儿歌</button>
-        </div>
-        <p class="subtitle">只收录已核实允许公开分发的演唱录音，不为凑数量加入授权不明的歌曲。录音随网站提供，无外部播放器或广告。</p>
-        <div id="song-list" class="song-list"></div>
-        <div id="song-player" hidden>
-          <h2 id="song-title"></h2>
-          <p id="song-status" class="subtitle" role="status" aria-live="polite"></p>
-          <p id="song-source" class="subtitle"></p>
-          <a id="song-link" class="source-link" target="_blank" rel="noopener noreferrer">录音来源与授权 ↗</a>
-          <a id="song-license" class="source-link" target="_blank" rel="noopener noreferrer">查看许可条款 ↗</a>
-          <button id="song-stop" class="secondary wide">■ 停止播放</button>
-        </div>
-      </div>
       <p class="parent-note">给家长：无需按年龄选择，从简单开始。可以随时休息，不计时、不催促。</p>
     </section>
 
@@ -91,7 +70,14 @@
         <p id="sound-status" class="subtitle" role="status" aria-live="polite" hidden></p>
         <div id="answers" class="answers"></div>
         <p id="feedback" role="status" aria-live="polite"></p>
-        <button id="explain-button" class="secondary">🍬 用实物讲给我听</button>
+        <div id="explain-actions" class="explain-actions" hidden>
+          <button id="explain-button" class="secondary">🍬 讲给我听</button>
+          <button id="change-object" class="mini" aria-expanded="false" aria-controls="object-settings">换讲解物品</button>
+        </div>
+        <div id="object-settings" class="object-picker" hidden>
+          <p class="eyebrow">选一种喜欢的讲解物品</p>
+          <div id="object-row" class="object-grid" role="group" aria-label="讲解实物"></div>
+        </div>
         <div id="explanation" class="explanation" hidden>
           <p id="explain-text"></p><div id="star-scene" class="star-scene"></div>
           <button id="explain-next" class="secondary">▶ 下一步</button>
@@ -105,10 +91,9 @@
     </section>
   </main>
   <script src="js/data.js?v=0.3"></script>
-  <script src="js/songs.js?v=0.3"></script>
   <script src="js/pictures.js?v=0.3"></script>
   <script src="js/characters.js?v=0.2"></script>
   <script src="js/audio.js?v=0.3"></script>
-  <script src="js/app.js?v=0.3.1"></script>
+  <script src="js/app.js?v=0.3.2"></script>
 </body>
 </html>

@@ -1,15 +1,15 @@
 const $ = selector => document.querySelector(selector);
 const THEMES = {
-  dino: { paper: "#f5fcf4", grid: "#dcebd9", ink: "#354d43", muted: "#587568", accent: "#ceeab8", strong: "#5f9b6d", secondary: "#e6e5fa", highlight: "#fff0bc", song: "#f7d8df", world: "森林课堂", symbol: "🌿" },
-  bunny: { paper: "#fff7fb", grid: "#f6dce8", ink: "#583756", muted: "#8b5d80", accent: "#ffd2e3", strong: "#bd4b81", secondary: "#e7defa", highlight: "#fff0be", song: "#d3eee2", world: "花园课堂", symbol: "🌸" },
-  cat: { paper: "#fffbf2", grid: "#f1e5cd", ink: "#67462f", muted: "#8b684d", accent: "#ffe2a8", strong: "#aa722f", secondary: "#f8dce6", highlight: "#e0efcf", song: "#dce5fa", world: "阳光课堂", symbol: "☀️" },
-  dog: { paper: "#fcf8f1", grid: "#e9dfcf", ink: "#604530", muted: "#82644d", accent: "#f1d3ad", strong: "#9b683d", secondary: "#dce9f7", highlight: "#fff0bf", song: "#eadcf4", world: "小屋课堂", symbol: "🏡" },
-  bear: { paper: "#faf6f0", grid: "#e6d9ca", ink: "#594233", muted: "#7b6150", accent: "#dcc5b0", strong: "#8c6245", secondary: "#e1e7cf", highlight: "#fbe7c2", song: "#e1ddf5", world: "蜂蜜课堂", symbol: "🍯" },
-  fox: { paper: "#fff8f2", grid: "#f5deca", ink: "#663f39", muted: "#926757", accent: "#ffd1af", strong: "#b16a43", secondary: "#e9ddf4", highlight: "#fff0c7", song: "#d5eaf2", world: "秋叶课堂", symbol: "🍂" },
-  penguin: { paper: "#f3f8ff", grid: "#dce6f9", ink: "#35486b", muted: "#59709a", accent: "#c9ddfb", strong: "#557cb5", secondary: "#d9eef0", highlight: "#ffedc2", song: "#f6dce8", world: "冰雪课堂", symbol: "❄️" },
-  panda: { paper: "#f6faf5", grid: "#dce6d7", ink: "#3d4640", muted: "#68776a", accent: "#dcecc9", strong: "#62804c", secondary: "#e4e3ef", highlight: "#f3e9ce", song: "#f4dce6", world: "竹林课堂", symbol: "🎋" },
-  frog: { paper: "#f2fcfa", grid: "#d0ece7", ink: "#2e5350", muted: "#4b7873", accent: "#bcebdc", strong: "#36887a", secondary: "#dae6fa", highlight: "#f8f1c1", song: "#f7dce7", world: "池塘课堂", symbol: "🪷" },
-  lion: { paper: "#fffbec", grid: "#f3e5bf", ink: "#634c30", muted: "#8b704f", accent: "#ffe29b", strong: "#a77a2b", secondary: "#efddcf", highlight: "#e0edc6", song: "#e5ddf6", world: "草原课堂", symbol: "🌾" }
+  dino: { paper: "#f5fcf4", grid: "#dcebd9", ink: "#354d43", muted: "#587568", accent: "#ceeab8", strong: "#5f9b6d", secondary: "#e6e5fa", highlight: "#fff0bc", playful: "#f7d8df", world: "森林课堂", symbol: "🌿" },
+  bunny: { paper: "#fff7fb", grid: "#f6dce8", ink: "#583756", muted: "#8b5d80", accent: "#ffd2e3", strong: "#bd4b81", secondary: "#e7defa", highlight: "#fff0be", playful: "#d3eee2", world: "花园课堂", symbol: "🌸" },
+  cat: { paper: "#fffbf2", grid: "#f1e5cd", ink: "#67462f", muted: "#8b684d", accent: "#ffe2a8", strong: "#aa722f", secondary: "#f8dce6", highlight: "#e0efcf", playful: "#dce5fa", world: "阳光课堂", symbol: "☀️" },
+  dog: { paper: "#fcf8f1", grid: "#e9dfcf", ink: "#604530", muted: "#82644d", accent: "#f1d3ad", strong: "#9b683d", secondary: "#dce9f7", highlight: "#fff0bf", playful: "#eadcf4", world: "小屋课堂", symbol: "🏡" },
+  bear: { paper: "#faf6f0", grid: "#e6d9ca", ink: "#594233", muted: "#7b6150", accent: "#dcc5b0", strong: "#8c6245", secondary: "#e1e7cf", highlight: "#fbe7c2", playful: "#e1ddf5", world: "蜂蜜课堂", symbol: "🍯" },
+  fox: { paper: "#fff8f2", grid: "#f5deca", ink: "#663f39", muted: "#926757", accent: "#ffd1af", strong: "#b16a43", secondary: "#e9ddf4", highlight: "#fff0c7", playful: "#d5eaf2", world: "秋叶课堂", symbol: "🍂" },
+  penguin: { paper: "#f3f8ff", grid: "#dce6f9", ink: "#35486b", muted: "#59709a", accent: "#c9ddfb", strong: "#557cb5", secondary: "#d9eef0", highlight: "#ffedc2", playful: "#f6dce8", world: "冰雪课堂", symbol: "❄️" },
+  panda: { paper: "#f6faf5", grid: "#dce6d7", ink: "#3d4640", muted: "#68776a", accent: "#dcecc9", strong: "#62804c", secondary: "#e4e3ef", highlight: "#f3e9ce", playful: "#f4dce6", world: "竹林课堂", symbol: "🎋" },
+  frog: { paper: "#f2fcfa", grid: "#d0ece7", ink: "#2e5350", muted: "#4b7873", accent: "#bcebdc", strong: "#36887a", secondary: "#dae6fa", highlight: "#f8f1c1", playful: "#f7dce7", world: "池塘课堂", symbol: "🪷" },
+  lion: { paper: "#fffbec", grid: "#f3e5bf", ink: "#634c30", muted: "#8b704f", accent: "#ffe29b", strong: "#a77a2b", secondary: "#efddcf", highlight: "#e0edc6", playful: "#e5ddf6", world: "草原课堂", symbol: "🌾" }
 };
 
 function stored(key, fallback) {
@@ -17,7 +17,7 @@ function stored(key, fallback) {
 }
 const state = {
   subject: "zh", level: 1, count: 10, countMode: "10", repeat: false, ratio: .1,
-  limit: 10, objectId: "candy", songLang: "zh",
+  limit: 10, objectId: "candy",
   charId: getCharacter(stored("smartkid_char", "dino")).id,
   stars: Math.max(0, Number(stored("smartkid_stars", "0")) || 0),
   items: [], index: 0, completed: new Set(), explanationStep: 0, returnScreen: "screen-home"
@@ -120,7 +120,7 @@ function renderCompanions(mood = "happy") {
 }
 function applyTheme() {
   const theme = THEMES[state.charId];
-  for (const key of ["paper", "grid", "ink", "muted", "accent", "secondary", "highlight", "song"]) {
+  for (const key of ["paper", "grid", "ink", "muted", "accent", "secondary", "highlight", "playful"]) {
     document.documentElement.style.setProperty(`--${key}`, theme[key]);
   }
   document.documentElement.style.setProperty("--accent-strong", theme.strong);
@@ -132,7 +132,6 @@ function applyTheme() {
 }
 function show(screenId) {
   narrator.stop();
-  stopSong();
   document.querySelectorAll(".screen").forEach(el => el.classList.toggle("active", el.id === screenId));
   window.scrollTo({ top: 0, behavior: "instant" });
 }
@@ -147,11 +146,7 @@ function renderSettings() {
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
-  const songs = state.subject === "songs";
-  $("#learning-settings").hidden = songs;
-  $("#song-settings").hidden = !songs;
   $("#settings-error").textContent = "";
-  if (songs) { renderSongs(); return; }
   const math = state.subject === "math";
   $("#level-heading").textContent = math ? "🔢 数字范围" : "🌱 选个难度";
   $("#level-row").setAttribute("aria-label", math ? "数字范围" : "难度");
@@ -169,7 +164,6 @@ function renderSettings() {
   });
   $("#custom-range-field").hidden = !math || state.level !== 3;
   $("#custom-count-field").hidden = state.countMode !== "custom";
-  $("#object-settings").hidden = !math;
   $("#repeat-settings").hidden = math;
   $("#allow-repeat").checked = state.repeat;
   $("#repeat-options").hidden = !state.repeat;
@@ -178,61 +172,29 @@ function renderSettings() {
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
-  $("#object-row").innerHTML = COUNTING_OBJECTS.map(item =>
-    `<button data-object="${item.id}" aria-pressed="${item.id === state.objectId}" class="${item.id === state.objectId ? "selected" : ""}"><span>${item.emoji}</span>${item.name}</button>`
-  ).join("");
-  $("#object-row").querySelectorAll("button").forEach(button => {
-    button.onclick = () => { state.objectId = button.dataset.object; renderSettings(); };
-  });
   $("#lesson-note").textContent = math
     ? "数字和结果均不超过所选范围，没有负数。每次生成不同题目，可用喜欢的实物分步讲解。"
     : `本难度有 ${WORDS[state.subject][state.level - 1].length} 个字词，${state.subject === "zh" ? "语文" : "英语"}共 90 个。${state.repeat ? `重复比例 ${Math.round(state.ratio * 100)}%，其余为不同字词。` : "默认不重复；数量超过材料时会提示，不会偷偷重复。"} `;
 }
-const songAudio = new Audio();
-songAudio.preload = "none";
-let songSequence = 0;
-function stopSong() {
-  songSequence++;
-  songAudio.pause();
+function setObjectPicker(open) {
+  $("#object-settings").hidden = !open;
+  $("#change-object").setAttribute("aria-expanded", String(open));
 }
-function renderSongs() {
-  stopSong();
-  $("#song-player").hidden = true;
-  const songs = SONGS[state.songLang];
-  document.querySelectorAll("[data-song-lang]").forEach(button => {
-    const lang = button.dataset.songLang;
-    button.textContent = `${lang === "zh" ? "中文儿歌" : "英文儿歌"} · ${SONGS[lang].length}首`;
-    button.classList.toggle("selected", lang === state.songLang);
-    button.setAttribute("aria-pressed", String(lang === state.songLang));
-  });
-  $("#song-list").innerHTML = "";
-  if (!songs.length) {
-    $("#song-list").textContent = "暂未找到可核实公开分发授权的中文经典儿歌演唱录音，先不收录。";
-  }
-  songs.forEach((song, index) => {
-    const button = document.createElement("button");
-    button.textContent = `${index + 1}. ${song.title}`;
-    button.onclick = async () => {
-      narrator.stop();
-      stopSong();
-      const sequence = songSequence;
-      narrator.enabled = true;
-      updateSound();
-      $("#song-player").hidden = false;
-      $("#song-title").textContent = song.title;
-      $("#song-source").textContent = `${song.author} · ${song.license} · ${song.changes}`;
-      $("#song-link").href = song.source;
-      $("#song-license").href = song.licenseUrl;
-      $("#song-status").textContent = "正在准备儿歌…";
-      songAudio.src = song.file;
-      try {
-        await songAudio.play();
-        if (sequence === songSequence && !songAudio.paused) $("#song-status").textContent = "正在播放，点击停止可暂停。";
-      } catch {
-        if (sequence === songSequence) $("#song-status").textContent = "儿歌未能播放，请重试并检查音量、网络；也可查看来源页面。";
-      }
+function renderObjectChoices() {
+  const object = COUNTING_OBJECTS.find(item => item.id === state.objectId);
+  $("#explain-button").textContent = `${object.emoji} 讲给我听`;
+  $("#explain-button").setAttribute("aria-label", `用${object.name}讲给我听`);
+  $("#object-row").innerHTML = COUNTING_OBJECTS.map(item =>
+    `<button data-object="${item.id}" aria-pressed="${item.id === state.objectId}" class="${item.id === state.objectId ? "selected" : ""}"><span>${item.emoji}</span>${item.name}</button>`
+  ).join("");
+  $("#object-row").querySelectorAll("button").forEach(button => {
+    button.onclick = () => {
+      state.objectId = button.dataset.object;
+      renderObjectChoices();
+      setObjectPicker(false);
+      if (!$("#explanation").hidden) renderExplanation();
+      $("#change-object").focus();
     };
-    $("#song-list").appendChild(button);
   });
 }
 function renderCharSelect(returnScreen) {
@@ -284,9 +246,9 @@ function renderLesson() {
   $("#answers").innerHTML = "";
   const q = currentQuestion();
   const math = state.subject === "math";
-  const object = COUNTING_OBJECTS.find(item => item.id === state.objectId);
-  $("#explain-button").hidden = !math;
-  $("#explain-button").textContent = `${object.emoji} 用${object.name}讲给我听`;
+  $("#explain-actions").hidden = !math;
+  setObjectPicker(false);
+  if (math) renderObjectChoices();
   $("#next-button").disabled = math && !state.completed.has(state.index);
   if (math) {
     $("#lesson-content").innerHTML = `<p class="eyebrow">小伙伴陪你加一加、减一减</p><div class="equation">${q.a} ${q.op} ${q.b} = ?</div><p class="subtitle">${q.op === "+" ? "拿来一些，合在一起。" : "拿走一些，看看还剩多少。"}</p>`;
@@ -310,7 +272,7 @@ function renderLesson() {
           if (narrator.enabled) narrator.play(["praise"]);
         } else {
           button.classList.add("wrong");
-          $("#feedback").textContent = `🌱 没关系，点下面的${object.name}解法，数一数再试。`;
+          $("#feedback").textContent = "🌱 没关系，点下面的“讲给我听”，数一数再试。";
           if (narrator.enabled) narrator.play(["retry"]);
         }
       };
@@ -396,7 +358,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#lesson-character").onclick = () => renderCharSelect("screen-lesson");
   continuousAudio.preload(["hello"]);
   $("#sound-button").onclick = () => {
-    stopSong();
     if (!narrator.enabled) narrator.play(["hello"]);
     else {
       narrator.stop();
@@ -405,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   document.querySelectorAll("[data-subject]").forEach(button => {
-    button.onclick = () => { stopSong(); state.subject = button.dataset.subject; renderSettings(); };
+    button.onclick = () => { state.subject = button.dataset.subject; renderSettings(); };
   });
   document.querySelectorAll("[data-count]").forEach(button => {
     button.onclick = () => { state.countMode = button.dataset.count; renderSettings(); };
@@ -414,12 +375,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-repeat]").forEach(button => {
     button.onclick = () => { state.ratio = Number(button.dataset.repeat); renderSettings(); };
   });
-  document.querySelectorAll("[data-song-lang]").forEach(button => {
-    button.onclick = () => { state.songLang = button.dataset.songLang; renderSongs(); };
-  });
-  $("#song-stop").onclick = () => { stopSong(); $("#song-status").textContent = "儿歌已暂停，点曲目可重新播放。"; };
-  songAudio.onended = () => { $("#song-status").textContent = "这首儿歌唱完啦！"; };
-  songAudio.onerror = () => { $("#song-status").textContent = "儿歌加载失败，请检查网络或查看来源页面。"; };
   $("#start-button").onclick = startLesson;
   $("#again-button").onclick = startLesson;
   $("#listen-button").onclick = () => narrator.play(questionTracks());
@@ -427,10 +382,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#previous-button").onclick = () => {
     if (state.index > 0) { state.index--; renderLesson(); }
   };
-  $("#explain-button").onclick = () => { state.explanationStep = 0; renderExplanation(); };
+  $("#change-object").onclick = () => setObjectPicker($("#object-settings").hidden);
+  $("#explain-button").onclick = () => { setObjectPicker(false); state.explanationStep = 0; renderExplanation(); };
   $("#explain-next").onclick = () => {
     state.explanationStep = (state.explanationStep + 1) % 3;
     renderExplanation();
   };
-  document.addEventListener("visibilitychange", () => { if (document.hidden) { narrator.stop(); stopSong(); } });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) narrator.stop(); });
 });
