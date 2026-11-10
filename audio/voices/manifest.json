@@ -1,0 +1,1854 @@
+{
+  "voices": [
+    {
+      "name": "小宇",
+      "id": "XiaoYu"
+    },
+    {
+      "name": "小悠",
+      "id": "XiaoYou"
+    },
+    {
+      "name": "小夏",
+      "id": "XiaoXia"
+    },
+    {
+      "name": "小柔",
+      "id": "XiaoRou"
+    }
+  ],
+  "track_count": 305,
+  "output_template": "audio/voices/{voiceId}/{filename}",
+  "tracks": [
+    {
+      "id": "zh-1-0",
+      "text": "日。",
+      "lang": "zh-CN",
+      "filename": "zh-1-0.mp3"
+    },
+    {
+      "id": "zh-1-1",
+      "text": "月。",
+      "lang": "zh-CN",
+      "filename": "zh-1-1.mp3"
+    },
+    {
+      "id": "zh-1-2",
+      "text": "水。",
+      "lang": "zh-CN",
+      "filename": "zh-1-2.mp3"
+    },
+    {
+      "id": "zh-1-3",
+      "text": "火。",
+      "lang": "zh-CN",
+      "filename": "zh-1-3.mp3"
+    },
+    {
+      "id": "zh-1-4",
+      "text": "山。",
+      "lang": "zh-CN",
+      "filename": "zh-1-4.mp3"
+    },
+    {
+      "id": "zh-1-5",
+      "text": "人。",
+      "lang": "zh-CN",
+      "filename": "zh-1-5.mp3"
+    },
+    {
+      "id": "zh-1-6",
+      "text": "口，开口的口。",
+      "lang": "zh-CN",
+      "filename": "zh-1-6.mp3"
+    },
+    {
+      "id": "zh-1-7",
+      "text": "手。",
+      "lang": "zh-CN",
+      "filename": "zh-1-7.mp3"
+    },
+    {
+      "id": "zh-1-8",
+      "text": "目。",
+      "lang": "zh-CN",
+      "filename": "zh-1-8.mp3"
+    },
+    {
+      "id": "zh-1-9",
+      "text": "木。",
+      "lang": "zh-CN",
+      "filename": "zh-1-9.mp3"
+    },
+    {
+      "id": "zh-1-10",
+      "text": "天。",
+      "lang": "zh-CN",
+      "filename": "zh-1-10.mp3"
+    },
+    {
+      "id": "zh-1-11",
+      "text": "雨。",
+      "lang": "zh-CN",
+      "filename": "zh-1-11.mp3"
+    },
+    {
+      "id": "zh-1-12",
+      "text": "花。",
+      "lang": "zh-CN",
+      "filename": "zh-1-12.mp3"
+    },
+    {
+      "id": "zh-1-13",
+      "text": "鸟。",
+      "lang": "zh-CN",
+      "filename": "zh-1-13.mp3"
+    },
+    {
+      "id": "zh-1-14",
+      "text": "鱼，小鱼的鱼。",
+      "lang": "zh-CN",
+      "filename": "zh-1-14.mp3"
+    },
+    {
+      "id": "zh-1-15",
+      "text": "猫。",
+      "lang": "zh-CN",
+      "filename": "zh-1-15.mp3"
+    },
+    {
+      "id": "zh-1-16",
+      "text": "狗。",
+      "lang": "zh-CN",
+      "filename": "zh-1-16.mp3"
+    },
+    {
+      "id": "zh-1-17",
+      "text": "车。",
+      "lang": "zh-CN",
+      "filename": "zh-1-17.mp3"
+    },
+    {
+      "id": "zh-1-18",
+      "text": "书。",
+      "lang": "zh-CN",
+      "filename": "zh-1-18.mp3"
+    },
+    {
+      "id": "zh-1-19",
+      "text": "门。",
+      "lang": "zh-CN",
+      "filename": "zh-1-19.mp3"
+    },
+    {
+      "id": "zh-1-20",
+      "text": "衣。",
+      "lang": "zh-CN",
+      "filename": "zh-1-20.mp3"
+    },
+    {
+      "id": "zh-1-21",
+      "text": "床。",
+      "lang": "zh-CN",
+      "filename": "zh-1-21.mp3"
+    },
+    {
+      "id": "zh-1-22",
+      "text": "杯。",
+      "lang": "zh-CN",
+      "filename": "zh-1-22.mp3"
+    },
+    {
+      "id": "zh-1-23",
+      "text": "球。",
+      "lang": "zh-CN",
+      "filename": "zh-1-23.mp3"
+    },
+    {
+      "id": "zh-1-24",
+      "text": "羊。",
+      "lang": "zh-CN",
+      "filename": "zh-1-24.mp3"
+    },
+    {
+      "id": "zh-1-25",
+      "text": "牛。",
+      "lang": "zh-CN",
+      "filename": "zh-1-25.mp3"
+    },
+    {
+      "id": "zh-1-26",
+      "text": "马。",
+      "lang": "zh-CN",
+      "filename": "zh-1-26.mp3"
+    },
+    {
+      "id": "zh-1-27",
+      "text": "兔。",
+      "lang": "zh-CN",
+      "filename": "zh-1-27.mp3"
+    },
+    {
+      "id": "zh-1-28",
+      "text": "米，大米的米。",
+      "lang": "zh-CN",
+      "filename": "zh-1-28.mp3"
+    },
+    {
+      "id": "zh-1-29",
+      "text": "伞。",
+      "lang": "zh-CN",
+      "filename": "zh-1-29.mp3"
+    },
+    {
+      "id": "zh-2-0",
+      "text": "苹果。",
+      "lang": "zh-CN",
+      "filename": "zh-2-0.mp3"
+    },
+    {
+      "id": "zh-2-1",
+      "text": "香蕉。",
+      "lang": "zh-CN",
+      "filename": "zh-2-1.mp3"
+    },
+    {
+      "id": "zh-2-2",
+      "text": "小猫。",
+      "lang": "zh-CN",
+      "filename": "zh-2-2.mp3"
+    },
+    {
+      "id": "zh-2-3",
+      "text": "小狗。",
+      "lang": "zh-CN",
+      "filename": "zh-2-3.mp3"
+    },
+    {
+      "id": "zh-2-4",
+      "text": "小鱼。",
+      "lang": "zh-CN",
+      "filename": "zh-2-4.mp3"
+    },
+    {
+      "id": "zh-2-5",
+      "text": "小鸟。",
+      "lang": "zh-CN",
+      "filename": "zh-2-5.mp3"
+    },
+    {
+      "id": "zh-2-6",
+      "text": "花朵。",
+      "lang": "zh-CN",
+      "filename": "zh-2-6.mp3"
+    },
+    {
+      "id": "zh-2-7",
+      "text": "星星。",
+      "lang": "zh-CN",
+      "filename": "zh-2-7.mp3"
+    },
+    {
+      "id": "zh-2-8",
+      "text": "汽车。",
+      "lang": "zh-CN",
+      "filename": "zh-2-8.mp3"
+    },
+    {
+      "id": "zh-2-9",
+      "text": "书本。",
+      "lang": "zh-CN",
+      "filename": "zh-2-9.mp3"
+    },
+    {
+      "id": "zh-2-10",
+      "text": "牛奶。",
+      "lang": "zh-CN",
+      "filename": "zh-2-10.mp3"
+    },
+    {
+      "id": "zh-2-11",
+      "text": "鸡蛋。",
+      "lang": "zh-CN",
+      "filename": "zh-2-11.mp3"
+    },
+    {
+      "id": "zh-2-12",
+      "text": "面包。",
+      "lang": "zh-CN",
+      "filename": "zh-2-12.mp3"
+    },
+    {
+      "id": "zh-2-13",
+      "text": "皮球。",
+      "lang": "zh-CN",
+      "filename": "zh-2-13.mp3"
+    },
+    {
+      "id": "zh-2-14",
+      "text": "杯子。",
+      "lang": "zh-CN",
+      "filename": "zh-2-14.mp3"
+    },
+    {
+      "id": "zh-2-15",
+      "text": "月亮。",
+      "lang": "zh-CN",
+      "filename": "zh-2-15.mp3"
+    },
+    {
+      "id": "zh-2-16",
+      "text": "太阳。",
+      "lang": "zh-CN",
+      "filename": "zh-2-16.mp3"
+    },
+    {
+      "id": "zh-2-17",
+      "text": "大树。",
+      "lang": "zh-CN",
+      "filename": "zh-2-17.mp3"
+    },
+    {
+      "id": "zh-2-18",
+      "text": "雨伞。",
+      "lang": "zh-CN",
+      "filename": "zh-2-18.mp3"
+    },
+    {
+      "id": "zh-2-19",
+      "text": "帽子。",
+      "lang": "zh-CN",
+      "filename": "zh-2-19.mp3"
+    },
+    {
+      "id": "zh-2-20",
+      "text": "椅子。",
+      "lang": "zh-CN",
+      "filename": "zh-2-20.mp3"
+    },
+    {
+      "id": "zh-2-21",
+      "text": "桌子。",
+      "lang": "zh-CN",
+      "filename": "zh-2-21.mp3"
+    },
+    {
+      "id": "zh-2-22",
+      "text": "时钟。",
+      "lang": "zh-CN",
+      "filename": "zh-2-22.mp3"
+    },
+    {
+      "id": "zh-2-23",
+      "text": "牙刷。",
+      "lang": "zh-CN",
+      "filename": "zh-2-23.mp3"
+    },
+    {
+      "id": "zh-2-24",
+      "text": "小羊。",
+      "lang": "zh-CN",
+      "filename": "zh-2-24.mp3"
+    },
+    {
+      "id": "zh-2-25",
+      "text": "小兔。",
+      "lang": "zh-CN",
+      "filename": "zh-2-25.mp3"
+    },
+    {
+      "id": "zh-2-26",
+      "text": "西瓜。",
+      "lang": "zh-CN",
+      "filename": "zh-2-26.mp3"
+    },
+    {
+      "id": "zh-2-27",
+      "text": "草莓。",
+      "lang": "zh-CN",
+      "filename": "zh-2-27.mp3"
+    },
+    {
+      "id": "zh-2-28",
+      "text": "橙子。",
+      "lang": "zh-CN",
+      "filename": "zh-2-28.mp3"
+    },
+    {
+      "id": "zh-2-29",
+      "text": "葡萄。",
+      "lang": "zh-CN",
+      "filename": "zh-2-29.mp3"
+    },
+    {
+      "id": "zh-3-0",
+      "text": "喝水。",
+      "lang": "zh-CN",
+      "filename": "zh-3-0.mp3"
+    },
+    {
+      "id": "zh-3-1",
+      "text": "吃饭。",
+      "lang": "zh-CN",
+      "filename": "zh-3-1.mp3"
+    },
+    {
+      "id": "zh-3-2",
+      "text": "洗手。",
+      "lang": "zh-CN",
+      "filename": "zh-3-2.mp3"
+    },
+    {
+      "id": "zh-3-3",
+      "text": "穿衣。",
+      "lang": "zh-CN",
+      "filename": "zh-3-3.mp3"
+    },
+    {
+      "id": "zh-3-4",
+      "text": "穿鞋。",
+      "lang": "zh-CN",
+      "filename": "zh-3-4.mp3"
+    },
+    {
+      "id": "zh-3-5",
+      "text": "开门。",
+      "lang": "zh-CN",
+      "filename": "zh-3-5.mp3"
+    },
+    {
+      "id": "zh-3-6",
+      "text": "刷牙。",
+      "lang": "zh-CN",
+      "filename": "zh-3-6.mp3"
+    },
+    {
+      "id": "zh-3-7",
+      "text": "睡觉。",
+      "lang": "zh-CN",
+      "filename": "zh-3-7.mp3"
+    },
+    {
+      "id": "zh-3-8",
+      "text": "下雨。",
+      "lang": "zh-CN",
+      "filename": "zh-3-8.mp3"
+    },
+    {
+      "id": "zh-3-9",
+      "text": "早上好。",
+      "lang": "zh-CN",
+      "filename": "zh-3-9.mp3"
+    },
+    {
+      "id": "zh-3-10",
+      "text": "看书。",
+      "lang": "zh-CN",
+      "filename": "zh-3-10.mp3"
+    },
+    {
+      "id": "zh-3-11",
+      "text": "踢球。",
+      "lang": "zh-CN",
+      "filename": "zh-3-11.mp3"
+    },
+    {
+      "id": "zh-3-12",
+      "text": "赏花。",
+      "lang": "zh-CN",
+      "filename": "zh-3-12.mp3"
+    },
+    {
+      "id": "zh-3-13",
+      "text": "看月亮。",
+      "lang": "zh-CN",
+      "filename": "zh-3-13.mp3"
+    },
+    {
+      "id": "zh-3-14",
+      "text": "数星星。",
+      "lang": "zh-CN",
+      "filename": "zh-3-14.mp3"
+    },
+    {
+      "id": "zh-3-15",
+      "text": "戴帽子。",
+      "lang": "zh-CN",
+      "filename": "zh-3-15.mp3"
+    },
+    {
+      "id": "zh-3-16",
+      "text": "撑雨伞。",
+      "lang": "zh-CN",
+      "filename": "zh-3-16.mp3"
+    },
+    {
+      "id": "zh-3-17",
+      "text": "喝牛奶。",
+      "lang": "zh-CN",
+      "filename": "zh-3-17.mp3"
+    },
+    {
+      "id": "zh-3-18",
+      "text": "吃苹果。",
+      "lang": "zh-CN",
+      "filename": "zh-3-18.mp3"
+    },
+    {
+      "id": "zh-3-19",
+      "text": "剥香蕉。",
+      "lang": "zh-CN",
+      "filename": "zh-3-19.mp3"
+    },
+    {
+      "id": "zh-3-20",
+      "text": "看小鸟。",
+      "lang": "zh-CN",
+      "filename": "zh-3-20.mp3"
+    },
+    {
+      "id": "zh-3-21",
+      "text": "喂小鱼。",
+      "lang": "zh-CN",
+      "filename": "zh-3-21.mp3"
+    },
+    {
+      "id": "zh-3-22",
+      "text": "坐椅子。",
+      "lang": "zh-CN",
+      "filename": "zh-3-22.mp3"
+    },
+    {
+      "id": "zh-3-23",
+      "text": "擦桌子。",
+      "lang": "zh-CN",
+      "filename": "zh-3-23.mp3"
+    },
+    {
+      "id": "zh-3-24",
+      "text": "关门。",
+      "lang": "zh-CN",
+      "filename": "zh-3-24.mp3"
+    },
+    {
+      "id": "zh-3-25",
+      "text": "吃面包。",
+      "lang": "zh-CN",
+      "filename": "zh-3-25.mp3"
+    },
+    {
+      "id": "zh-3-26",
+      "text": "吃鸡蛋。",
+      "lang": "zh-CN",
+      "filename": "zh-3-26.mp3"
+    },
+    {
+      "id": "zh-3-27",
+      "text": "浇花。",
+      "lang": "zh-CN",
+      "filename": "zh-3-27.mp3"
+    },
+    {
+      "id": "zh-3-28",
+      "text": "看时钟。",
+      "lang": "zh-CN",
+      "filename": "zh-3-28.mp3"
+    },
+    {
+      "id": "zh-3-29",
+      "text": "抱小猫。",
+      "lang": "zh-CN",
+      "filename": "zh-3-29.mp3"
+    },
+    {
+      "id": "en-1-0",
+      "text": "apple.",
+      "lang": "en",
+      "filename": "en-1-0.mp3"
+    },
+    {
+      "id": "en-1-1",
+      "text": "banana.",
+      "lang": "en",
+      "filename": "en-1-1.mp3"
+    },
+    {
+      "id": "en-1-2",
+      "text": "milk.",
+      "lang": "en",
+      "filename": "en-1-2.mp3"
+    },
+    {
+      "id": "en-1-3",
+      "text": "egg.",
+      "lang": "en",
+      "filename": "en-1-3.mp3"
+    },
+    {
+      "id": "en-1-4",
+      "text": "water.",
+      "lang": "en",
+      "filename": "en-1-4.mp3"
+    },
+    {
+      "id": "en-1-5",
+      "text": "This is bread.",
+      "lang": "en",
+      "filename": "en-1-5.mp3"
+    },
+    {
+      "id": "en-1-6",
+      "text": "cat.",
+      "lang": "en",
+      "filename": "en-1-6.mp3"
+    },
+    {
+      "id": "en-1-7",
+      "text": "dog.",
+      "lang": "en",
+      "filename": "en-1-7.mp3"
+    },
+    {
+      "id": "en-1-8",
+      "text": "fish.",
+      "lang": "en",
+      "filename": "en-1-8.mp3"
+    },
+    {
+      "id": "en-1-9",
+      "text": "bird.",
+      "lang": "en",
+      "filename": "en-1-9.mp3"
+    },
+    {
+      "id": "en-1-10",
+      "text": "This is the sun.",
+      "lang": "en",
+      "filename": "en-1-10.mp3"
+    },
+    {
+      "id": "en-1-11",
+      "text": "moon.",
+      "lang": "en",
+      "filename": "en-1-11.mp3"
+    },
+    {
+      "id": "en-1-12",
+      "text": "star.",
+      "lang": "en",
+      "filename": "en-1-12.mp3"
+    },
+    {
+      "id": "en-1-13",
+      "text": "This is a tree.",
+      "lang": "en",
+      "filename": "en-1-13.mp3"
+    },
+    {
+      "id": "en-1-14",
+      "text": "flower.",
+      "lang": "en",
+      "filename": "en-1-14.mp3"
+    },
+    {
+      "id": "en-1-15",
+      "text": "ball.",
+      "lang": "en",
+      "filename": "en-1-15.mp3"
+    },
+    {
+      "id": "en-1-16",
+      "text": "book.",
+      "lang": "en",
+      "filename": "en-1-16.mp3"
+    },
+    {
+      "id": "en-1-17",
+      "text": "This is a car.",
+      "lang": "en",
+      "filename": "en-1-17.mp3"
+    },
+    {
+      "id": "en-1-18",
+      "text": "cup.",
+      "lang": "en",
+      "filename": "en-1-18.mp3"
+    },
+    {
+      "id": "en-1-19",
+      "text": "This is a bed.",
+      "lang": "en",
+      "filename": "en-1-19.mp3"
+    },
+    {
+      "id": "en-1-20",
+      "text": "hat.",
+      "lang": "en",
+      "filename": "en-1-20.mp3"
+    },
+    {
+      "id": "en-1-21",
+      "text": "shoes.",
+      "lang": "en",
+      "filename": "en-1-21.mp3"
+    },
+    {
+      "id": "en-1-22",
+      "text": "This is a shirt.",
+      "lang": "en",
+      "filename": "en-1-22.mp3"
+    },
+    {
+      "id": "en-1-23",
+      "text": "rabbit.",
+      "lang": "en",
+      "filename": "en-1-23.mp3"
+    },
+    {
+      "id": "en-1-24",
+      "text": "sheep.",
+      "lang": "en",
+      "filename": "en-1-24.mp3"
+    },
+    {
+      "id": "en-1-25",
+      "text": "cow.",
+      "lang": "en",
+      "filename": "en-1-25.mp3"
+    },
+    {
+      "id": "en-1-26",
+      "text": "horse.",
+      "lang": "en",
+      "filename": "en-1-26.mp3"
+    },
+    {
+      "id": "en-1-27",
+      "text": "orange.",
+      "lang": "en",
+      "filename": "en-1-27.mp3"
+    },
+    {
+      "id": "en-1-28",
+      "text": "grapes.",
+      "lang": "en",
+      "filename": "en-1-28.mp3"
+    },
+    {
+      "id": "en-1-29",
+      "text": "rice.",
+      "lang": "en",
+      "filename": "en-1-29.mp3"
+    },
+    {
+      "id": "en-2-0",
+      "text": "ball.",
+      "lang": "en",
+      "filename": "en-2-0.mp3"
+    },
+    {
+      "id": "en-2-1",
+      "text": "book.",
+      "lang": "en",
+      "filename": "en-2-1.mp3"
+    },
+    {
+      "id": "en-2-2",
+      "text": "This is a car.",
+      "lang": "en",
+      "filename": "en-2-2.mp3"
+    },
+    {
+      "id": "en-2-3",
+      "text": "cup.",
+      "lang": "en",
+      "filename": "en-2-3.mp3"
+    },
+    {
+      "id": "en-2-4",
+      "text": "This is a bed.",
+      "lang": "en",
+      "filename": "en-2-4.mp3"
+    },
+    {
+      "id": "en-2-5",
+      "text": "This is the sun.",
+      "lang": "en",
+      "filename": "en-2-5.mp3"
+    },
+    {
+      "id": "en-2-6",
+      "text": "moon.",
+      "lang": "en",
+      "filename": "en-2-6.mp3"
+    },
+    {
+      "id": "en-2-7",
+      "text": "star.",
+      "lang": "en",
+      "filename": "en-2-7.mp3"
+    },
+    {
+      "id": "en-2-8",
+      "text": "flower.",
+      "lang": "en",
+      "filename": "en-2-8.mp3"
+    },
+    {
+      "id": "en-2-9",
+      "text": "This is a tree.",
+      "lang": "en",
+      "filename": "en-2-9.mp3"
+    },
+    {
+      "id": "en-2-10",
+      "text": "mountain.",
+      "lang": "en",
+      "filename": "en-2-10.mp3"
+    },
+    {
+      "id": "en-2-11",
+      "text": "rain.",
+      "lang": "en",
+      "filename": "en-2-11.mp3"
+    },
+    {
+      "id": "en-2-12",
+      "text": "umbrella.",
+      "lang": "en",
+      "filename": "en-2-12.mp3"
+    },
+    {
+      "id": "en-2-13",
+      "text": "This is a door.",
+      "lang": "en",
+      "filename": "en-2-13.mp3"
+    },
+    {
+      "id": "en-2-14",
+      "text": "chair.",
+      "lang": "en",
+      "filename": "en-2-14.mp3"
+    },
+    {
+      "id": "en-2-15",
+      "text": "table.",
+      "lang": "en",
+      "filename": "en-2-15.mp3"
+    },
+    {
+      "id": "en-2-16",
+      "text": "clock.",
+      "lang": "en",
+      "filename": "en-2-16.mp3"
+    },
+    {
+      "id": "en-2-17",
+      "text": "toothbrush.",
+      "lang": "en",
+      "filename": "en-2-17.mp3"
+    },
+    {
+      "id": "en-2-18",
+      "text": "watermelon.",
+      "lang": "en",
+      "filename": "en-2-18.mp3"
+    },
+    {
+      "id": "en-2-19",
+      "text": "strawberry.",
+      "lang": "en",
+      "filename": "en-2-19.mp3"
+    },
+    {
+      "id": "en-2-20",
+      "text": "This is a pear.",
+      "lang": "en",
+      "filename": "en-2-20.mp3"
+    },
+    {
+      "id": "en-2-21",
+      "text": "peach.",
+      "lang": "en",
+      "filename": "en-2-21.mp3"
+    },
+    {
+      "id": "en-2-22",
+      "text": "cherry.",
+      "lang": "en",
+      "filename": "en-2-22.mp3"
+    },
+    {
+      "id": "en-2-23",
+      "text": "hand.",
+      "lang": "en",
+      "filename": "en-2-23.mp3"
+    },
+    {
+      "id": "en-2-24",
+      "text": "eye.",
+      "lang": "en",
+      "filename": "en-2-24.mp3"
+    },
+    {
+      "id": "en-2-25",
+      "text": "This is my mouth.",
+      "lang": "en",
+      "filename": "en-2-25.mp3"
+    },
+    {
+      "id": "en-2-26",
+      "text": "fire.",
+      "lang": "en",
+      "filename": "en-2-26.mp3"
+    },
+    {
+      "id": "en-2-27",
+      "text": "candy.",
+      "lang": "en",
+      "filename": "en-2-27.mp3"
+    },
+    {
+      "id": "en-2-28",
+      "text": "rabbit.",
+      "lang": "en",
+      "filename": "en-2-28.mp3"
+    },
+    {
+      "id": "en-2-29",
+      "text": "sheep.",
+      "lang": "en",
+      "filename": "en-2-29.mp3"
+    },
+    {
+      "id": "en-3-0",
+      "text": "shoes.",
+      "lang": "en",
+      "filename": "en-3-0.mp3"
+    },
+    {
+      "id": "en-3-1",
+      "text": "This is a shirt.",
+      "lang": "en",
+      "filename": "en-3-1.mp3"
+    },
+    {
+      "id": "en-3-2",
+      "text": "hat.",
+      "lang": "en",
+      "filename": "en-3-2.mp3"
+    },
+    {
+      "id": "en-3-3",
+      "text": "chair.",
+      "lang": "en",
+      "filename": "en-3-3.mp3"
+    },
+    {
+      "id": "en-3-4",
+      "text": "table.",
+      "lang": "en",
+      "filename": "en-3-4.mp3"
+    },
+    {
+      "id": "en-3-5",
+      "text": "This is a door.",
+      "lang": "en",
+      "filename": "en-3-5.mp3"
+    },
+    {
+      "id": "en-3-6",
+      "text": "clock.",
+      "lang": "en",
+      "filename": "en-3-6.mp3"
+    },
+    {
+      "id": "en-3-7",
+      "text": "toothbrush.",
+      "lang": "en",
+      "filename": "en-3-7.mp3"
+    },
+    {
+      "id": "en-3-8",
+      "text": "rain.",
+      "lang": "en",
+      "filename": "en-3-8.mp3"
+    },
+    {
+      "id": "en-3-9",
+      "text": "umbrella.",
+      "lang": "en",
+      "filename": "en-3-9.mp3"
+    },
+    {
+      "id": "en-3-10",
+      "text": "drink water.",
+      "lang": "en",
+      "filename": "en-3-10.mp3"
+    },
+    {
+      "id": "en-3-11",
+      "text": "wash hands.",
+      "lang": "en",
+      "filename": "en-3-11.mp3"
+    },
+    {
+      "id": "en-3-12",
+      "text": "read a book.",
+      "lang": "en",
+      "filename": "en-3-12.mp3"
+    },
+    {
+      "id": "en-3-13",
+      "text": "eat an apple.",
+      "lang": "en",
+      "filename": "en-3-13.mp3"
+    },
+    {
+      "id": "en-3-14",
+      "text": "play ball.",
+      "lang": "en",
+      "filename": "en-3-14.mp3"
+    },
+    {
+      "id": "en-3-15",
+      "text": "go to bed.",
+      "lang": "en",
+      "filename": "en-3-15.mp3"
+    },
+    {
+      "id": "en-3-16",
+      "text": "open the door.",
+      "lang": "en",
+      "filename": "en-3-16.mp3"
+    },
+    {
+      "id": "en-3-17",
+      "text": "sit down.",
+      "lang": "en",
+      "filename": "en-3-17.mp3"
+    },
+    {
+      "id": "en-3-18",
+      "text": "brush teeth.",
+      "lang": "en",
+      "filename": "en-3-18.mp3"
+    },
+    {
+      "id": "en-3-19",
+      "text": "good morning.",
+      "lang": "en",
+      "filename": "en-3-19.mp3"
+    },
+    {
+      "id": "en-3-20",
+      "text": "good night.",
+      "lang": "en",
+      "filename": "en-3-20.mp3"
+    },
+    {
+      "id": "en-3-21",
+      "text": "put on a hat.",
+      "lang": "en",
+      "filename": "en-3-21.mp3"
+    },
+    {
+      "id": "en-3-22",
+      "text": "a little bird.",
+      "lang": "en",
+      "filename": "en-3-22.mp3"
+    },
+    {
+      "id": "en-3-23",
+      "text": "a big tree.",
+      "lang": "en",
+      "filename": "en-3-23.mp3"
+    },
+    {
+      "id": "en-3-24",
+      "text": "a red flower.",
+      "lang": "en",
+      "filename": "en-3-24.mp3"
+    },
+    {
+      "id": "en-3-25",
+      "text": "a yellow banana.",
+      "lang": "en",
+      "filename": "en-3-25.mp3"
+    },
+    {
+      "id": "en-3-26",
+      "text": "a small fish.",
+      "lang": "en",
+      "filename": "en-3-26.mp3"
+    },
+    {
+      "id": "en-3-27",
+      "text": "a happy cat.",
+      "lang": "en",
+      "filename": "en-3-27.mp3"
+    },
+    {
+      "id": "en-3-28",
+      "text": "count the stars.",
+      "lang": "en",
+      "filename": "en-3-28.mp3"
+    },
+    {
+      "id": "en-3-29",
+      "text": "drink milk.",
+      "lang": "en",
+      "filename": "en-3-29.mp3"
+    },
+    {
+      "id": "n-0",
+      "text": "零。",
+      "lang": "zh-CN",
+      "filename": "n-0.mp3"
+    },
+    {
+      "id": "n-1",
+      "text": "一。",
+      "lang": "zh-CN",
+      "filename": "n-1.mp3"
+    },
+    {
+      "id": "n-2",
+      "text": "二。",
+      "lang": "zh-CN",
+      "filename": "n-2.mp3"
+    },
+    {
+      "id": "n-3",
+      "text": "三。",
+      "lang": "zh-CN",
+      "filename": "n-3.mp3"
+    },
+    {
+      "id": "n-4",
+      "text": "四。",
+      "lang": "zh-CN",
+      "filename": "n-4.mp3"
+    },
+    {
+      "id": "n-5",
+      "text": "五。",
+      "lang": "zh-CN",
+      "filename": "n-5.mp3"
+    },
+    {
+      "id": "n-6",
+      "text": "六。",
+      "lang": "zh-CN",
+      "filename": "n-6.mp3"
+    },
+    {
+      "id": "n-7",
+      "text": "七。",
+      "lang": "zh-CN",
+      "filename": "n-7.mp3"
+    },
+    {
+      "id": "n-8",
+      "text": "八。",
+      "lang": "zh-CN",
+      "filename": "n-8.mp3"
+    },
+    {
+      "id": "n-9",
+      "text": "九。",
+      "lang": "zh-CN",
+      "filename": "n-9.mp3"
+    },
+    {
+      "id": "n-10",
+      "text": "十。",
+      "lang": "zh-CN",
+      "filename": "n-10.mp3"
+    },
+    {
+      "id": "n-11",
+      "text": "十一。",
+      "lang": "zh-CN",
+      "filename": "n-11.mp3"
+    },
+    {
+      "id": "n-12",
+      "text": "十二。",
+      "lang": "zh-CN",
+      "filename": "n-12.mp3"
+    },
+    {
+      "id": "n-13",
+      "text": "十三。",
+      "lang": "zh-CN",
+      "filename": "n-13.mp3"
+    },
+    {
+      "id": "n-14",
+      "text": "十四。",
+      "lang": "zh-CN",
+      "filename": "n-14.mp3"
+    },
+    {
+      "id": "n-15",
+      "text": "十五。",
+      "lang": "zh-CN",
+      "filename": "n-15.mp3"
+    },
+    {
+      "id": "n-16",
+      "text": "十六。",
+      "lang": "zh-CN",
+      "filename": "n-16.mp3"
+    },
+    {
+      "id": "n-17",
+      "text": "十七。",
+      "lang": "zh-CN",
+      "filename": "n-17.mp3"
+    },
+    {
+      "id": "n-18",
+      "text": "十八。",
+      "lang": "zh-CN",
+      "filename": "n-18.mp3"
+    },
+    {
+      "id": "n-19",
+      "text": "十九。",
+      "lang": "zh-CN",
+      "filename": "n-19.mp3"
+    },
+    {
+      "id": "n-20",
+      "text": "二十。",
+      "lang": "zh-CN",
+      "filename": "n-20.mp3"
+    },
+    {
+      "id": "n-21",
+      "text": "二十一。",
+      "lang": "zh-CN",
+      "filename": "n-21.mp3"
+    },
+    {
+      "id": "n-22",
+      "text": "二十二。",
+      "lang": "zh-CN",
+      "filename": "n-22.mp3"
+    },
+    {
+      "id": "n-23",
+      "text": "二十三。",
+      "lang": "zh-CN",
+      "filename": "n-23.mp3"
+    },
+    {
+      "id": "n-24",
+      "text": "二十四。",
+      "lang": "zh-CN",
+      "filename": "n-24.mp3"
+    },
+    {
+      "id": "n-25",
+      "text": "二十五。",
+      "lang": "zh-CN",
+      "filename": "n-25.mp3"
+    },
+    {
+      "id": "n-26",
+      "text": "二十六。",
+      "lang": "zh-CN",
+      "filename": "n-26.mp3"
+    },
+    {
+      "id": "n-27",
+      "text": "二十七。",
+      "lang": "zh-CN",
+      "filename": "n-27.mp3"
+    },
+    {
+      "id": "n-28",
+      "text": "二十八。",
+      "lang": "zh-CN",
+      "filename": "n-28.mp3"
+    },
+    {
+      "id": "n-29",
+      "text": "二十九。",
+      "lang": "zh-CN",
+      "filename": "n-29.mp3"
+    },
+    {
+      "id": "n-30",
+      "text": "三十。",
+      "lang": "zh-CN",
+      "filename": "n-30.mp3"
+    },
+    {
+      "id": "n-31",
+      "text": "三十一。",
+      "lang": "zh-CN",
+      "filename": "n-31.mp3"
+    },
+    {
+      "id": "n-32",
+      "text": "三十二。",
+      "lang": "zh-CN",
+      "filename": "n-32.mp3"
+    },
+    {
+      "id": "n-33",
+      "text": "三十三。",
+      "lang": "zh-CN",
+      "filename": "n-33.mp3"
+    },
+    {
+      "id": "n-34",
+      "text": "三十四。",
+      "lang": "zh-CN",
+      "filename": "n-34.mp3"
+    },
+    {
+      "id": "n-35",
+      "text": "三十五。",
+      "lang": "zh-CN",
+      "filename": "n-35.mp3"
+    },
+    {
+      "id": "n-36",
+      "text": "三十六。",
+      "lang": "zh-CN",
+      "filename": "n-36.mp3"
+    },
+    {
+      "id": "n-37",
+      "text": "三十七。",
+      "lang": "zh-CN",
+      "filename": "n-37.mp3"
+    },
+    {
+      "id": "n-38",
+      "text": "三十八。",
+      "lang": "zh-CN",
+      "filename": "n-38.mp3"
+    },
+    {
+      "id": "n-39",
+      "text": "三十九。",
+      "lang": "zh-CN",
+      "filename": "n-39.mp3"
+    },
+    {
+      "id": "n-40",
+      "text": "四十。",
+      "lang": "zh-CN",
+      "filename": "n-40.mp3"
+    },
+    {
+      "id": "n-41",
+      "text": "四十一。",
+      "lang": "zh-CN",
+      "filename": "n-41.mp3"
+    },
+    {
+      "id": "n-42",
+      "text": "四十二。",
+      "lang": "zh-CN",
+      "filename": "n-42.mp3"
+    },
+    {
+      "id": "n-43",
+      "text": "四十三。",
+      "lang": "zh-CN",
+      "filename": "n-43.mp3"
+    },
+    {
+      "id": "n-44",
+      "text": "四十四。",
+      "lang": "zh-CN",
+      "filename": "n-44.mp3"
+    },
+    {
+      "id": "n-45",
+      "text": "四十五。",
+      "lang": "zh-CN",
+      "filename": "n-45.mp3"
+    },
+    {
+      "id": "n-46",
+      "text": "四十六。",
+      "lang": "zh-CN",
+      "filename": "n-46.mp3"
+    },
+    {
+      "id": "n-47",
+      "text": "四十七。",
+      "lang": "zh-CN",
+      "filename": "n-47.mp3"
+    },
+    {
+      "id": "n-48",
+      "text": "四十八。",
+      "lang": "zh-CN",
+      "filename": "n-48.mp3"
+    },
+    {
+      "id": "n-49",
+      "text": "四十九。",
+      "lang": "zh-CN",
+      "filename": "n-49.mp3"
+    },
+    {
+      "id": "n-50",
+      "text": "五十。",
+      "lang": "zh-CN",
+      "filename": "n-50.mp3"
+    },
+    {
+      "id": "n-51",
+      "text": "五十一。",
+      "lang": "zh-CN",
+      "filename": "n-51.mp3"
+    },
+    {
+      "id": "n-52",
+      "text": "五十二。",
+      "lang": "zh-CN",
+      "filename": "n-52.mp3"
+    },
+    {
+      "id": "n-53",
+      "text": "五十三。",
+      "lang": "zh-CN",
+      "filename": "n-53.mp3"
+    },
+    {
+      "id": "n-54",
+      "text": "五十四。",
+      "lang": "zh-CN",
+      "filename": "n-54.mp3"
+    },
+    {
+      "id": "n-55",
+      "text": "五十五。",
+      "lang": "zh-CN",
+      "filename": "n-55.mp3"
+    },
+    {
+      "id": "n-56",
+      "text": "五十六。",
+      "lang": "zh-CN",
+      "filename": "n-56.mp3"
+    },
+    {
+      "id": "n-57",
+      "text": "五十七。",
+      "lang": "zh-CN",
+      "filename": "n-57.mp3"
+    },
+    {
+      "id": "n-58",
+      "text": "五十八。",
+      "lang": "zh-CN",
+      "filename": "n-58.mp3"
+    },
+    {
+      "id": "n-59",
+      "text": "五十九。",
+      "lang": "zh-CN",
+      "filename": "n-59.mp3"
+    },
+    {
+      "id": "n-60",
+      "text": "六十。",
+      "lang": "zh-CN",
+      "filename": "n-60.mp3"
+    },
+    {
+      "id": "n-61",
+      "text": "六十一。",
+      "lang": "zh-CN",
+      "filename": "n-61.mp3"
+    },
+    {
+      "id": "n-62",
+      "text": "六十二。",
+      "lang": "zh-CN",
+      "filename": "n-62.mp3"
+    },
+    {
+      "id": "n-63",
+      "text": "六十三。",
+      "lang": "zh-CN",
+      "filename": "n-63.mp3"
+    },
+    {
+      "id": "n-64",
+      "text": "六十四。",
+      "lang": "zh-CN",
+      "filename": "n-64.mp3"
+    },
+    {
+      "id": "n-65",
+      "text": "六十五。",
+      "lang": "zh-CN",
+      "filename": "n-65.mp3"
+    },
+    {
+      "id": "n-66",
+      "text": "六十六。",
+      "lang": "zh-CN",
+      "filename": "n-66.mp3"
+    },
+    {
+      "id": "n-67",
+      "text": "六十七。",
+      "lang": "zh-CN",
+      "filename": "n-67.mp3"
+    },
+    {
+      "id": "n-68",
+      "text": "六十八。",
+      "lang": "zh-CN",
+      "filename": "n-68.mp3"
+    },
+    {
+      "id": "n-69",
+      "text": "六十九。",
+      "lang": "zh-CN",
+      "filename": "n-69.mp3"
+    },
+    {
+      "id": "n-70",
+      "text": "七十。",
+      "lang": "zh-CN",
+      "filename": "n-70.mp3"
+    },
+    {
+      "id": "n-71",
+      "text": "七十一。",
+      "lang": "zh-CN",
+      "filename": "n-71.mp3"
+    },
+    {
+      "id": "n-72",
+      "text": "七十二。",
+      "lang": "zh-CN",
+      "filename": "n-72.mp3"
+    },
+    {
+      "id": "n-73",
+      "text": "七十三。",
+      "lang": "zh-CN",
+      "filename": "n-73.mp3"
+    },
+    {
+      "id": "n-74",
+      "text": "七十四。",
+      "lang": "zh-CN",
+      "filename": "n-74.mp3"
+    },
+    {
+      "id": "n-75",
+      "text": "七十五。",
+      "lang": "zh-CN",
+      "filename": "n-75.mp3"
+    },
+    {
+      "id": "n-76",
+      "text": "七十六。",
+      "lang": "zh-CN",
+      "filename": "n-76.mp3"
+    },
+    {
+      "id": "n-77",
+      "text": "七十七。",
+      "lang": "zh-CN",
+      "filename": "n-77.mp3"
+    },
+    {
+      "id": "n-78",
+      "text": "七十八。",
+      "lang": "zh-CN",
+      "filename": "n-78.mp3"
+    },
+    {
+      "id": "n-79",
+      "text": "七十九。",
+      "lang": "zh-CN",
+      "filename": "n-79.mp3"
+    },
+    {
+      "id": "n-80",
+      "text": "八十。",
+      "lang": "zh-CN",
+      "filename": "n-80.mp3"
+    },
+    {
+      "id": "n-81",
+      "text": "八十一。",
+      "lang": "zh-CN",
+      "filename": "n-81.mp3"
+    },
+    {
+      "id": "n-82",
+      "text": "八十二。",
+      "lang": "zh-CN",
+      "filename": "n-82.mp3"
+    },
+    {
+      "id": "n-83",
+      "text": "八十三。",
+      "lang": "zh-CN",
+      "filename": "n-83.mp3"
+    },
+    {
+      "id": "n-84",
+      "text": "八十四。",
+      "lang": "zh-CN",
+      "filename": "n-84.mp3"
+    },
+    {
+      "id": "n-85",
+      "text": "八十五。",
+      "lang": "zh-CN",
+      "filename": "n-85.mp3"
+    },
+    {
+      "id": "n-86",
+      "text": "八十六。",
+      "lang": "zh-CN",
+      "filename": "n-86.mp3"
+    },
+    {
+      "id": "n-87",
+      "text": "八十七。",
+      "lang": "zh-CN",
+      "filename": "n-87.mp3"
+    },
+    {
+      "id": "n-88",
+      "text": "八十八。",
+      "lang": "zh-CN",
+      "filename": "n-88.mp3"
+    },
+    {
+      "id": "n-89",
+      "text": "八十九。",
+      "lang": "zh-CN",
+      "filename": "n-89.mp3"
+    },
+    {
+      "id": "n-90",
+      "text": "九十。",
+      "lang": "zh-CN",
+      "filename": "n-90.mp3"
+    },
+    {
+      "id": "n-91",
+      "text": "九十一。",
+      "lang": "zh-CN",
+      "filename": "n-91.mp3"
+    },
+    {
+      "id": "n-92",
+      "text": "九十二。",
+      "lang": "zh-CN",
+      "filename": "n-92.mp3"
+    },
+    {
+      "id": "n-93",
+      "text": "九十三。",
+      "lang": "zh-CN",
+      "filename": "n-93.mp3"
+    },
+    {
+      "id": "n-94",
+      "text": "九十四。",
+      "lang": "zh-CN",
+      "filename": "n-94.mp3"
+    },
+    {
+      "id": "n-95",
+      "text": "九十五。",
+      "lang": "zh-CN",
+      "filename": "n-95.mp3"
+    },
+    {
+      "id": "n-96",
+      "text": "九十六。",
+      "lang": "zh-CN",
+      "filename": "n-96.mp3"
+    },
+    {
+      "id": "n-97",
+      "text": "九十七。",
+      "lang": "zh-CN",
+      "filename": "n-97.mp3"
+    },
+    {
+      "id": "n-98",
+      "text": "九十八。",
+      "lang": "zh-CN",
+      "filename": "n-98.mp3"
+    },
+    {
+      "id": "n-99",
+      "text": "九十九。",
+      "lang": "zh-CN",
+      "filename": "n-99.mp3"
+    },
+    {
+      "id": "n-100",
+      "text": "一百。",
+      "lang": "zh-CN",
+      "filename": "n-100.mp3"
+    },
+    {
+      "id": "object-candy",
+      "text": "颗五彩糖果。",
+      "lang": "zh-CN",
+      "filename": "object-candy.mp3"
+    },
+    {
+      "id": "object-banana",
+      "text": "根香蕉。",
+      "lang": "zh-CN",
+      "filename": "object-banana.mp3"
+    },
+    {
+      "id": "object-apple",
+      "text": "个苹果。",
+      "lang": "zh-CN",
+      "filename": "object-apple.mp3"
+    },
+    {
+      "id": "object-orange",
+      "text": "个橙子。",
+      "lang": "zh-CN",
+      "filename": "object-orange.mp3"
+    },
+    {
+      "id": "object-strawberry",
+      "text": "颗草莓。",
+      "lang": "zh-CN",
+      "filename": "object-strawberry.mp3"
+    },
+    {
+      "id": "object-grapes",
+      "text": "串葡萄。",
+      "lang": "zh-CN",
+      "filename": "object-grapes.mp3"
+    },
+    {
+      "id": "object-pear",
+      "text": "个梨。",
+      "lang": "zh-CN",
+      "filename": "object-pear.mp3"
+    },
+    {
+      "id": "object-peach",
+      "text": "个桃子。",
+      "lang": "zh-CN",
+      "filename": "object-peach.mp3"
+    },
+    {
+      "id": "object-watermelon",
+      "text": "块西瓜。",
+      "lang": "zh-CN",
+      "filename": "object-watermelon.mp3"
+    },
+    {
+      "id": "hello",
+      "text": "你好！我是你的学习小伙伴。声音准备好啦！",
+      "lang": "zh-CN",
+      "filename": "hello.mp3"
+    },
+    {
+      "id": "plus",
+      "text": "加。",
+      "lang": "zh-CN",
+      "filename": "plus.mp3"
+    },
+    {
+      "id": "minus",
+      "text": "减去。",
+      "lang": "zh-CN",
+      "filename": "minus.mp3"
+    },
+    {
+      "id": "question",
+      "text": "等于几呢？",
+      "lang": "zh-CN",
+      "filename": "question.mp3"
+    },
+    {
+      "id": "equals",
+      "text": "等于。",
+      "lang": "zh-CN",
+      "filename": "equals.mp3"
+    },
+    {
+      "id": "first",
+      "text": "先放好。",
+      "lang": "zh-CN",
+      "filename": "first.mp3"
+    },
+    {
+      "id": "bring",
+      "text": "再拿来。",
+      "lang": "zh-CN",
+      "filename": "bring.mp3"
+    },
+    {
+      "id": "take",
+      "text": "拿走。",
+      "lang": "zh-CN",
+      "filename": "take.mp3"
+    },
+    {
+      "id": "together",
+      "text": "放在一起，一个一个数。",
+      "lang": "zh-CN",
+      "filename": "together.mp3"
+    },
+    {
+      "id": "left",
+      "text": "看看还剩下多少？",
+      "lang": "zh-CN",
+      "filename": "left.mp3"
+    },
+    {
+      "id": "total",
+      "text": "一共有。",
+      "lang": "zh-CN",
+      "filename": "total.mp3"
+    },
+    {
+      "id": "remains",
+      "text": "还剩。",
+      "lang": "zh-CN",
+      "filename": "remains.mp3"
+    },
+    {
+      "id": "praise",
+      "text": "答对啦！太棒了！",
+      "lang": "zh-CN",
+      "filename": "praise.mp3"
+    },
+    {
+      "id": "retry",
+      "text": "没关系。我们数一数，再试一次。",
+      "lang": "zh-CN",
+      "filename": "retry.mp3"
+    },
+    {
+      "id": "done",
+      "text": "学完啦！休息一下，抱抱小伙伴吧。",
+      "lang": "zh-CN",
+      "filename": "done.mp3"
+    }
+  ]
+}

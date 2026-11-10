@@ -1781,12 +1781,6 @@
       "lang": "zh-CN",
       "sha256": "f2dbbc30342a4bc02c7550dda8ff32bbc1f4c392adeb7f9da3eade145f3306cd"
     },
-    "object-cherry": {
-      "text": "对樱桃。",
-      "spoken_text": "对樱桃。",
-      "lang": "zh-CN",
-      "sha256": "dadd4554f5bac17310b3f14d8d979bee90b06c16e97fd6d3894f2ed282c4e1d0"
-    },
     "question": {
       "text": "等于几呢？",
       "spoken_text": "等于几呢？",

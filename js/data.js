@@ -111,8 +111,7 @@ const COUNTING_OBJECTS = [
   { id: "grapes", name: "葡萄", emoji: "🍇", unit: "串" },
   { id: "pear", name: "梨", emoji: "🍐", unit: "个" },
   { id: "peach", name: "桃子", emoji: "🍑", unit: "个" },
-  { id: "watermelon", name: "西瓜", emoji: "🍉", unit: "块" },
-  { id: "cherry", name: "樱桃", emoji: "🍒", unit: "对" }
+  { id: "watermelon", name: "西瓜", emoji: "🍉", unit: "块" }
 ];
 
 function shuffle(items) {

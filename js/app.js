@@ -15,9 +15,12 @@ const THEMES = {
 function stored(key, fallback) {
   try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
 }
+const DEFAULT_VOICE_ID = "XiaoYu";
+let voiceManifest = null;
+const voiceAvailability = new Map();
 const state = {
   subject: "zh", level: 1, count: 10, countMode: "10", repeat: false, ratio: .1,
-  limit: 10, objectId: "candy",
+  limit: 10, objectId: "candy", voiceId: stored("smartkid_voice", DEFAULT_VOICE_ID),
   charId: getCharacter(stored("smartkid_char", "dino")).id,
   stars: Math.max(0, Number(stored("smartkid_stars", "0")) || 0),
   items: [], index: 0, completed: new Set(), explanationStep: 0, returnScreen: "screen-home"
@@ -26,7 +29,68 @@ function save() {
   try {
     localStorage.setItem("smartkid_char", state.charId);
     localStorage.setItem("smartkid_stars", String(state.stars));
+    localStorage.setItem("smartkid_voice", state.voiceId);
   } catch { /* Learning still works when browser storage is unavailable. */ }
+}
+
+function voiceAudioUrl(id, voiceId = state.voiceId) {
+  const template = voiceManifest?.output_template || "audio/voices/{voiceId}/{filename}";
+  return template
+    .replace("{voiceId}", voiceId)
+    .replace("{filename}", `${id}.mp3`);
+}
+
+function renderVoiceOptions() {
+  const options = $("#voice-options");
+  options.replaceChildren();
+  for (const voice of voiceManifest.voices) {
+    const button = document.createElement("button");
+    const available = voiceAvailability.get(voice.id);
+    button.type = "button";
+    button.className = "voice-option";
+    button.dataset.voice = voice.id;
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", String(state.voiceId === voice.id));
+    button.disabled = available === false;
+    button.textContent = available === false ? `${voice.name}（音频待上传）` : voice.name;
+    button.onclick = () => {
+      narrator.stop();
+      state.voiceId = voice.id;
+      save();
+      renderVoiceOptions();
+      setVoiceMenu(false);
+    };
+    options.appendChild(button);
+  }
+  const selected = voiceManifest.voices.find(voice => voice.id === state.voiceId);
+  $("#voice-picker-button").setAttribute("aria-label", `选择发音人，当前是${selected.name}`);
+}
+
+function setVoiceMenu(open) {
+  $("#voice-menu").hidden = !open;
+  $("#voice-picker-button").setAttribute("aria-expanded", String(open));
+}
+
+async function initializeVoicePicker() {
+  const response = await fetch("audio/voices/manifest.json");
+  if (!response.ok) throw new Error(`voice-manifest-${response.status}`);
+  voiceManifest = await response.json();
+  if (!Array.isArray(voiceManifest.voices) || !voiceManifest.voices.length || !voiceManifest.output_template) {
+    throw new Error("voice-manifest-invalid");
+  }
+  const availability = await Promise.all(voiceManifest.voices.map(async voice => {
+    const result = await fetch(voiceAudioUrl("zh-1-0", voice.id), { method: "HEAD" });
+    return [voice.id, result.ok];
+  }));
+  availability.forEach(([id, available]) => voiceAvailability.set(id, available));
+  if (!voiceAvailability.get(state.voiceId)) {
+    state.voiceId = voiceAvailability.get(DEFAULT_VOICE_ID)
+      ? DEFAULT_VOICE_ID
+      : voiceManifest.voices.find(voice => voiceAvailability.get(voice.id))?.id || DEFAULT_VOICE_ID;
+    save();
+  }
+  renderVoiceOptions();
+  $("#voice-picker-button").disabled = false;
 }
 
 // Bundled MP3s do not depend on a device's installed speech voices.
@@ -72,7 +136,7 @@ const narrator = {
             this.unlocked = true;
           } finally { URL.revokeObjectURL(silence); }
         }
-        const phrase = await continuousAudio.prepare(ids);
+        const phrase = await continuousAudio.prepare(ids, state.voiceId);
         if (sequence !== this.sequence) return;
         await this.playSource(phrase.url, Math.ceil(phrase.duration * 1000) + 15000);
         return;
@@ -88,7 +152,7 @@ const narrator = {
     for (const id of ids) {
       if (sequence !== this.sequence) return;
       try {
-        await this.playSource(`audio/${id}.mp3?v=0.3`);
+        await this.playSelectedTrack(id, state.voiceId, sequence);
       } catch (error) {
         if (sequence !== this.sequence) return;
         this.audio.pause();
@@ -96,13 +160,53 @@ const narrator = {
           setSoundError("浏览器拦截了播放，请再点一次“听一听”，并检查设备音量。");
           return;
         }
-        setSoundError("读音未加载，请检查网络并刷新。文字和图片仍可使用。");
+        setSoundError("新语音尚未安装，朗读暂时不可用。文字和图片仍可使用。");
         return;
       }
+    }
+  },
+  async playSelectedTrack(id, voiceId, sequence) {
+    try {
+      await this.playSource(`${voiceAudioUrl(id, voiceId)}?v=0.4`);
+    } catch (error) {
+      if (sequence !== this.sequence) return;
+      if (error.name === "NotAllowedError" || voiceId === DEFAULT_VOICE_ID) throw error;
+      await this.playSource(`${voiceAudioUrl(id, DEFAULT_VOICE_ID)}?v=0.4`);
     }
   }
 };
 narrator.audio.preload = "auto";
+
+const buttonSound = {
+  context: null,
+  play() {
+    if (!narrator.enabled) return;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    this.context ??= new AudioContext();
+    if (this.context.state !== "running") void this.context.resume();
+    const start = this.context.currentTime;
+    [[587.33, 0, .065], [880, .045, .075]].forEach(([frequency, offset, duration]) => {
+      const oscillator = this.context.createOscillator();
+      const volume = this.context.createGain();
+      const noteStart = start + offset;
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, noteStart);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.08, noteStart + duration);
+      volume.gain.setValueAtTime(.035, noteStart);
+      volume.gain.exponentialRampToValueAtTime(.001, noteStart + duration);
+      oscillator.connect(volume).connect(this.context.destination);
+      oscillator.start(noteStart);
+      oscillator.stop(noteStart + duration);
+    });
+  }
+};
+
+document.addEventListener("click", event => {
+  if (!(event.target instanceof Element)) return;
+  const button = event.target.closest("button");
+  if (button && !button.disabled) buttonSound.play();
+}, true);
 
 function setSoundError(message = "") {
   $("#sound-status").textContent = message;
@@ -356,7 +460,22 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#finish-button").onclick = renderHome;
   $("#pick-character").onclick = () => renderCharSelect("screen-home");
   $("#lesson-character").onclick = () => renderCharSelect("screen-lesson");
-  continuousAudio.preload(["hello"]);
+  window.appReady = initializeVoicePicker().catch(error => {
+    console.error("Could not initialize voice picker", error);
+    $("#voice-status").textContent = "发音人暂时无法加载，请检查网络后刷新页面。";
+    $("#voice-status").hidden = false;
+  });
+  continuousAudio.preload(["hello"], state.voiceId);
+  $("#voice-picker-button").onclick = () => setVoiceMenu($("#voice-menu").hidden);
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".voice-picker")) setVoiceMenu(false);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !$("#voice-menu").hidden) {
+      setVoiceMenu(false);
+      $("#voice-picker-button").focus();
+    }
+  });
   $("#sound-button").onclick = () => {
     if (!narrator.enabled) narrator.play(["hello"]);
     else {

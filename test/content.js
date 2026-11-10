@@ -48,13 +48,34 @@ for (const limit of [1, 7, 37, 100]) {
 }
 assert.throws(() => evaluate("generateLesson('math', 1, 3, {limit: 1})"), /只有 2/);
 for (const limit of [0, 101, 2.5]) assert.throws(() => evaluate(`generateLesson('math', 1, 10, {limit: ${limit}})`), /整数/);
-const provenance = JSON.parse(fs.readFileSync(path.join(__dirname, "../audio/provenance.json"), "utf8"));
-for (const track of evaluate("audioTracks()")) {
-  const bytes = fs.readFileSync(path.join(__dirname, `../audio/${track.id}.mp3`));
-  assert.ok(bytes.length > 500, track.id);
-  assert.ok((bytes[0] === 255 && (bytes[1] & 224) === 224) || bytes.subarray(0, 3).toString() === "ID3", track.id);
-  const entry = provenance.tracks[track.id];
-  assert.equal(entry?.text, track.text, `locally generated narration required: ${track.id}`);
-  assert.equal(entry.sha256, require("node:crypto").createHash("sha256").update(bytes).digest("hex"), track.id);
+assert.equal(evaluate("COUNTING_OBJECTS.length"), 9);
+assert.ok(!evaluate("audioTracks().some(track => track.id === 'object-cherry')"));
+const audioDirectory = path.join(__dirname, "../audio");
+const voiceManifest = JSON.parse(fs.readFileSync(path.join(audioDirectory, "voices/manifest.json"), "utf8"));
+const tracks = JSON.parse(JSON.stringify(evaluate("audioTracks()")));
+assert.equal(voiceManifest.track_count, tracks.length);
+assert.equal(voiceManifest.voices.length, 4);
+assert.equal(voiceManifest.output_template, "audio/voices/{voiceId}/{filename}");
+assert.deepEqual(voiceManifest.tracks.map(track => track.id), tracks.map(track => track.id));
+for (const track of tracks) {
+  assert.ok(fs.existsSync(path.join(audioDirectory, "voices/XiaoYu", `${track.id}.mp3`)), `default voice missing ${track.id}`);
 }
-console.log("OK: arithmetic bounds, expanded vocabulary, exact repeat ratios, custom sizes/ranges, generated narration provenance");
+for (const [track, listed] of tracks.map((track, i) => [track, voiceManifest.tracks[i]])) {
+  let spokenText = track.text;
+  if (track.id.startsWith("n-")) {
+    const number = Number(track.text), digits = "零一二三四五六七八九";
+    if (number < 10) spokenText = `${digits[number]}。`;
+    else if (number === 100) spokenText = "一百。";
+    else {
+      const [tens, units] = [Math.floor(number / 10), number % 10];
+      spokenText = `${tens > 1 ? digits[tens] : ""}十${units ? digits[units] : ""}。`;
+    }
+  } else if (!".!?。！？".includes(spokenText.at(-1))) {
+    spokenText += track.lang === "zh-CN" ? "。" : ".";
+  }
+  assert.deepEqual(listed, {
+    id: track.id, text: spokenText, lang: track.lang, filename: `${track.id}.mp3`
+  });
+}
+assert.deepEqual(fs.readdirSync(audioDirectory).filter(file => file.endsWith(".mp3")), [], "old narration MP3s have been removed");
+console.log("OK: arithmetic bounds, expanded vocabulary, exact repeat ratios, custom sizes/ranges, replacement voice manifest");

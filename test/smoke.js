@@ -65,60 +65,97 @@ async function main() {
     };
     const url = process.env.SITE_URL || `http://127.0.0.1:${server.address().port}/index.html`;
     const navigation = await send("Page.navigate", { url });
-    for (let n = 0; n < 50 && !(await run("document.readyState === 'complete' && typeof renderHome === 'function'")); n++) {
+    for (let n = 0; n < 50 && !(await run("document.readyState === 'complete' && typeof renderHome === 'function' && window.appReady")); n++) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
+    await run("window.appReady");
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("CHARACTERS.length"), 10);
     assert.equal(await run("narrator.enabled"), false, "do not attempt autoplay on page open");
+    assert.equal(await run("COUNTING_OBJECTS.length"), 9, "math explanation has nine objects");
+    assert.deepEqual(await run("[...document.querySelectorAll('#voice-options [data-voice]')].map(button => [button.dataset.voice, button.disabled])"), [["XiaoYu", false], ["XiaoYou", false], ["XiaoXia", true], ["XiaoRou", true]], "only voices with uploaded audio are selectable");
+    await run("window.buttonSoundCalls = 0; window.originalButtonSoundPlay = buttonSound.play; buttonSound.play = function() { if (narrator.enabled) window.buttonSoundCalls++; return window.originalButtonSoundPlay.call(this); }");
     assert.equal(await run("document.querySelector('.sound-panel, #sound-test, .voice-note')"), null, "remove the sound preview and voice description panel");
     assert.equal(await run("document.querySelector('[data-subject=songs], #song-settings')"), null, "remove the songs section");
     assert.equal(await run("document.querySelector('#screen-home #object-settings')"), null, "object choices belong in the lesson, not home settings");
-    await run("document.querySelector('#sound-button').click()");
-    for (let n = 0; n < 80 && !(await run("narrator.audio.currentTime > .1")); n++) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    assert.equal(await run("narrator.audio.currentTime > .1"), true, `bundled audio did not actually play: ${await run("document.querySelector('#sound-status').textContent")}`);
-    assert.equal(await run("narrator.audio.error === null"), true);
-    await run("narrator.play(['en-1-0'])");
-    assert.equal(await run("narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "English MP3 must play");
-    await run("narrator.play(['n-2', 'plus', 'n-3', 'question'])");
-    assert.equal(await run("narrator.audio.src.startsWith('blob:') && narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "math narration must finish as one continuous clip");
-    const timing = await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(p => ({before: p.originalDuration, after: p.duration}))");
-    assert.ok(timing.after <= timing.before + .1, "continuous narration must not introduce long pauses");
-    console.log(`Math audio: ${timing.before.toFixed(2)}s → ${timing.after.toFixed(2)}s (including all words)`);
-    assert.equal(await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(async p => p.url === (await continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question'])).url)"), true, "replay reuses prepared audio");
-    assert.equal(await run("document.querySelector('#voice-profile')"), null);
-    assert.equal(await run("narrator.audio.playbackRate"), 1, "fixed voice must not be pitch-shifted or sped up");
-    const invalidRecordings = await run(`(async () => {
-      const invalid = [];
-      for (const track of audioTracks()) {
-        try {
-          const recording = await continuousAudio.recording(track.id);
-          if (recording.samples.length < 2400 || !recording.samples.some(sample => Math.abs(sample) > .01)) invalid.push(track.id);
-        } catch { invalid.push(track.id); }
+    if (fs.existsSync(path.join(root, "audio/voices/XiaoYu/hello.mp3"))) {
+      await run("document.querySelector('#sound-button').click()");
+      for (let n = 0; n < 80 && !(await run("narrator.audio.currentTime > .1")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
-      return invalid;
-    })()`);
-    assert.deepEqual(invalidRecordings, [], "every generated narration asset must decode and contain audible samples");
-    await run("narrator.play(['hello']); window.OfflineDecoder = window.OfflineAudioContext; window.OfflineAudioContext = undefined; window.LegacyOfflineDecoder = window.webkitOfflineAudioContext; window.webkitOfflineAudioContext = undefined; narrator.play(['n-2'])");
-    for (let n = 0; n < 40 && !(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1")); n++) {
+      assert.equal(await run("narrator.audio.currentTime > .1"), true, `bundled audio did not actually play: ${await run("document.querySelector('#sound-status').textContent")}`);
+      assert.equal(await run("narrator.audio.error === null"), true);
+      await run("narrator.play(['en-1-0'])");
+      assert.equal(await run("narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "English MP3 must play");
+      await run("narrator.play(['n-2', 'plus', 'n-3', 'question'])");
+      assert.equal(await run("narrator.audio.src.startsWith('blob:') && narrator.audio.currentTime > .1 && narrator.audio.error === null"), true, "math narration must finish as one continuous clip");
+      const timing = await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(p => ({before: p.originalDuration, after: p.duration}))");
+      assert.ok(timing.after <= timing.before + .1, "continuous narration must not introduce long pauses");
+      console.log(`Math audio: ${timing.before.toFixed(2)}s → ${timing.after.toFixed(2)}s (including all words)`);
+      assert.equal(await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(async p => p.url === (await continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question'])).url)"), true, "replay reuses prepared audio");
+      assert.equal(await run("document.querySelector('#voice-profile')"), null);
+      assert.equal(await run("narrator.audio.playbackRate"), 1, "fixed voice must not be pitch-shifted or sped up");
+      await run("window.nativeFetch = window.fetch; window.voiceFetchPaths = []; window.fetch = (input, ...args) => { window.voiceFetchPaths.push(new URL(input, location.href).pathname); return window.nativeFetch(input, ...args); }");
+      await run("continuousAudio.recording('en-1-0', 'XiaoYou')");
+      assert.ok(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/en-1-0.mp3')"), "selected voice loads its own audio directory");
+      await run("window.voiceFetchPaths.length = 0; continuousAudio.recording('n-82', 'XiaoYou')");
+      assert.deepEqual(await run("window.voiceFetchPaths"), ["/audio/voices/XiaoYou/n-82.mp3", "/audio/voices/XiaoYu/n-82.mp3"], "missing selected-voice tracks fall back to XiaoYu");
+      await run("document.querySelector('#voice-picker-button').click()");
+      assert.equal(await run("document.querySelector('#voice-menu').hidden"), false, "voice control opens its choices");
+      await run("document.querySelector('[data-voice=XiaoYou]').click()");
+      assert.equal(await run("state.voiceId === 'XiaoYou' && localStorage.getItem('smartkid_voice') === 'XiaoYou' && document.querySelector('#voice-menu').hidden"), true, "voice selection is saved and the menu collapses");
+      await run("document.querySelector('#voice-picker-button').click(); document.querySelector('[data-voice=XiaoYu]').click()");
+      assert.equal(await run("state.voiceId === 'XiaoYu' && localStorage.getItem('smartkid_voice') === 'XiaoYu'"), true, "XiaoYu remains the default voice");
+      await run("window.buttonSoundCalls = 0");
+      const invalidRecordings = await run(`(async () => {
+        const invalid = [];
+        for (const track of audioTracks()) {
+          try {
+            const recording = await continuousAudio.recording(track.id);
+            if (recording.samples.length < 2400 || !recording.samples.some(sample => Math.abs(sample) > .01)) invalid.push(track.id);
+          } catch { invalid.push(track.id); }
+        }
+        return invalid;
+      })()`);
+      assert.deepEqual(invalidRecordings, [], "every generated narration asset must decode and contain audible samples");
+      await run("narrator.play(['hello']); window.OfflineDecoder = window.OfflineAudioContext; window.OfflineAudioContext = undefined; window.LegacyOfflineDecoder = window.webkitOfflineAudioContext; window.webkitOfflineAudioContext = undefined; narrator.play(['n-2'])");
+      for (let n = 0; n < 40 && !(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      assert.equal(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1"), true, "old browsers retain original MP3 playback");
+      await run("window.OfflineAudioContext = window.OfflineDecoder; window.webkitOfflineAudioContext = window.LegacyOfflineDecoder; narrator.play(['n-2'])");
+      assert.equal(await run("document.querySelector('#sound-status').hidden && document.querySelector('#sound-status').textContent === ''"), true, "normal playback must not show a sound status block");
+      await run("document.querySelector('#sound-button').click()");
+      assert.equal(await run("narrator.enabled"), false);
+      assert.equal(await run("window.buttonSoundCalls"), 1, "an enabled sound plays a click chime when muted");
+      assert.equal(await run("narrator.audio.paused"), true);
+      assert.equal(await run("document.querySelector('#sound-status').hidden && document.querySelector('#sound-status').textContent === ''"), true, "muting must not display the removed sound-off message");
+      await run("narrator.enabled = true; updateSound(); document.querySelector('#home-button').click(); narrator.enabled = false; updateSound(); document.querySelector('#home-button').click()");
+      assert.equal(await run("window.buttonSoundCalls"), 2, "ordinary buttons chime only while sound is enabled");
+      await run("document.querySelector('#start-button').click(); document.querySelector('#home-button').click()");
+      assert.equal(await run("window.buttonSoundCalls"), 2, "clicks while muted do not play a chime");
+      await run("document.querySelector('#start-button').click(); window.savedPlay = narrator.audio.play; narrator.audio.play = () => Promise.reject(new DOMException('blocked', 'NotAllowedError')); document.querySelector('#listen-button').click()");
       await new Promise(resolve => setTimeout(resolve, 100));
+      assert.equal(await run("document.querySelector('#sound-status').getClientRects().length > 0 && document.querySelector('#sound-status').textContent.includes('拦截')"), true, "playback errors remain visible in the lesson");
+      await run("narrator.audio.play = window.savedPlay; narrator.play(questionTracks())");
+      assert.equal(await run("narrator.enabled && narrator.audio.currentTime > .1 && document.querySelector('#sound-status').hidden"), true, "listen still enables playback and clears the error after removing the preview panel");
+      await run("document.querySelector('#sound-button').click(); renderHome()");
+      assert.equal(await run("window.buttonSoundCalls"), 3, "buttons keep playing chimes while sound is enabled");
+      assert.ok(await run("buttonSound.context instanceof AudioContext"), "click chime uses the Web Audio API");
+    } else {
+      await run("document.querySelector('#sound-button').click()");
+      assert.equal(await run("narrator.enabled"), true, "sound switch stays usable without narration assets");
+      for (let n = 0; n < 40 && !(await run("document.querySelector('#sound-status').textContent.includes('新语音尚未安装')")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      assert.equal(await run("document.querySelector('#sound-status').textContent.includes('新语音尚未安装')"), true);
+      await run("document.querySelector('#sound-button').click()");
+      assert.equal(await run("narrator.enabled"), false);
+      assert.equal(await run("window.buttonSoundCalls"), 1, "button chime plays on mute while sound is enabled");
+      assert.ok(await run("buttonSound.context instanceof AudioContext"), "click chime uses the Web Audio API");
+      await run("narrator.play = () => {}");
     }
-    assert.equal(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1"), true, "old browsers retain original MP3 playback");
-    await run("window.OfflineAudioContext = window.OfflineDecoder; window.webkitOfflineAudioContext = window.LegacyOfflineDecoder; narrator.play(['n-2'])");
-    assert.equal(await run("document.querySelector('#sound-status').hidden && document.querySelector('#sound-status').textContent === ''"), true, "normal playback must not show a sound status block");
-    await run("document.querySelector('#sound-button').click()");
-    assert.equal(await run("narrator.enabled"), false);
-    assert.equal(await run("narrator.audio.paused"), true);
-    assert.equal(await run("document.querySelector('#sound-status').hidden && document.querySelector('#sound-status').textContent === ''"), true, "muting must not display the removed sound-off message");
-    await run("document.querySelector('#start-button').click(); window.savedPlay = narrator.audio.play; narrator.audio.play = () => Promise.reject(new DOMException('blocked', 'NotAllowedError')); document.querySelector('#listen-button').click()");
-    await new Promise(resolve => setTimeout(resolve, 100));
-    assert.equal(await run("document.querySelector('#sound-status').getClientRects().length > 0 && document.querySelector('#sound-status').textContent.includes('拦截')"), true, "playback errors remain visible in the lesson");
-    await run("narrator.audio.play = window.savedPlay; narrator.play(questionTracks())");
-    assert.equal(await run("narrator.enabled && narrator.audio.currentTime > .1 && document.querySelector('#sound-status').hidden"), true, "listen still enables playback and clears the error after removing the preview panel");
-    await run("document.querySelector('#sound-button').click(); renderHome()");
     const themes = new Set();
     for (const id of await run("CHARACTERS.map(ch => ch.id)")) {
       await run(`document.querySelector('#pick-character').click(); document.querySelector('[data-char="${id}"]').click()`);
@@ -180,6 +217,7 @@ async function main() {
     assert.equal(await run("document.querySelector('#settings-error').textContent.includes('只有 2')"), true);
     await run("document.querySelector('#custom-range').value = '37'; document.querySelector('#custom-count').value = '10'; document.querySelector('#start-button').click(); state.items[0] = {a:2,b:3,op:'+',answer:5}; renderLesson()");
     assert.equal(await run("state.objectId === 'candy' && document.querySelector('#explain-button').getAttribute('aria-label').includes('五彩糖果')"), true, "default explanation object is colorful candy");
+    assert.equal(await run("document.querySelectorAll('#object-settings [data-object]').length"), 9, "lesson offers exactly nine explanation objects");
     assert.equal(await run("document.querySelector('#object-settings').hidden && document.querySelector('#change-object').getAttribute('aria-expanded') === 'false'"), true, "object choices are initially collapsed");
     assert.equal(await run("document.querySelector('#change-object').getBoundingClientRect().left >= document.querySelector('#explain-button').getBoundingClientRect().right"), true, "change-object button is to the right of explain");
     await run("document.querySelector('#change-object').click()");

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f5fcf4">
   <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
   <title>萌学园 · 和小伙伴一起学</title>
-  <link rel="stylesheet" href="css/style.css?v=0.3.2">
+  <link rel="stylesheet" href="css/style.css?v=0.4">
 </head>
 <body>
   <main class="app">
@@ -14,6 +14,15 @@
       <button id="home-button" class="icon-button" aria-label="返回首页">⌂</button>
       <span class="brand">萌学园 <small>v0.3</small></span>
       <span class="star-badge" aria-label="获得的星星">⭐ <span id="stars">0</span></span>
+      <div class="voice-picker">
+        <button id="voice-picker-button" class="icon-button" aria-label="选择发音人" aria-expanded="false" aria-controls="voice-menu" disabled>🗣️</button>
+        <div id="voice-menu" class="voice-menu" hidden>
+          <p class="eyebrow">选择发音人</p>
+          <div id="voice-options" class="voice-options" role="radiogroup" aria-label="发音人"></div>
+          <p class="voice-hint">缺少的音轨会使用小宇补齐。</p>
+          <p id="voice-status" role="status" aria-live="polite" hidden></p>
+        </div>
+      </div>
       <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false">🔈</button>
     </header>
     <section id="screen-home" class="screen active" aria-label="学习设置">
@@ -93,7 +102,7 @@
   <script src="js/data.js?v=0.3"></script>
   <script src="js/pictures.js?v=0.3"></script>
   <script src="js/characters.js?v=0.2"></script>
-  <script src="js/audio.js?v=0.3"></script>
-  <script src="js/app.js?v=0.3.2"></script>
+  <script src="js/audio.js?v=0.4"></script>
+  <script src="js/app.js?v=0.4"></script>
 </body>
 </html>

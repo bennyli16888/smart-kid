@@ -38,13 +38,15 @@ function encodeWave(samples, sampleRate) {
 const continuousAudio = {
   sampleRate: 24000, recordings: new Map(), phrases: new Map(),
   get supported() { return Boolean(window.OfflineAudioContext || window.webkitOfflineAudioContext); },
-  async recording(id) {
-    if (!this.recordings.has(id)) {
+  async recording(id, voiceId = "XiaoYu") {
+    const key = `${voiceId}|${id}`;
+    if (!this.recordings.has(key)) {
       const pending = (async () => {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 15000);
         try {
-          const response = await fetch(`audio/${id}.mp3?v=0.3`, { signal: controller.signal });
+          const response = await fetch(`audio/voices/${voiceId}/${id}.mp3?v=0.4`, { signal: controller.signal });
+          if (response.status === 404 && voiceId !== "XiaoYu") return this.recording(id, "XiaoYu");
           if (!response.ok) throw new Error("audio-load");
           const Decoder = window.OfflineAudioContext || window.webkitOfflineAudioContext;
           const decoder = new Decoder(1, 1, this.sampleRate);
@@ -52,16 +54,16 @@ const continuousAudio = {
           return { samples: trimRecording(decoded), originalDuration: decoded.duration };
         } finally { clearTimeout(timer); }
       })();
-      this.recordings.set(id, pending);
-      pending.catch(() => this.recordings.delete(id));
+      this.recordings.set(key, pending);
+      pending.catch(() => this.recordings.delete(key));
     }
-    return this.recordings.get(id);
+    return this.recordings.get(key);
   },
-  async prepare(ids) {
-    const key = ids.join("|");
+  async prepare(ids, voiceId = "XiaoYu") {
+    const key = `${voiceId}|${ids.join("|")}`;
     if (!this.phrases.has(key)) {
       const pending = (async () => {
-        const recordings = await Promise.all(ids.map(id => this.recording(id)));
+        const recordings = await Promise.all(ids.map(id => this.recording(id, voiceId)));
         const gap = Math.round(this.sampleRate * .03);
         const length = recordings.reduce((sum, item) => sum + item.samples.length, 0) + gap * (recordings.length - 1);
         const samples = new Float32Array(length);
@@ -88,7 +90,7 @@ const continuousAudio = {
     }
     return this.phrases.get(key);
   },
-  preload(ids) {
-    if (this.supported) ids.forEach(id => { this.recording(id).catch(() => {}); });
+  preload(ids, voiceId = "XiaoYu") {
+    if (this.supported) ids.forEach(id => { this.recording(id, voiceId).catch(() => {}); });
   }
 };
