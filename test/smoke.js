@@ -77,6 +77,7 @@ async function main() {
     assert.equal(await run("typeof CHARACTERS"), "object", `Page script error: ${browserErrors.join("; ")}`);
     assert.equal(await run("CHARACTERS.length"), 10);
     assert.equal(await run("narrator.enabled"), false, "do not attempt autoplay on page open");
+    assert.equal(await run("document.querySelector('#sound-button svg[data-icon=muted] .mute-slash') !== null"), true, "muted state uses a clear crossed-out speaker icon");
     assert.equal(await run("COUNTING_OBJECTS.length"), 9, "math explanation has nine objects");
     assert.deepEqual(await run("[...document.querySelectorAll('#voice-options [data-voice]')].map(button => [button.dataset.voice, button.disabled])"), [["XiaoYu", false], ["XiaoYou", false], ["XiaoXia", false]], "the three voices with uploaded audio are selectable, without XiaoRou");
     await run("window.buttonSoundCalls = 0; window.originalButtonSoundPlay = buttonSound.play; buttonSound.play = function() { if (narrator.enabled) window.buttonSoundCalls++; return window.originalButtonSoundPlay.call(this); }");
@@ -93,6 +94,7 @@ async function main() {
     await run("narrator.stop()");
     if (fs.existsSync(path.join(root, "audio/voices/XiaoYu/hello.mp3"))) {
       await run("document.querySelector('#sound-button').click()");
+      assert.equal(await run("document.querySelector('#sound-button svg[data-icon=on]') !== null"), true, "enabled sound uses the unmuted speaker icon");
       for (let n = 0; n < 20 && !(await run("buttonSound.context?.state === 'running'")); n++) {
         await new Promise(resolve => setTimeout(resolve, 25));
       }
@@ -209,7 +211,13 @@ async function main() {
       themes.add(await run("getComputedStyle(document.body).backgroundColor"));
     }
     assert.equal(themes.size, 10, "all companion themes must differ");
-    await run("renderHome(); narrator.enabled = false; updateSound(); state.subject = 'en'; state.level = 1; state.limit = 10; state.items = [{word:'apple',hint:'苹果',picture:'apple',audio:'en-1-0'}]; state.index = 0; state.completed = new Set(); renderLesson()");
+    await run("renderHome(); narrator.enabled = false; updateSound(); state.subject = 'en'; renderSettings(); state.level = 1; state.limit = 10; state.items = [{word:'apple',hint:'苹果',picture:'apple',audio:'en-1-0'}]; state.index = 0; state.completed = new Set(); state.languageMode = 'study'; renderLesson()");
+    assert.equal(await run("(() => { const study = document.querySelector('#start-button'); const quiz = document.querySelector('#find-button'); return !quiz.hidden && Math.abs(study.getBoundingClientRect().top - quiz.getBoundingClientRect().top) < 1; })()"), true, "both language entries are visible on one row");
+    assert.equal(await run("document.querySelector('.word').textContent === 'apple' && !!document.querySelector('#lesson-content svg') && document.querySelectorAll('.picture-answer').length === 0 && !document.querySelector('#next-button').disabled"), true, "look-and-listen shows the word, image and audio without quiz choices");
+    const studyStars = await run("state.stars");
+    await run("nextQuestion()");
+    assert.equal(await run("state.completed.has(0) && state.stars === " + (studyStars + 1)), true, "look-and-listen earns its star when moving on");
+    await run("state.index = 0; state.completed = new Set(); state.languageMode = 'find'; renderLesson()");
     assert.equal(await run("document.querySelectorAll('.picture-answer').length === 3 && !document.querySelector('#lesson-content').textContent.includes('apple') && document.querySelector('#next-button').disabled"), true, "listen-and-find hides the target and requires an answer");
     await run("[...document.querySelectorAll('.picture-answer')].find(button => button.dataset.picture !== currentQuestion().picture).click()");
     assert.equal(await run("document.querySelector('#feedback').textContent.includes(currentQuestion().hint) && !document.querySelector('.picture-answer.revealed') && document.querySelector('#next-button').disabled"), true, "the first wrong choice gives a clue before revealing the answer");
@@ -228,7 +236,8 @@ async function main() {
     for (const subject of ["zh", "math", "en"]) {
       for (const level of [1, 2, 3]) {
         for (const count of [10, 20, 30]) {
-          await run(`renderHome(); document.querySelector('[data-subject="${subject}"]').click(); document.querySelector('[data-level="${level}"]').click(); document.querySelector('[data-count="${count === 30 ? "custom" : count}"]').click(); document.querySelector('#custom-count').value = '30'; document.querySelector('#start-button').click()`);
+          const entryButton = subject === "math" ? "#start-button" : "#find-button";
+          await run(`renderHome(); document.querySelector('[data-subject="${subject}"]').click(); document.querySelector('[data-level="${level}"]').click(); document.querySelector('[data-count="${count === 30 ? "custom" : count}"]').click(); document.querySelector('#custom-count').value = '30'; document.querySelector('${entryButton}').click()`);
           assert.equal(await run("state.items.length"), count);
           assert.equal(await run("document.querySelector('#lesson-progress').textContent"), `1 / ${count}`);
           if (subject === "math") {

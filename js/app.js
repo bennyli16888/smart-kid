@@ -23,7 +23,7 @@ const state = {
   limit: 10, objectId: "candy", voiceId: stored("smartkid_voice", DEFAULT_VOICE_ID),
   charId: getCharacter(stored("smartkid_char", "dino")).id,
   stars: Math.max(0, Number(stored("smartkid_stars", "0")) || 0),
-  items: [], index: 0, completed: new Set(), explanationStep: 0, returnScreen: "screen-home"
+  items: [], index: 0, completed: new Set(), languageMode: "study", explanationStep: 0, returnScreen: "screen-home"
 };
 function save() {
   try {
@@ -229,7 +229,9 @@ function setSoundError(message = "") {
   $("#sound-status").hidden = !message;
 }
 function updateSound() {
-  $("#sound-button").textContent = narrator.enabled ? "🔊" : "🔈";
+  $("#sound-button").innerHTML = narrator.enabled
+    ? `<svg class="sound-icon" data-icon="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z" fill="currentColor"/><path d="M15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`
+    : `<svg class="sound-icon" data-icon="muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z" fill="currentColor"/><path class="mute-slash" d="M4 4 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
   $("#sound-button").setAttribute("aria-pressed", String(narrator.enabled));
   $("#sound-button").setAttribute("aria-label", narrator.enabled ? "关闭声音" : "开启声音");
 }
@@ -269,6 +271,8 @@ function renderSettings() {
   });
   $("#settings-error").textContent = "";
   const math = state.subject === "math";
+  $("#start-button").textContent = math ? "▶ 开始学习" : "👀 看和听";
+  $("#find-button").hidden = math;
   $("#level-heading").textContent = math ? "🔢 数字范围" : "🌱 选个难度";
   $("#level-row").setAttribute("aria-label", math ? "数字范围" : "难度");
   $("#level-row").innerHTML = SUBJECTS[state.subject].levels.map((name, index) =>
@@ -336,7 +340,8 @@ function renderCharSelect(returnScreen) {
   });
   show("screen-chars");
 }
-function startLesson() {
+function startLesson(mode = state.languageMode) {
+  if (state.subject !== "math") state.languageMode = mode === "find" ? "find" : "study";
   state.count = state.countMode === "custom" ? Number($("#custom-count").value) : Number(state.countMode);
   state.limit = state.level === 3 ? Number($("#custom-range").value) : state.level * 10;
   try {
@@ -495,13 +500,14 @@ function renderLesson() {
   $("#answers").innerHTML = "";
   const q = currentQuestion();
   const math = state.subject === "math";
+  const findPicture = !math && state.languageMode === "find";
   const countObjects = math && state.limit <= 20;
   let languageMistakes = 0;
-  $("#answers").classList.toggle("picture-answers", !math);
+  $("#answers").classList.toggle("picture-answers", findPicture);
   $("#explain-actions").hidden = !math;
   setObjectPicker(false);
   if (math) renderObjectChoices();
-  $("#next-button").disabled = !state.completed.has(state.index);
+  $("#next-button").disabled = (math || findPicture) && !state.completed.has(state.index);
   if (math) {
     $("#lesson-content").innerHTML = `<p class="eyebrow">小伙伴陪你加一加、减一减</p><div class="equation">${q.a} ${q.op} ${q.b} = ?</div>${countObjects ? renderMathCounting(q) : `<p class="subtitle">${q.op === "+" ? "拿来一些，合在一起。" : "拿走一些，看看还剩多少。"}</p>`}`;
     answerChoices(q, state.limit).forEach(answer => {
@@ -532,7 +538,7 @@ function renderLesson() {
       $("#answers").appendChild(button);
     });
     if (countObjects) setupMathCounting(q);
-  } else {
+  } else if (findPicture) {
     $("#lesson-content").innerHTML = `<p class="eyebrow">听一听，找到对应的图片</p><p class="subtitle">听到熟悉的声音后，点一张图片。</p>`;
     pictureChoices(q).forEach(choice => {
       const button = document.createElement("button");
@@ -577,6 +583,8 @@ function renderLesson() {
         if (button.dataset.picture === q.picture) button.classList.add("correct");
       });
     }
+  } else {
+    $("#lesson-content").innerHTML = `<p class="eyebrow">看一看，听一听，读一读</p>${renderPicture(q.picture, q.hint)}<div class="word">${q.word}</div><p class="word-hint">${q.hint}</p>`;
   }
   if (narrator.enabled) narrator.play(questionTracks());
   if (narrator.enabled) scheduleLessonAudioPreload(q, math);
@@ -589,6 +597,7 @@ function markComplete() {
   save();
 }
 function nextQuestion() {
+  if (state.subject !== "math" && state.languageMode === "study" && !state.completed.has(state.index)) markComplete();
   if (!state.completed.has(state.index)) return;
   if (state.index < state.items.length - 1) {
     state.index++;
@@ -685,8 +694,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-repeat]").forEach(button => {
     button.onclick = () => { state.ratio = Number(button.dataset.repeat); renderSettings(); };
   });
-  $("#start-button").onclick = startLesson;
-  $("#again-button").onclick = startLesson;
+  $("#start-button").onclick = () => startLesson("study");
+  $("#find-button").onclick = () => startLesson("find");
+  $("#again-button").onclick = () => startLesson();
   $("#listen-button").onclick = () => {
     cancelScheduledCoursePreload();
     narrator.play(questionTracks());

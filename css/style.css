@@ -28,6 +28,7 @@ h2 { font-size: 21px; }
 .brand { font-size: 21px; font-weight: 850; flex: 1; }
 .brand small { font-size: 11px; color: var(--muted); }
 .icon-button { width: 48px; padding: 0; flex-shrink: 0; font-size: 24px; border-radius: 50%; }
+.sound-icon { display: block; width: 25px; height: 25px; margin: auto; }
 .voice-picker { position: relative; }
 .voice-menu { position: absolute; z-index: 20; top: calc(100% + 10px); right: 0; width: min(250px, calc(100vw - 32px)); padding: 14px; border: 2px solid var(--ink); border-radius: 18px; background: var(--paper); box-shadow: 0 5px 0 var(--ink); }
 .voice-options { display: grid; gap: 8px; }
@@ -65,6 +66,8 @@ h2 { font-size: 21px; }
 .object-grid button:nth-child(4n), .answer:nth-child(4n) { background: var(--playful); }
 .input-field { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 24px; }
 .input-field input { width: 110px; max-width: 100%; padding: 10px; font: inherit; border: 2px solid var(--ink); border-radius: 12px; }
+.lesson-entry-actions { display: flex; gap: 12px; margin-top: 18px; }
+.lesson-entry-actions button { flex: 1; min-width: 0; padding: 12px 6px; font-size: clamp(14px, 3.8vw, 18px); white-space: nowrap; }
 .check-field { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-weight: 750; }
 .check-field input { width: 24px; height: 24px; accent-color: var(--accent-strong); }
 .explain-actions { display: flex; align-items: stretch; gap: 10px; }

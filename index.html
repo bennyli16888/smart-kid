@@ -6,13 +6,13 @@
   <meta name="theme-color" content="#f5fcf4">
   <meta name="description" content="萌学园：看图认字、生活英语和有实物解法的加减法，原创萌宠陪你学。">
   <title>萌学园 · 和小伙伴一起学</title>
-  <link rel="stylesheet" href="css/style.css?v=0.6.0">
+  <link rel="stylesheet" href="css/style.css?v=0.7.0">
 </head>
 <body>
   <main class="app">
     <header class="topbar">
       <button id="home-button" class="icon-button" aria-label="返回首页">⌂</button>
-      <span class="brand">萌学园 <small>v0.6</small></span>
+      <span class="brand">萌学园 <small>v0.7</small></span>
       <span class="star-badge" aria-label="获得的星星">⭐ <span id="stars">0</span></span>
       <div class="voice-picker">
         <button id="voice-picker-button" class="icon-button" aria-label="选择发音人" aria-expanded="false" aria-controls="voice-menu" disabled>🗣️</button>
@@ -22,7 +22,7 @@
           <p id="voice-status" role="status" aria-live="polite" hidden></p>
         </div>
       </div>
-      <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false">🔈</button>
+      <button id="sound-button" class="icon-button" aria-label="开启声音" aria-pressed="false"><svg class="sound-icon" data-icon="muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z" fill="currentColor"/><path class="mute-slash" d="M4 4 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
     </header>
     <section id="screen-home" class="screen active" aria-label="学习设置">
       <div class="hero">
@@ -59,7 +59,10 @@
         </div>
         <p id="lesson-note" class="subtitle"></p>
         <p id="settings-error" role="alert"></p>
-        <button id="start-button" class="primary wide">▶ 开始学习</button>
+        <div class="lesson-entry-actions">
+          <button id="start-button" class="primary">👀 看和听</button>
+          <button id="find-button" class="secondary">🎧 听后找一找</button>
+        </div>
       </div>
       <p class="parent-note">给家长：无需按年龄选择，从简单开始。可以随时休息，不计时、不催促。</p>
     </section>
@@ -101,7 +104,7 @@
   <script src="js/data.js?v=0.3"></script>
   <script src="js/pictures.js?v=0.3"></script>
   <script src="js/characters.js?v=0.2"></script>
-  <script src="js/audio.js?v=0.6.0"></script>
-  <script src="js/app.js?v=0.6.0"></script>
+  <script src="js/audio.js?v=0.7.0"></script>
+  <script src="js/app.js?v=0.7.0"></script>
 </body>
 </html>
