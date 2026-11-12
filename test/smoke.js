@@ -209,6 +209,22 @@ async function main() {
       themes.add(await run("getComputedStyle(document.body).backgroundColor"));
     }
     assert.equal(themes.size, 10, "all companion themes must differ");
+    await run("renderHome(); narrator.enabled = false; updateSound(); state.subject = 'en'; state.level = 1; state.limit = 10; state.items = [{word:'apple',hint:'苹果',picture:'apple',audio:'en-1-0'}]; state.index = 0; state.completed = new Set(); renderLesson()");
+    assert.equal(await run("document.querySelectorAll('.picture-answer').length === 3 && !document.querySelector('#lesson-content').textContent.includes('apple') && document.querySelector('#next-button').disabled"), true, "listen-and-find hides the target and requires an answer");
+    await run("[...document.querySelectorAll('.picture-answer')].find(button => button.dataset.picture !== currentQuestion().picture).click()");
+    assert.equal(await run("document.querySelector('#feedback').textContent.includes(currentQuestion().hint) && !document.querySelector('.picture-answer.revealed') && document.querySelector('#next-button').disabled"), true, "the first wrong choice gives a clue before revealing the answer");
+    await run("[...document.querySelectorAll('.picture-answer')].find(button => !button.disabled && button.dataset.picture !== currentQuestion().picture).click()");
+    assert.equal(await run("document.querySelector('.picture-answer.revealed')?.dataset.picture === currentQuestion().picture && document.querySelector('#next-button').disabled"), true, "the second wrong choice demonstrates the correct picture");
+    await run("document.querySelector('.picture-answer.revealed').click()");
+    assert.equal(await run("state.completed.has(state.index) && !document.querySelector('#next-button').disabled"), true, "choosing the demonstrated picture completes the word");
+    await run("state.subject = 'math'; state.level = 1; state.limit = 10; state.items = [{a:5,b:2,op:'−',answer:3}]; state.index = 0; state.completed = new Set(); renderLesson()");
+    assert.equal(await run("document.querySelectorAll('.count-token').length === 5 && [...document.querySelectorAll('.answer')].every(button => button.disabled)"), true, "math result choices wait for object manipulation");
+    await run("(() => { const tokens = [...document.querySelectorAll('.count-token')]; tokens[0].click(); tokens[1].click(); })()");
+    assert.equal(await run("document.querySelectorAll('.count-token.taken').length === 2 && [...document.querySelectorAll('.answer')].every(button => button.disabled)"), true, "subtraction first removes the requested objects");
+    await run("[...document.querySelectorAll('.count-token:not(:disabled)')].forEach(button => button.click())");
+    assert.equal(await run("[...document.querySelectorAll('.answer')].every(button => !button.disabled) && document.querySelector('#math-count-status').textContent.includes('数到 3')"), true, "subtraction unlocks answers after counting the remainder");
+    await run("[...document.querySelectorAll('.answer')].find(button => Number(button.textContent) === currentQuestion().answer).click()");
+    assert.equal(await run("state.completed.has(state.index)"), true, "the counted math answer can be selected");
     for (const subject of ["zh", "math", "en"]) {
       for (const level of [1, 2, 3]) {
         for (const count of [10, 20, 30]) {
@@ -221,14 +237,18 @@ async function main() {
             assert.equal(await run("new Set([...document.querySelectorAll('.answer')].map(button => getComputedStyle(button).backgroundColor)).size"), 4, "math answers use four coordinated colors");
           } else {
             assert.equal(await run("new Set(state.items.map(item => item.word)).size"), count, "words must not repeat by default");
-            assert.equal(await run("document.querySelector('#lesson-content svg').getAttribute('role')"), "img");
+            assert.equal(await run("document.querySelectorAll('#answers.picture-answers .picture-answer').length"), 3, "word lessons offer three picture choices");
+            assert.equal(await run("document.querySelector('#answers svg').getAttribute('role')"), "img");
             assert.equal(await run("document.querySelector('#explain-actions').hidden && document.querySelector('#object-settings').hidden"), true);
           }
           const before = await run("state.stars");
           await run(`for(let i=0; i<${count}; i++) {
             if(state.subject === 'math') {
+              [...document.querySelectorAll('.count-token')].forEach(button => button.click());
               const button = [...document.querySelectorAll('.answer')].find(b => Number(b.textContent) === currentQuestion().answer);
               button.click(); button.click();
+            } else {
+              [...document.querySelectorAll('.picture-answer')].find(button => button.dataset.picture === currentQuestion().picture).click();
             }
             document.querySelector('#next-button').click();
           }`);
@@ -282,7 +302,7 @@ async function main() {
     await run("narrator.play = window.savedNarratorPlay; narrator.enabled = false; updateSound()");
     await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('[data-level=\"1\"]').click(); document.querySelector('#start-button').click()");
     const stars = await run("state.stars");
-    await run("[...document.querySelectorAll('.answer')].find(b => Number(b.textContent) !== currentQuestion().answer).click()");
+    await run("[...document.querySelectorAll('.count-token')].forEach(button => button.click()); [...document.querySelectorAll('.answer')].find(b => Number(b.textContent) !== currentQuestion().answer).click()");
     assert.equal(await run("state.stars"), stars, "wrong answer must not award stars");
     assert.equal(await run("document.querySelector('#next-button').disabled"), true);
     for (const q of [{ a: 2, b: 3, op: "+", answer: 5 }, { a: 5, b: 2, op: "−", answer: 3 }, { a: 1, b: 1, op: "−", answer: 0 }, { a: 0, b: 2, op: "+", answer: 2 }]) {

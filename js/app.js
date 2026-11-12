@@ -313,6 +313,7 @@ function renderObjectChoices() {
       cancelScheduledCoursePreload();
       state.objectId = button.dataset.object;
       renderObjectChoices();
+      updateMathCountingObject();
       setObjectPicker(false);
       if (!$("#explanation").hidden) renderExplanation();
       else scheduleLessonAudioPreload(currentQuestion(), true);
@@ -363,6 +364,79 @@ function mathExplanationTracks(q, objectId = state.objectId) {
     adding ? "total" : "remains", `n-${q.answer}`, `object-${objectId}`, `n-${q.a}`,
     adding ? "plus" : "minus", `n-${q.b}`, "equals"
   ])];
+}
+function pictureChoices(question) {
+  const pool = WORDS[state.subject][state.level - 1].map(([word, hint, picture]) => ({ word, hint, picture }));
+  const unique = [...new Map(pool.map(item => [item.picture, item])).values()];
+  const distractors = shuffle(unique.filter(item => item.picture !== question.picture)).slice(0, 2);
+  return shuffle([question, ...distractors]);
+}
+function renderMathCounting(q) {
+  const object = COUNTING_OBJECTS.find(item => item.id === state.objectId);
+  const group = (count, name, offset = 0) => {
+    if (!count) return `<div class="count-group"><span class="count-zero">0</span></div>`;
+    const buttons = Array.from({ length: count }, (_, index) => `
+      <button type="button" class="count-token" data-count-number="${offset + index + 1}" aria-label="第 ${offset + index + 1} 个物品">
+        <span>${object.emoji}</span><small></small>
+      </button>`).join("");
+    return `<div class="count-group ${name}">${buttons}</div>`;
+  };
+  const groups = q.op === "+"
+    ? `${group(q.a, "first-group")}<span class="count-operator">+</span>${group(q.b, "second-group", q.a)}`
+    : `${group(q.a, "first-group")}<span class="count-operator">− ${q.b}</span>`;
+  const instruction = q.op === "+"
+    ? "点一点，把两组物品合起来数。"
+    : `点出要拿走的 ${q.b} 个物品，再数一数剩下多少。`;
+  return `<div class="math-counting"><p class="subtitle">${instruction}</p><div id="math-object-scene" class="math-object-scene">${groups}</div><p id="math-count-status" role="status" aria-live="polite"></p></div>`;
+}
+function updateMathCountingObject() {
+  const object = COUNTING_OBJECTS.find(item => item.id === state.objectId);
+  document.querySelectorAll("#math-object-scene .count-token").forEach(button => {
+    const number = button.dataset.countNumber;
+    button.querySelector("span").textContent = object.emoji;
+    button.setAttribute("aria-label", `第 ${number} 个${object.name}`);
+  });
+}
+function setupMathCounting(q) {
+  const buttons = [...document.querySelectorAll("#math-object-scene .count-token")];
+  const answerButtons = [...$("#answers").querySelectorAll(".answer")];
+  const status = $("#math-count-status");
+  if (state.completed.has(state.index)) {
+    buttons.forEach(button => { button.disabled = true; });
+    status.textContent = `答案是 ${q.answer}，这题已经完成啦。`;
+    return;
+  }
+  let removed = 0;
+  let counted = 0;
+  const target = q.op === "+" ? q.a + q.b : q.answer;
+  const unlockAnswers = () => answerButtons.forEach(button => { button.disabled = false; });
+  buttons.forEach(button => {
+    button.onclick = () => {
+      if (q.op === "−" && removed < q.b) {
+        removed++;
+        button.disabled = true;
+        button.classList.add("taken");
+        button.querySelector("small").textContent = "×";
+        status.textContent = removed === q.b
+          ? q.answer === 0 ? "一个也没有了，选 0。"
+            : "拿走啦！再点一点剩下的物品。"
+          : `已拿走 ${removed} 个，继续点要拿走的物品。`;
+        if (narrator.enabled) narrator.play([`n-${removed}`]);
+        if (removed === q.b && q.answer === 0) unlockAnswers();
+        return;
+      }
+      counted++;
+      button.disabled = true;
+      button.classList.add("counted");
+      button.querySelector("small").textContent = String(counted);
+      status.textContent = counted === target
+        ? `数到 ${counted} 个了，选一个答案。`
+        : `你数到 ${counted} 个了，继续点。`;
+      if (narrator.enabled) narrator.play([`n-${counted}`]);
+      if (counted === target) unlockAnswers();
+    };
+  });
+  status.textContent = q.op === "+" ? "先数数看，再选一个答案。" : "先点出要拿走的物品。";
 }
 let coursePreloadGeneration = 0;
 let cancelCoursePreload = null;
@@ -421,16 +495,20 @@ function renderLesson() {
   $("#answers").innerHTML = "";
   const q = currentQuestion();
   const math = state.subject === "math";
+  const countObjects = math && state.limit <= 20;
+  let languageMistakes = 0;
+  $("#answers").classList.toggle("picture-answers", !math);
   $("#explain-actions").hidden = !math;
   setObjectPicker(false);
   if (math) renderObjectChoices();
-  $("#next-button").disabled = math && !state.completed.has(state.index);
+  $("#next-button").disabled = !state.completed.has(state.index);
   if (math) {
-    $("#lesson-content").innerHTML = `<p class="eyebrow">小伙伴陪你加一加、减一减</p><div class="equation">${q.a} ${q.op} ${q.b} = ?</div><p class="subtitle">${q.op === "+" ? "拿来一些，合在一起。" : "拿走一些，看看还剩多少。"}</p>`;
+    $("#lesson-content").innerHTML = `<p class="eyebrow">小伙伴陪你加一加、减一减</p><div class="equation">${q.a} ${q.op} ${q.b} = ?</div>${countObjects ? renderMathCounting(q) : `<p class="subtitle">${q.op === "+" ? "拿来一些，合在一起。" : "拿走一些，看看还剩多少。"}</p>`}`;
     answerChoices(q, state.limit).forEach(answer => {
       const button = document.createElement("button");
       button.className = "answer";
       button.textContent = answer;
+      button.disabled = countObjects && !state.completed.has(state.index);
       if (state.completed.has(state.index)) {
         button.disabled = true;
         if (answer === q.answer) button.classList.add("correct");
@@ -453,8 +531,52 @@ function renderLesson() {
       };
       $("#answers").appendChild(button);
     });
+    if (countObjects) setupMathCounting(q);
   } else {
-    $("#lesson-content").innerHTML = `${renderPicture(q.picture, q.hint)}<div class="word">${q.word}</div><p class="word-hint">${q.hint}</p>`;
+    $("#lesson-content").innerHTML = `<p class="eyebrow">听一听，找到对应的图片</p><p class="subtitle">听到熟悉的声音后，点一张图片。</p>`;
+    pictureChoices(q).forEach(choice => {
+      const button = document.createElement("button");
+      button.className = "answer picture-answer";
+      button.dataset.picture = choice.picture;
+      button.setAttribute("aria-label", choice.word);
+      button.innerHTML = renderPicture(choice.picture, choice.word);
+      button.onclick = () => {
+        if (state.completed.has(state.index)) return;
+        if (choice.picture !== q.picture) {
+          languageMistakes++;
+          button.disabled = true;
+          button.classList.add("wrong");
+          if (languageMistakes === 1) {
+            $("#feedback").textContent = `提示：${q.hint}。再听一遍，找一找。`;
+            if (narrator.enabled) narrator.play(["retry", q.audio]);
+          } else {
+            const correct = [...$("#answers").querySelectorAll(".picture-answer")]
+              .find(answer => answer.dataset.picture === q.picture);
+            $("#answers").querySelectorAll(".picture-answer").forEach(answer => {
+              if (answer !== correct) answer.disabled = true;
+            });
+            correct.classList.add("revealed");
+            $("#feedback").textContent = `答案是 ${q.word}，我们一起再听一次。`;
+            if (narrator.enabled) narrator.play([q.audio]);
+          }
+          return;
+        }
+        markComplete();
+        button.classList.add("correct");
+        $("#answers").querySelectorAll("button").forEach(answer => { answer.disabled = true; });
+        $("#feedback").textContent = `⭐ 找到了！${q.word}（${q.hint}）`;
+        $("#next-button").disabled = false;
+        renderCompanions("excited");
+        if (narrator.enabled) narrator.play(["praise"]);
+      };
+      $("#answers").appendChild(button);
+    });
+    if (state.completed.has(state.index)) {
+      $("#answers").querySelectorAll(".picture-answer").forEach(button => {
+        button.disabled = true;
+        if (button.dataset.picture === q.picture) button.classList.add("correct");
+      });
+    }
   }
   if (narrator.enabled) narrator.play(questionTracks());
   if (narrator.enabled) scheduleLessonAudioPreload(q, math);
@@ -467,8 +589,7 @@ function markComplete() {
   save();
 }
 function nextQuestion() {
-  if (state.subject === "math" && !state.completed.has(state.index)) return;
-  if (state.subject !== "math") markComplete();
+  if (!state.completed.has(state.index)) return;
   if (state.index < state.items.length - 1) {
     state.index++;
     renderLesson();

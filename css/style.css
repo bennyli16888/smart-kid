@@ -98,10 +98,25 @@ progress::-moz-progress-bar { background: var(--accent); }
 .equation { font-size: clamp(35px, 8vw, 64px); font-weight: 900; margin: 18px 0; }
 .listen-button { background: var(--highlight); margin: 12px 0 20px; }
 .answers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.answers.picture-answers { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 540px; margin: auto; }
 .answers:empty { display: none; }
 .answer { font-size: 28px; padding: 12px; background: var(--paper); }
+.picture-answer { min-height: 100px; display: grid; place-items: center; padding: 8px; }
+.picture-answer .word-picture { width: clamp(58px, 18vw, 100px); margin: 0 auto; }
 .answer.correct { background: #d1f3d8; }
 .answer.wrong { background: #ffdfd9; }
+.answer.revealed { outline: 4px dashed var(--accent-strong); outline-offset: 2px; }
+.math-counting { margin: 12px 0; }
+.math-object-scene { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin: 14px auto; }
+.count-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 100%; }
+.count-operator { font-size: 25px; font-weight: 850; }
+.count-zero { min-width: 48px; font-size: 25px; font-weight: 850; }
+.count-token { min-width: 48px; min-height: 52px; padding: 3px; border: 0; border-radius: 12px; box-shadow: none; background: transparent; }
+.count-token span { display: block; font-size: 30px; line-height: 1.2; }
+.count-token small { display: block; min-height: 14px; font-size: 11px; }
+.count-token.counted { background: var(--highlight); }
+.count-token.taken { background: var(--playful); text-decoration: line-through; }
+#math-count-status { min-height: 26px; font-weight: 750; }
 #feedback { min-height: 28px; margin: 16px 0; font-weight: 750; }
 .explanation { margin-top: 22px; padding: 18px 12px; border: 2px dashed var(--ink); border-radius: 18px; background: var(--paper); }
 .explanation[hidden] { display: none; }
