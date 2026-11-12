@@ -73,7 +73,7 @@ async function main() {
     }
     await run("window.appReady");
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
-    assert.equal(await run("(() => { const button = document.querySelector('#home-button'); const icon = button.querySelector('.home-button-icon'); return document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.png?v=0.7.0' && icon.complete && icon.naturalWidth === 256 && getComputedStyle(button).width === '60px' && getComputedStyle(button).borderRadius === '50%' && !document.querySelector('.brand-icon'); })()"), true, "the complete user-provided v0.7 icon is used in the enlarged circular Home button");
+    assert.equal(await run("(() => { const button = document.querySelector('#home-button'); const icon = button.querySelector('.home-button-icon'); return document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.png?v=0.8.0' && icon.complete && icon.naturalWidth === 256 && getComputedStyle(button).width === '60px' && getComputedStyle(button).borderRadius === '50%' && document.querySelector('.brand small').textContent === 'v0.8' && !document.querySelector('.brand-icon'); })()"), true, "the complete user-provided v0.8 icon is used in the enlarged circular Home button");
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("typeof CHARACTERS"), "object", `Page script error: ${browserErrors.join("; ")}`);
     assert.equal(await run("CHARACTERS.length"), 10);
@@ -215,6 +215,11 @@ async function main() {
     await run("renderHome(); narrator.enabled = false; updateSound(); state.subject = 'en'; renderSettings(); state.level = 1; state.limit = 10; state.items = [{word:'apple',hint:'苹果',picture:'apple',audio:'en-1-0'}]; state.index = 0; state.completed = new Set(); state.languageMode = 'study'; renderLesson()");
     assert.equal(await run("(() => { const study = document.querySelector('#start-button'); const quiz = document.querySelector('#find-button'); return !quiz.hidden && Math.abs(study.getBoundingClientRect().top - quiz.getBoundingClientRect().top) < 1; })()"), true, "both language entries are visible on one row");
     assert.equal(await run("document.querySelector('.word').textContent === 'apple' && !!document.querySelector('#lesson-content svg') && document.querySelectorAll('.picture-answer').length === 0 && !document.querySelector('#next-button').disabled"), true, "look-and-listen shows the word, image and audio without quiz choices");
+    for (const [width, height] of [[320, 568], [360, 640], [390, 844]]) {
+      await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: true });
+      assert.equal(await run("(() => { const nav = document.querySelector('.navigation').getBoundingClientRect(); const previous = document.querySelector('#previous-button').getBoundingClientRect(); const next = document.querySelector('#next-button').getBoundingClientRect(); return document.querySelector('#screen-lesson').classList.contains('language-lesson') && getComputedStyle(document.querySelector('.navigation')).position === 'fixed' && previous.top >= 0 && next.bottom <= innerHeight && previous.width > 0 && next.width > 0; })()"), true, `${width}x${height}: previous and next controls stay fully visible`);
+    }
+    await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
     const studyStars = await run("state.stars");
     await run("nextQuestion()");
     assert.equal(await run("state.completed.has(0) && state.stars === " + (studyStars + 1)), true, "look-and-listen earns its star when moving on");
@@ -226,14 +231,22 @@ async function main() {
     assert.equal(await run("document.querySelector('.picture-answer.revealed')?.dataset.picture === currentQuestion().picture && document.querySelector('#next-button').disabled"), true, "the second wrong choice demonstrates the correct picture");
     await run("document.querySelector('.picture-answer.revealed').click()");
     assert.equal(await run("state.completed.has(state.index) && !document.querySelector('#next-button').disabled"), true, "choosing the demonstrated picture completes the word");
-    await run("state.subject = 'math'; state.level = 1; state.limit = 10; state.items = [{a:5,b:2,op:'−',answer:3}]; state.index = 0; state.completed = new Set(); renderLesson()");
-    assert.equal(await run("document.querySelectorAll('.count-token').length === 5 && [...document.querySelectorAll('.answer')].every(button => button.disabled)"), true, "math result choices wait for object manipulation");
+    await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('#start-button').click(); state.items[0] = {a:5,b:2,op:'−',answer:3}; renderLesson()");
+    assert.equal(await run("!state.countingMode && document.querySelectorAll('.count-token').length === 0 && [...document.querySelectorAll('.answer')].every(button => !button.disabled) && !document.querySelector('#explain-actions').hidden"), true, "normal math lessons keep direct answers and the original explanation");
+    await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('#counting-button').click(); state.items[0] = {a:5,b:2,op:'−',answer:3}; renderLesson()");
+    assert.equal(await run("state.countingMode && document.querySelectorAll('.count-token').length === 5 && [...document.querySelectorAll('.answer')].every(button => button.disabled) && document.querySelector('#explain-actions').hidden && !document.querySelector('#change-object').hidden && document.querySelector('#change-object').textContent === '换物品'"), true, "the separate counting mode requires manipulation and hides narrated explanation");
+    assert.equal(await run("document.querySelector('#change-object').getBoundingClientRect().left >= document.querySelector('#listen-button').getBoundingClientRect().right"), true, "the object switch is beside the listen button");
     await run("(() => { const tokens = [...document.querySelectorAll('.count-token')]; tokens[0].click(); tokens[1].click(); })()");
     assert.equal(await run("document.querySelectorAll('.count-token.taken').length === 2 && [...document.querySelectorAll('.answer')].every(button => button.disabled)"), true, "subtraction first removes the requested objects");
     await run("[...document.querySelectorAll('.count-token:not(:disabled)')].forEach(button => button.click())");
     assert.equal(await run("[...document.querySelectorAll('.answer')].every(button => !button.disabled) && document.querySelector('#math-count-status').textContent.includes('数到 3')"), true, "subtraction unlocks answers after counting the remainder");
     await run("[...document.querySelectorAll('.answer')].find(button => Number(button.textContent) === currentQuestion().answer).click()");
     assert.equal(await run("state.completed.has(state.index)"), true, "the counted math answer can be selected");
+    await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('[data-level=\"3\"]').click(); document.querySelector('#custom-range').value = '20'; document.querySelector('#custom-range').dispatchEvent(new Event('input', {bubbles:true}))");
+    assert.equal(await run("!document.querySelector('#counting-button').hidden"), true, "custom math ranges up to 20 expose counting mode");
+    assert.equal(await run("Math.abs(document.querySelector('#counting-button').getBoundingClientRect().top - document.querySelector('#start-button').getBoundingClientRect().top) < 1"), true, "counting mode sits beside normal math study");
+    await run("document.querySelector('#custom-range').value = '21'; document.querySelector('#custom-range').dispatchEvent(new Event('input', {bubbles:true}))");
+    assert.equal(await run("document.querySelector('#counting-button').hidden"), true, "custom ranges above 20 hide counting mode");
     for (const subject of ["zh", "math", "en"]) {
       for (const level of [1, 2, 3]) {
         for (const count of [10, 20, 30]) {
@@ -254,7 +267,6 @@ async function main() {
           const before = await run("state.stars");
           await run(`for(let i=0; i<${count}; i++) {
             if(state.subject === 'math') {
-              [...document.querySelectorAll('.count-token')].forEach(button => button.click());
               const button = [...document.querySelectorAll('.answer')].find(b => Number(b.textContent) === currentQuestion().answer);
               button.click(); button.click();
             } else {
@@ -291,7 +303,7 @@ async function main() {
     assert.equal(await run("state.objectId === 'candy' && document.querySelector('#explain-button').getAttribute('aria-label').includes('五彩糖果')"), true, "default explanation object is colorful candy");
     assert.equal(await run("document.querySelectorAll('#object-settings [data-object]').length"), 9, "lesson offers exactly nine explanation objects");
     assert.equal(await run("document.querySelector('#object-settings').hidden && document.querySelector('#change-object').getAttribute('aria-expanded') === 'false'"), true, "object choices are initially collapsed");
-    assert.equal(await run("document.querySelector('#change-object').getBoundingClientRect().left >= document.querySelector('#explain-button').getBoundingClientRect().right"), true, "change-object button is to the right of explain");
+    assert.equal(await run("document.querySelector('#change-object').getBoundingClientRect().left >= document.querySelector('#listen-button').getBoundingClientRect().right"), true, "change-object button is beside listen");
     await run("document.querySelector('#change-object').click()");
     assert.equal(await run("!document.querySelector('#object-settings').hidden && document.querySelector('#change-object').getAttribute('aria-expanded') === 'true'"), true);
     await run("document.querySelector('#change-object').click()");
@@ -312,7 +324,7 @@ async function main() {
     await run("narrator.play = window.savedNarratorPlay; narrator.enabled = false; updateSound()");
     await run("renderHome(); document.querySelector('[data-subject=math]').click(); document.querySelector('[data-level=\"1\"]').click(); document.querySelector('#start-button').click()");
     const stars = await run("state.stars");
-    await run("[...document.querySelectorAll('.count-token')].forEach(button => button.click()); [...document.querySelectorAll('.answer')].find(b => Number(b.textContent) !== currentQuestion().answer).click()");
+    await run("[...document.querySelectorAll('.answer')].find(b => Number(b.textContent) !== currentQuestion().answer).click()");
     assert.equal(await run("state.stars"), stars, "wrong answer must not award stars");
     assert.equal(await run("document.querySelector('#next-button').disabled"), true);
     for (const q of [{ a: 2, b: 3, op: "+", answer: 5 }, { a: 5, b: 2, op: "−", answer: 3 }, { a: 1, b: 1, op: "−", answer: 0 }, { a: 0, b: 2, op: "+", answer: 2 }]) {
@@ -336,7 +348,7 @@ async function main() {
         assert.equal(await run("document.documentElement.scrollWidth <= window.innerWidth"), true, `${width}px horizontal overflow: ${expression}`);
       }
       await run("renderLesson()");
-      assert.equal(await run("document.querySelector('#change-object').getBoundingClientRect().left >= document.querySelector('#explain-button').getBoundingClientRect().right"), true, `${width}px: object switch stays to the right of explain`);
+      assert.equal(await run("document.querySelector('#change-object').getBoundingClientRect().left >= document.querySelector('#listen-button').getBoundingClientRect().right"), true, `${width}px: object switch stays beside listen`);
     }
     if (process.env.SCREENSHOT_DIR) {
       await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });

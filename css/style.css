@@ -43,6 +43,7 @@ h2 { font-size: 21px; }
 .screen { display: none; padding-top: 24px; }
 #screen-home { padding-top: 8px; }
 .screen.active { display: block; animation: arrive .25s ease; }
+#screen-lesson.language-lesson.active { animation: arrive-fade .25s ease; }
 .hero { display: flex; align-items: center; gap: 24px; margin: 4px 0 24px; }
 .companion-button { border: 0; box-shadow: none; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
 .companion-button small { font-size: 12px; color: var(--muted); margin-top: 5px; }
@@ -72,6 +73,9 @@ h2 { font-size: 21px; }
 .input-field input { width: 110px; max-width: 100%; padding: 10px; font: inherit; border: 2px solid var(--ink); border-radius: 12px; }
 .lesson-entry-actions { display: flex; gap: 12px; margin-top: 18px; }
 .lesson-entry-actions button { flex: 1; min-width: 0; padding: 12px 6px; font-size: clamp(14px, 3.8vw, 18px); white-space: nowrap; }
+.lesson-tools { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+.lesson-tools .listen-button { margin: 0; }
+.lesson-tools #change-object { flex-shrink: 0; white-space: nowrap; }
 .check-field { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-weight: 750; }
 .check-field input { width: 24px; height: 24px; accent-color: var(--accent-strong); }
 .explain-actions { display: flex; align-items: stretch; gap: 10px; }
@@ -103,7 +107,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 .word { font-size: clamp(36px, 8vw, 65px); font-weight: 900; line-height: 1.4; overflow-wrap: anywhere; }
 .word-hint { font-size: 20px; color: var(--muted); margin: 6px 0 16px; }
 .equation { font-size: clamp(35px, 8vw, 64px); font-weight: 900; margin: 18px 0; }
-.listen-button { background: var(--highlight); margin: 12px 0 20px; }
+.listen-button { background: var(--highlight); }
 .answers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .answers.picture-answers { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 540px; margin: auto; }
 .answers:empty { display: none; }
@@ -140,6 +144,7 @@ progress::-moz-progress-bar { background: var(--accent); }
 .results { text-align: center; padding: 36px 24px; }
 .results > p { margin-top: 18px; line-height: 1.8; }
 @keyframes arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes arrive-fade { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 560px) {
   .app { padding-left: 16px; padding-right: 16px; }
   .hero { gap: 10px; }
@@ -159,6 +164,22 @@ progress::-moz-progress-bar { background: var(--accent); }
   .lesson-heading .companion { width: 62px; }
   .answers { gap: 10px; }
   .answer { font-size: 25px; padding: 12px 4px; }
+  #screen-lesson.language-lesson { padding-top: 8px; padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  #screen-lesson.language-lesson .lesson-heading { margin-bottom: 8px; }
+  #screen-lesson.language-lesson progress { margin-bottom: 10px; }
+  #screen-lesson.language-lesson .lesson-card { padding: 12px 10px; }
+  #screen-lesson.language-lesson #lesson-content > .eyebrow { margin-bottom: 4px; }
+  #screen-lesson.language-lesson .word-picture { width: min(38vw, 148px); }
+  #screen-lesson.language-lesson .word { font-size: clamp(34px, 8vw, 48px); line-height: 1.15; }
+  #screen-lesson.language-lesson .word-hint { font-size: 16px; margin: 2px 0 6px; }
+  #screen-lesson.language-lesson .lesson-tools { margin: 6px 0 10px; }
+  #screen-lesson.language-lesson .answers { gap: 6px; }
+  #screen-lesson.language-lesson .answer { min-height: 44px; font-size: 22px; padding: 8px 4px; }
+  #screen-lesson.language-lesson .picture-answer { min-height: 74px; padding: 4px; }
+  #screen-lesson.language-lesson .picture-answer .word-picture { width: clamp(48px, 15vw, 80px); }
+  #screen-lesson.language-lesson #feedback { min-height: 0; margin: 6px 0; }
+  #screen-lesson.language-lesson .navigation { position: fixed; z-index: 20; left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right)); bottom: 0; margin: 0; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); background: var(--paper); border-top: 1px solid var(--grid); }
+  #screen-lesson.language-lesson .navigation button { min-height: 44px; padding: 8px 6px; font-size: 16px; }
   .brand { font-size: 17px; }
   .brand small { display: block; }
   .topbar { gap: 8px; }

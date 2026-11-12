@@ -23,7 +23,7 @@ const state = {
   limit: 10, objectId: "candy", voiceId: stored("smartkid_voice", DEFAULT_VOICE_ID),
   charId: getCharacter(stored("smartkid_char", "dino")).id,
   stars: Math.max(0, Number(stored("smartkid_stars", "0")) || 0),
-  items: [], index: 0, completed: new Set(), languageMode: "study", explanationStep: 0, returnScreen: "screen-home"
+  items: [], index: 0, completed: new Set(), languageMode: "study", countingMode: false, explanationStep: 0, returnScreen: "screen-home"
 };
 function save() {
   try {
@@ -271,8 +271,10 @@ function renderSettings() {
   });
   $("#settings-error").textContent = "";
   const math = state.subject === "math";
+  const selectedRange = state.level === 3 ? Number($("#custom-range").value) : state.level * 10;
   $("#start-button").textContent = math ? "▶ 开始学习" : "👀 看和听";
   $("#find-button").hidden = math;
+  $("#counting-button").hidden = !math || !Number.isInteger(selectedRange) || selectedRange < 1 || selectedRange > 20;
   $("#level-heading").textContent = math ? "🔢 数字范围" : "🌱 选个难度";
   $("#level-row").setAttribute("aria-label", math ? "数字范围" : "难度");
   $("#level-row").innerHTML = SUBJECTS[state.subject].levels.map((name, index) =>
@@ -298,7 +300,7 @@ function renderSettings() {
     button.setAttribute("aria-pressed", String(selected));
   });
   $("#lesson-note").textContent = math
-    ? "数字和结果均不超过所选范围，没有负数。每次生成不同题目，可用喜欢的实物分步讲解。"
+    ? "数字和结果均不超过所选范围，没有负数。可直接答题；20以内还可选择“操作数一数”。"
     : `本难度有 ${WORDS[state.subject][state.level - 1].length} 个字词，${state.subject === "zh" ? "语文" : "英语"}共 90 个。${state.repeat ? `重复比例 ${Math.round(state.ratio * 100)}%，其余为不同字词。` : "默认不重复；数量超过材料时会提示，不会偷偷重复。"} `;
 }
 function setObjectPicker(open) {
@@ -320,7 +322,7 @@ function renderObjectChoices() {
       updateMathCountingObject();
       setObjectPicker(false);
       if (!$("#explanation").hidden) renderExplanation();
-      else scheduleLessonAudioPreload(currentQuestion(), true);
+      else if (!state.countingMode) scheduleLessonAudioPreload(currentQuestion(), true);
       $("#change-object").focus();
     };
   });
@@ -344,6 +346,11 @@ function startLesson(mode = state.languageMode) {
   if (state.subject !== "math") state.languageMode = mode === "find" ? "find" : "study";
   state.count = state.countMode === "custom" ? Number($("#custom-count").value) : Number(state.countMode);
   state.limit = state.level === 3 ? Number($("#custom-range").value) : state.level * 10;
+  const countingMode = state.subject === "math" && mode === "count";
+  if (countingMode && state.limit > 20) {
+    $("#settings-error").textContent = "“操作数一数”仅适用于 20 以内。";
+    return;
+  }
   try {
     state.items = generateLesson(state.subject, state.level, state.count, {
       repeat: state.repeat, ratio: state.ratio, limit: state.limit
@@ -352,6 +359,7 @@ function startLesson(mode = state.languageMode) {
     $("#settings-error").textContent = error.message;
     return;
   }
+  state.countingMode = countingMode;
   state.index = 0;
   state.completed = new Set();
   renderLesson();
@@ -483,7 +491,7 @@ function scheduleLessonAudioPreload(q, math) {
   const nextTracks = !next ? [] : math
     ? [`n-${next.a}`, next.op === "+" ? "plus" : "minus", `n-${next.b}`, "question"]
     : [next.audio];
-  scheduleCourseAudioPreload(math ? mathExplanationTracks(q) : [], nextTracks, state.voiceId);
+  scheduleCourseAudioPreload(math && !state.countingMode ? mathExplanationTracks(q) : [], nextTracks, state.voiceId);
 }
 function renderLesson() {
   cancelScheduledCoursePreload();
@@ -501,10 +509,12 @@ function renderLesson() {
   const q = currentQuestion();
   const math = state.subject === "math";
   const findPicture = !math && state.languageMode === "find";
-  const countObjects = math && state.limit <= 20;
+  const countObjects = math && state.countingMode;
+  $("#screen-lesson").classList.toggle("language-lesson", !math);
   let languageMistakes = 0;
   $("#answers").classList.toggle("picture-answers", findPicture);
-  $("#explain-actions").hidden = !math;
+  $("#explain-actions").hidden = !math || countObjects;
+  $("#change-object").hidden = !math;
   setObjectPicker(false);
   if (math) renderObjectChoices();
   $("#next-button").disabled = (math || findPicture) && !state.completed.has(state.index);
@@ -531,7 +541,7 @@ function renderLesson() {
           if (narrator.enabled) narrator.play(["praise"]);
         } else {
           button.classList.add("wrong");
-          $("#feedback").textContent = "🌱 没关系，点下面的“讲给我听”，数一数再试。";
+          $("#feedback").textContent = countObjects ? "🌱 没关系，再数一数后试试。" : "🌱 没关系，点下面的“讲给我听”，数一数再试。";
           if (narrator.enabled) narrator.play(["retry"]);
         }
       };
@@ -696,7 +706,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   $("#start-button").onclick = () => startLesson("study");
   $("#find-button").onclick = () => startLesson("find");
-  $("#again-button").onclick = () => startLesson();
+  $("#counting-button").onclick = () => startLesson("count");
+  $("#custom-range").addEventListener("input", renderSettings);
+  $("#again-button").onclick = () => startLesson(state.countingMode ? "count" : state.languageMode);
   $("#listen-button").onclick = () => {
     cancelScheduledCoursePreload();
     narrator.play(questionTracks());
