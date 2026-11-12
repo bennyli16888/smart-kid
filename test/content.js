@@ -54,11 +54,13 @@ const audioDirectory = path.join(__dirname, "../audio");
 const voiceManifest = JSON.parse(fs.readFileSync(path.join(audioDirectory, "voices/manifest.json"), "utf8"));
 const tracks = JSON.parse(JSON.stringify(evaluate("audioTracks()")));
 assert.equal(voiceManifest.track_count, tracks.length);
-assert.equal(voiceManifest.voices.length, 4);
+assert.deepEqual(voiceManifest.voices.map(voice => voice.id), ["XiaoYu", "XiaoYou", "XiaoXia"]);
 assert.equal(voiceManifest.output_template, "audio/voices/{voiceId}/{filename}");
 assert.deepEqual(voiceManifest.tracks.map(track => track.id), tracks.map(track => track.id));
-for (const track of tracks) {
-  assert.ok(fs.existsSync(path.join(audioDirectory, "voices/XiaoYu", `${track.id}.mp3`)), `default voice missing ${track.id}`);
+for (const voice of voiceManifest.voices) {
+  for (const track of tracks) {
+    assert.ok(fs.existsSync(path.join(audioDirectory, "voices", voice.id, `${track.id}.mp3`)), `${voice.id} missing ${track.id}`);
+  }
 }
 for (const [track, listed] of tracks.map((track, i) => [track, voiceManifest.tracks[i]])) {
   let spokenText = track.text;

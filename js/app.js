@@ -72,14 +72,14 @@ function setVoiceMenu(open) {
 }
 
 async function initializeVoicePicker() {
-  const response = await fetch("audio/voices/manifest.json");
+  const response = await fetch("audio/voices/manifest.json?v=0.4.1");
   if (!response.ok) throw new Error(`voice-manifest-${response.status}`);
   voiceManifest = await response.json();
   if (!Array.isArray(voiceManifest.voices) || !voiceManifest.voices.length || !voiceManifest.output_template) {
     throw new Error("voice-manifest-invalid");
   }
   const availability = await Promise.all(voiceManifest.voices.map(async voice => {
-    const result = await fetch(voiceAudioUrl("zh-1-0", voice.id), { method: "HEAD" });
+    const result = await fetch(`${voiceAudioUrl("zh-1-0", voice.id)}?v=0.4.1`, { method: "HEAD" });
     return [voice.id, result.ok];
   }));
   availability.forEach(([id, available]) => voiceAvailability.set(id, available));
@@ -152,7 +152,7 @@ const narrator = {
     for (const id of ids) {
       if (sequence !== this.sequence) return;
       try {
-        await this.playSelectedTrack(id, state.voiceId, sequence);
+        await this.playSelectedTrack(id, state.voiceId);
       } catch (error) {
         if (sequence !== this.sequence) return;
         this.audio.pause();
@@ -165,14 +165,8 @@ const narrator = {
       }
     }
   },
-  async playSelectedTrack(id, voiceId, sequence) {
-    try {
-      await this.playSource(`${voiceAudioUrl(id, voiceId)}?v=0.4`);
-    } catch (error) {
-      if (sequence !== this.sequence) return;
-      if (error.name === "NotAllowedError" || voiceId === DEFAULT_VOICE_ID) throw error;
-      await this.playSource(`${voiceAudioUrl(id, DEFAULT_VOICE_ID)}?v=0.4`);
-    }
+  async playSelectedTrack(id, voiceId) {
+    await this.playSource(`${voiceAudioUrl(id, voiceId)}?v=0.4.1`);
   }
 };
 narrator.audio.preload = "auto";
@@ -336,6 +330,15 @@ function questionTracks() {
   const q = currentQuestion();
   return state.subject === "math" ? [`n-${q.a}`, q.op === "+" ? "plus" : "minus", `n-${q.b}`, "question"] : [q.audio];
 }
+function mathExplanationTracks(q, objectId = state.objectId) {
+  const adding = q.op === "+";
+  return [...new Set([
+    "first", `n-${q.a}`, `object-${objectId}`,
+    adding ? "bring" : "take", `n-${q.b}`, `object-${objectId}`, adding ? "together" : "left",
+    adding ? "total" : "remains", `n-${q.answer}`, `object-${objectId}`, `n-${q.a}`,
+    adding ? "plus" : "minus", `n-${q.b}`, "equals"
+  ])];
+}
 function renderLesson() {
   show("screen-lesson");
   renderCompanions();
@@ -386,9 +389,17 @@ function renderLesson() {
     $("#lesson-content").innerHTML = `${renderPicture(q.picture, q.hint)}<div class="word">${q.word}</div><p class="word-hint">${q.hint}</p>`;
   }
   if (narrator.enabled) narrator.play(questionTracks());
-  continuousAudio.preload(questionTracks());
+  continuousAudio.preload([
+    ...questionTracks(),
+    ...(math ? mathExplanationTracks(q) : [])
+  ], state.voiceId);
   const next = state.items[state.index + 1];
-  if (next) continuousAudio.preload(state.subject === "math" ? [`n-${next.a}`, next.op === "+" ? "plus" : "minus", `n-${next.b}`, "question"] : [next.audio]);
+  if (next) {
+    const nextTracks = state.subject === "math"
+      ? [`n-${next.a}`, next.op === "+" ? "plus" : "minus", `n-${next.b}`, "question"]
+      : [next.audio];
+    continuousAudio.preload(nextTracks, state.voiceId);
+  }
 }
 function markComplete() {
   if (state.completed.has(state.index)) return;
@@ -449,7 +460,7 @@ function renderExplanation() {
   }
   if (number === 0) $("#star-scene").textContent = "0 · 一个也没有";
   if (narrator.enabled) narrator.play(ids);
-  continuousAudio.preload(ids);
+  continuousAudio.preload(ids, state.voiceId);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

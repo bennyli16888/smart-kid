@@ -45,8 +45,7 @@ const continuousAudio = {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 15000);
         try {
-          const response = await fetch(`audio/voices/${voiceId}/${id}.mp3?v=0.4`, { signal: controller.signal });
-          if (response.status === 404 && voiceId !== "XiaoYu") return this.recording(id, "XiaoYu");
+          const response = await fetch(`audio/voices/${voiceId}/${id}.mp3?v=0.4.1`, { signal: controller.signal });
           if (!response.ok) throw new Error("audio-load");
           const Decoder = window.OfflineAudioContext || window.webkitOfflineAudioContext;
           const decoder = new Decoder(1, 1, this.sampleRate);

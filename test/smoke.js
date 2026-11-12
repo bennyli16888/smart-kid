@@ -44,9 +44,11 @@ async function main() {
       ws.addEventListener("error", reject, { once: true });
     });
     let id = 0;
+    const browserErrors = [];
     const pending = new Map();
     ws.addEventListener("message", ({ data }) => {
       const msg = JSON.parse(data);
+      if (msg.method === "Runtime.exceptionThrown") browserErrors.push(msg.params.exceptionDetails.text);
       if (!msg.id || !pending.has(msg.id)) return;
       const { resolve, reject } = pending.get(msg.id);
       pending.delete(msg.id);
@@ -57,6 +59,7 @@ async function main() {
       pending.set(callId, { resolve, reject });
       ws.send(JSON.stringify({ id: callId, method, params }));
     });
+    await send("Runtime.enable");
     closeBrowser = () => send("Browser.close");
     const run = async expression => {
       const response = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true, userGesture: true });
@@ -71,10 +74,11 @@ async function main() {
     await run("window.appReady");
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
+    assert.equal(await run("typeof CHARACTERS"), "object", `Page script error: ${browserErrors.join("; ")}`);
     assert.equal(await run("CHARACTERS.length"), 10);
     assert.equal(await run("narrator.enabled"), false, "do not attempt autoplay on page open");
     assert.equal(await run("COUNTING_OBJECTS.length"), 9, "math explanation has nine objects");
-    assert.deepEqual(await run("[...document.querySelectorAll('#voice-options [data-voice]')].map(button => [button.dataset.voice, button.disabled])"), [["XiaoYu", false], ["XiaoYou", false], ["XiaoXia", true], ["XiaoRou", true]], "only voices with uploaded audio are selectable");
+    assert.deepEqual(await run("[...document.querySelectorAll('#voice-options [data-voice]')].map(button => [button.dataset.voice, button.disabled])"), [["XiaoYu", false], ["XiaoYou", false], ["XiaoXia", false]], "the three voices with uploaded audio are selectable, without XiaoRou");
     await run("window.buttonSoundCalls = 0; window.originalButtonSoundPlay = buttonSound.play; buttonSound.play = function() { if (narrator.enabled) window.buttonSoundCalls++; return window.originalButtonSoundPlay.call(this); }");
     assert.equal(await run("document.querySelector('.sound-panel, #sound-test, .voice-note')"), null, "remove the sound preview and voice description panel");
     assert.equal(await run("document.querySelector('[data-subject=songs], #song-settings')"), null, "remove the songs section");
@@ -99,8 +103,14 @@ async function main() {
       await run("window.nativeFetch = window.fetch; window.voiceFetchPaths = []; window.fetch = (input, ...args) => { window.voiceFetchPaths.push(new URL(input, location.href).pathname); return window.nativeFetch(input, ...args); }");
       await run("continuousAudio.recording('en-1-0', 'XiaoYou')");
       assert.ok(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/en-1-0.mp3')"), "selected voice loads its own audio directory");
-      await run("window.voiceFetchPaths.length = 0; continuousAudio.recording('n-82', 'XiaoYou')");
-      assert.deepEqual(await run("window.voiceFetchPaths"), ["/audio/voices/XiaoYou/n-82.mp3", "/audio/voices/XiaoYu/n-82.mp3"], "missing selected-voice tracks fall back to XiaoYu");
+      await run("continuousAudio.recording('n-82', 'XiaoYou'); continuousAudio.recording('en-1-0', 'XiaoXia')");
+      assert.ok(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/n-82.mp3') && window.voiceFetchPaths.includes('/audio/voices/XiaoXia/en-1-0.mp3')"), "each selectable voice loads its own recordings");
+      await run("(async () => { window.directVoiceUrls = []; window.originalPlaySource = narrator.playSource; narrator.playSource = async url => window.directVoiceUrls.push(url); await narrator.playSelectedTrack('n-82', 'XiaoXia'); narrator.playSource = window.originalPlaySource; })()");
+      assert.deepEqual(await run("window.directVoiceUrls"), ["audio/voices/XiaoXia/n-82.mp3?v=0.4.1"], "direct playback never substitutes another voice");
+      await run(`window.preloads = []; window.originalPreload = continuousAudio.preload; continuousAudio.preload = (ids, voiceId) => window.preloads.push({ids, voiceId}); state.voiceId = 'XiaoXia'; state.subject = 'math'; state.items = [{a:2,b:3,op:'+',answer:5},{a:1,b:2,op:'−',answer:1}]; state.index = 0; narrator.enabled = false; renderLesson()`);
+      assert.equal(await run("window.preloads.some(({ids, voiceId}) => voiceId === 'XiaoXia' && ids.includes('first') && ids.includes('object-candy') && ids.includes('together'))"), true, "math question and explanation audio are preloaded for the selected voice");
+      assert.equal(await run("window.preloads.every(({voiceId}) => voiceId === 'XiaoXia')"), true, "next-question preloads use the selected voice too");
+      await run("continuousAudio.preload = window.originalPreload; narrator.enabled = true; state.voiceId = 'XiaoYu'; state.subject = 'zh'; state.items = []; state.index = 0; renderHome()");
       await run("document.querySelector('#voice-picker-button').click()");
       assert.equal(await run("document.querySelector('#voice-menu').hidden"), false, "voice control opens its choices");
       await run("document.querySelector('[data-voice=XiaoYou]').click()");
@@ -281,7 +291,7 @@ async function main() {
       const lessonImage = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
       fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR, "smartkid-english.png"), Buffer.from(lessonImage.data, "base64"));
     }
-    console.log("OK: fixed narration, continuous audio, cached replay, MP3 fallback, autoplay handling, 10 colorful themes, custom lessons/ranges/repeats, in-lesson object picker, preserved explanation progress, responsive layouts");
+    console.log("OK: voice-specific narration and preloading, continuous audio, cached replay, autoplay handling, 10 colorful themes, custom lessons/ranges/repeats, in-lesson object picker, preserved explanation progress, responsive layouts");
   } finally {
     if (closeBrowser && ws?.readyState === WebSocket.OPEN) await closeBrowser();
     ws?.close();
