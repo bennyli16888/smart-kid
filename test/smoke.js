@@ -73,7 +73,7 @@ async function main() {
     }
     await run("window.appReady");
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
-    assert.equal(await run("document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.png?v=0.7.0' && document.querySelector('.brand-icon').complete && document.querySelector('.brand-icon').naturalWidth > 0"), true, "the user-provided v0.7 brand icon is used as the favicon and in the header");
+    assert.equal(await run("(() => { const button = document.querySelector('#home-button'); const icon = button.querySelector('.home-button-icon'); return document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.png?v=0.7.0' && icon.complete && icon.naturalWidth === 256 && getComputedStyle(button).width === '60px' && getComputedStyle(button).borderRadius === '50%' && !document.querySelector('.brand-icon'); })()"), true, "the complete user-provided v0.7 icon is used in the enlarged circular Home button");
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("typeof CHARACTERS"), "object", `Page script error: ${browserErrors.join("; ")}`);
     assert.equal(await run("CHARACTERS.length"), 10);
