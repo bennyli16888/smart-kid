@@ -28,7 +28,9 @@ h2 { font-size: 21px; }
 .brand { font-size: 21px; font-weight: 850; flex: 1; }
 .brand small { font-size: 11px; color: var(--muted); }
 .icon-button { width: 48px; padding: 0; flex-shrink: 0; font-size: 24px; border-radius: 50%; }
-.sound-icon { display: block; width: 25px; height: 25px; margin: auto; }
+.brand-icon { width: 34px; height: 34px; flex-shrink: 0; border-radius: 9px; }
+.sound-icon { position: relative; display: inline-grid; place-items: center; width: 30px; height: 30px; font-size: 24px; line-height: 1; }
+.mute-slash { position: absolute; width: 34px; height: 3px; border-radius: 2px; background: #d64545; transform: rotate(45deg); }
 .voice-picker { position: relative; }
 .voice-menu { position: absolute; z-index: 20; top: calc(100% + 10px); right: 0; width: min(250px, calc(100vw - 32px)); padding: 14px; border: 2px solid var(--ink); border-radius: 18px; background: var(--paper); box-shadow: 0 5px 0 var(--ink); }
 .voice-options { display: grid; gap: 8px; }

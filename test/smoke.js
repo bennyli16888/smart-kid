@@ -13,7 +13,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(404).end();
     return;
   }
-  res.setHeader("Content-Type", file.endsWith(".mp3") ? "audio/mpeg" : file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "text/html");
+  res.setHeader("Content-Type", file.endsWith(".mp3") ? "audio/mpeg" : file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : file.endsWith(".svg") ? "image/svg+xml" : "text/html");
   fs.createReadStream(file).pipe(res);
 });
 
@@ -73,11 +73,12 @@ async function main() {
     }
     await run("window.appReady");
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
+    assert.equal(await run("document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.svg?v=0.7.0' && document.querySelector('.brand-icon').complete && document.querySelector('.brand-icon').naturalWidth > 0"), true, "the cute v0.7 brand icon is used as the favicon and in the header");
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("typeof CHARACTERS"), "object", `Page script error: ${browserErrors.join("; ")}`);
     assert.equal(await run("CHARACTERS.length"), 10);
     assert.equal(await run("narrator.enabled"), false, "do not attempt autoplay on page open");
-    assert.equal(await run("document.querySelector('#sound-button svg[data-icon=muted] .mute-slash') !== null"), true, "muted state uses a clear crossed-out speaker icon");
+    assert.equal(await run("document.querySelector('#sound-button span[data-icon=muted] .mute-slash') !== null && getComputedStyle(document.querySelector('#sound-button .mute-slash')).backgroundColor === 'rgb(214, 69, 69)'"), true, "muted state overlays a red slash on the speaker icon");
     assert.equal(await run("COUNTING_OBJECTS.length"), 9, "math explanation has nine objects");
     assert.deepEqual(await run("[...document.querySelectorAll('#voice-options [data-voice]')].map(button => [button.dataset.voice, button.disabled])"), [["XiaoYu", false], ["XiaoYou", false], ["XiaoXia", false]], "the three voices with uploaded audio are selectable, without XiaoRou");
     await run("window.buttonSoundCalls = 0; window.originalButtonSoundPlay = buttonSound.play; buttonSound.play = function() { if (narrator.enabled) window.buttonSoundCalls++; return window.originalButtonSoundPlay.call(this); }");
@@ -94,7 +95,7 @@ async function main() {
     await run("narrator.stop()");
     if (fs.existsSync(path.join(root, "audio/voices/XiaoYu/hello.mp3"))) {
       await run("document.querySelector('#sound-button').click()");
-      assert.equal(await run("document.querySelector('#sound-button svg[data-icon=on]') !== null"), true, "enabled sound uses the unmuted speaker icon");
+      assert.equal(await run("document.querySelector('#sound-button span[data-icon=on]')?.textContent === '🔊'"), true, "enabled sound uses the original speaker icon");
       for (let n = 0; n < 20 && !(await run("buttonSound.context?.state === 'running'")); n++) {
         await new Promise(resolve => setTimeout(resolve, 25));
       }

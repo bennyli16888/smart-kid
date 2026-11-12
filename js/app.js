@@ -230,8 +230,8 @@ function setSoundError(message = "") {
 }
 function updateSound() {
   $("#sound-button").innerHTML = narrator.enabled
-    ? `<svg class="sound-icon" data-icon="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z" fill="currentColor"/><path d="M15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`
-    : `<svg class="sound-icon" data-icon="muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z" fill="currentColor"/><path class="mute-slash" d="M4 4 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+    ? `<span class="sound-icon" data-icon="on" aria-hidden="true">🔊</span>`
+    : `<span class="sound-icon" data-icon="muted" aria-hidden="true"><span>🔈</span><span class="mute-slash"></span></span>`;
   $("#sound-button").setAttribute("aria-pressed", String(narrator.enabled));
   $("#sound-button").setAttribute("aria-label", narrator.enabled ? "关闭声音" : "开启声音");
 }
