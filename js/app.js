@@ -54,11 +54,14 @@ function renderVoiceOptions() {
     button.disabled = available === false;
     button.textContent = available === false ? `${voice.name}（音频待上传）` : voice.name;
     button.onclick = () => {
+      cancelScheduledCoursePreload();
       narrator.stop();
       state.voiceId = voice.id;
       save();
       renderVoiceOptions();
       setVoiceMenu(false);
+      continuousAudio.preload(["hello"], voice.id);
+      narrator.play(["hello"], { enableSound: narrator.enabled });
     };
     options.appendChild(button);
   }
@@ -120,10 +123,13 @@ const narrator = {
       this.audio.play().catch(finish);
     });
   },
-  async play(ids) {
+  async play(ids, { enableSound = true } = {}) {
     this.stop();
-    this.enabled = true;
-    updateSound();
+    if (enableSound) {
+      this.enabled = true;
+      updateSound();
+      buttonSound.unlock();
+    }
     const sequence = this.sequence;
     if (continuousAudio.supported) {
       try {
@@ -173,26 +179,42 @@ narrator.audio.preload = "auto";
 
 const buttonSound = {
   context: null,
+  getContext() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    this.context ??= new AudioContext();
+    return this.context;
+  },
+  unlock() {
+    if (!narrator.enabled) return;
+    const context = this.getContext();
+    if (context && context.state !== "running") {
+      context.resume().catch(error => console.error("Could not resume button sound", error));
+    }
+  },
   play() {
     if (!narrator.enabled) return;
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    this.context ??= new AudioContext();
-    if (this.context.state !== "running") void this.context.resume();
-    const start = this.context.currentTime;
-    [[587.33, 0, .065], [880, .045, .075]].forEach(([frequency, offset, duration]) => {
-      const oscillator = this.context.createOscillator();
-      const volume = this.context.createGain();
-      const noteStart = start + offset;
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(frequency, noteStart);
-      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.08, noteStart + duration);
-      volume.gain.setValueAtTime(.035, noteStart);
-      volume.gain.exponentialRampToValueAtTime(.001, noteStart + duration);
-      oscillator.connect(volume).connect(this.context.destination);
-      oscillator.start(noteStart);
-      oscillator.stop(noteStart + duration);
-    });
+    const context = this.getContext();
+    if (!context) return;
+    const playNotes = () => {
+      if (!narrator.enabled || context.state !== "running") return;
+      const start = context.currentTime;
+      [[587.33, 0, .065], [880, .045, .075]].forEach(([frequency, offset, duration]) => {
+        const oscillator = context.createOscillator();
+        const volume = context.createGain();
+        const noteStart = start + offset;
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, noteStart);
+        oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.08, noteStart + duration);
+        volume.gain.setValueAtTime(.035, noteStart);
+        volume.gain.exponentialRampToValueAtTime(.001, noteStart + duration);
+        oscillator.connect(volume).connect(context.destination);
+        oscillator.start(noteStart);
+        oscillator.stop(noteStart + duration);
+      });
+    };
+    if (context.state === "running") playNotes();
+    else context.resume().then(playNotes).catch(error => console.error("Could not resume button sound", error));
   }
 };
 
@@ -229,6 +251,7 @@ function applyTheme() {
   renderCompanions();
 }
 function show(screenId) {
+  if (screenId !== "screen-lesson") cancelScheduledCoursePreload();
   narrator.stop();
   document.querySelectorAll(".screen").forEach(el => el.classList.toggle("active", el.id === screenId));
   window.scrollTo({ top: 0, behavior: "instant" });
@@ -287,10 +310,12 @@ function renderObjectChoices() {
   ).join("");
   $("#object-row").querySelectorAll("button").forEach(button => {
     button.onclick = () => {
+      cancelScheduledCoursePreload();
       state.objectId = button.dataset.object;
       renderObjectChoices();
       setObjectPicker(false);
       if (!$("#explanation").hidden) renderExplanation();
+      else scheduleLessonAudioPreload(currentQuestion(), true);
       $("#change-object").focus();
     };
   });
@@ -339,7 +364,50 @@ function mathExplanationTracks(q, objectId = state.objectId) {
     adding ? "plus" : "minus", `n-${q.b}`, "equals"
   ])];
 }
+let coursePreloadGeneration = 0;
+let cancelCoursePreload = null;
+function cancelScheduledCoursePreload() {
+  coursePreloadGeneration++;
+  cancelCoursePreload?.();
+  cancelCoursePreload = null;
+}
+function scheduleCourseAudioPreload(explanationTracks, nextTracks, voiceId) {
+  cancelScheduledCoursePreload();
+  const generation = coursePreloadGeneration;
+  const lesson = { items: state.items, index: state.index, subject: state.subject, objectId: state.objectId };
+  const isCurrent = () =>
+    generation === coursePreloadGeneration &&
+    narrator.enabled &&
+    state.voiceId === voiceId &&
+    state.items === lesson.items &&
+    state.index === lesson.index &&
+    state.subject === lesson.subject &&
+    state.objectId === lesson.objectId;
+  const preload = async () => {
+    cancelCoursePreload = null;
+    if (!isCurrent()) return;
+    await continuousAudio.preload(explanationTracks, voiceId);
+    if (!isCurrent()) return;
+    await continuousAudio.preload(nextTracks, voiceId);
+  };
+  if (window.requestIdleCallback) {
+    const handle = window.requestIdleCallback(preload, { timeout: 1000 });
+    cancelCoursePreload = () => window.cancelIdleCallback?.(handle);
+  } else {
+    const handle = window.setTimeout(preload, 100);
+    cancelCoursePreload = () => window.clearTimeout(handle);
+  }
+}
+function scheduleLessonAudioPreload(q, math) {
+  if (!narrator.enabled) return;
+  const next = state.items[state.index + 1];
+  const nextTracks = !next ? [] : math
+    ? [`n-${next.a}`, next.op === "+" ? "plus" : "minus", `n-${next.b}`, "question"]
+    : [next.audio];
+  scheduleCourseAudioPreload(math ? mathExplanationTracks(q) : [], nextTracks, state.voiceId);
+}
 function renderLesson() {
+  cancelScheduledCoursePreload();
   show("screen-lesson");
   renderCompanions();
   $("#lesson-title").textContent = `${SUBJECTS[state.subject].name} · ${state.subject === "math" ? `${state.limit}以内` : SUBJECTS[state.subject].levels[state.level - 1]}`;
@@ -389,17 +457,7 @@ function renderLesson() {
     $("#lesson-content").innerHTML = `${renderPicture(q.picture, q.hint)}<div class="word">${q.word}</div><p class="word-hint">${q.hint}</p>`;
   }
   if (narrator.enabled) narrator.play(questionTracks());
-  continuousAudio.preload([
-    ...questionTracks(),
-    ...(math ? mathExplanationTracks(q) : [])
-  ], state.voiceId);
-  const next = state.items[state.index + 1];
-  if (next) {
-    const nextTracks = state.subject === "math"
-      ? [`n-${next.a}`, next.op === "+" ? "plus" : "minus", `n-${next.b}`, "question"]
-      : [next.audio];
-    continuousAudio.preload(nextTracks, state.voiceId);
-  }
+  if (narrator.enabled) scheduleLessonAudioPreload(q, math);
 }
 function markComplete() {
   if (state.completed.has(state.index)) return;
@@ -423,6 +481,7 @@ function nextQuestion() {
 }
 
 function renderExplanation() {
+  cancelScheduledCoursePreload();
   narrator.stop();
   const q = currentQuestion();
   const step = state.explanationStep;
@@ -454,13 +513,13 @@ function renderExplanation() {
     button.setAttribute("aria-label", taken ? `已拿走的${object.name}` : `第 ${i + 1} ${object.unit}${object.name}`);
     button.onclick = () => {
       button.classList.add("counted");
-      narrator.play([`n-${i + 1}`]);
+      if (narrator.enabled) narrator.play([`n-${i + 1}`]);
     };
     $("#star-scene").appendChild(button);
   }
   if (number === 0) $("#star-scene").textContent = "0 · 一个也没有";
   if (narrator.enabled) narrator.play(ids);
-  continuousAudio.preload(ids, state.voiceId);
+  if (narrator.enabled) continuousAudio.preload(ids, state.voiceId);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -476,7 +535,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#voice-status").textContent = "发音人暂时无法加载，请检查网络后刷新页面。";
     $("#voice-status").hidden = false;
   });
-  continuousAudio.preload(["hello"], state.voiceId);
   $("#voice-picker-button").onclick = () => setVoiceMenu($("#voice-menu").hidden);
   document.addEventListener("click", event => {
     if (!event.target.closest(".voice-picker")) setVoiceMenu(false);
@@ -490,6 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#sound-button").onclick = () => {
     if (!narrator.enabled) narrator.play(["hello"]);
     else {
+      cancelScheduledCoursePreload();
       narrator.stop();
       narrator.enabled = false;
       updateSound();
@@ -507,7 +566,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   $("#start-button").onclick = startLesson;
   $("#again-button").onclick = startLesson;
-  $("#listen-button").onclick = () => narrator.play(questionTracks());
+  $("#listen-button").onclick = () => {
+    cancelScheduledCoursePreload();
+    narrator.play(questionTracks());
+  };
   $("#next-button").onclick = nextQuestion;
   $("#previous-button").onclick = () => {
     if (state.index > 0) { state.index--; renderLesson(); }
@@ -518,5 +580,10 @@ document.addEventListener("DOMContentLoaded", () => {
     state.explanationStep = (state.explanationStep + 1) % 3;
     renderExplanation();
   };
-  document.addEventListener("visibilitychange", () => { if (document.hidden) narrator.stop(); });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      cancelScheduledCoursePreload();
+      narrator.stop();
+    }
+  });
 });

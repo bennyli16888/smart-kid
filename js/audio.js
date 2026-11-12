@@ -36,27 +36,47 @@ function encodeWave(samples, sampleRate) {
 }
 
 const continuousAudio = {
-  sampleRate: 24000, recordings: new Map(), phrases: new Map(),
+  sampleRate: 24000, recordingCacheLimit: 120, recordings: new Map(), pendingRecordings: new Set(), phrases: new Map(),
   get supported() { return Boolean(window.OfflineAudioContext || window.webkitOfflineAudioContext); },
+  trimRecordings() {
+    while (this.recordings.size > this.recordingCacheLimit) {
+      const oldest = [...this.recordings.keys()].find(key => !this.pendingRecordings.has(key));
+      if (!oldest) return;
+      this.recordings.delete(oldest);
+    }
+  },
   async recording(id, voiceId = "XiaoYu") {
     const key = `${voiceId}|${id}`;
-    if (!this.recordings.has(key)) {
-      const pending = (async () => {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 15000);
-        try {
-          const response = await fetch(`audio/voices/${voiceId}/${id}.mp3?v=0.4.1`, { signal: controller.signal });
-          if (!response.ok) throw new Error("audio-load");
-          const Decoder = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-          const decoder = new Decoder(1, 1, this.sampleRate);
-          const decoded = await decoder.decodeAudioData(await response.arrayBuffer());
-          return { samples: trimRecording(decoded), originalDuration: decoded.duration };
-        } finally { clearTimeout(timer); }
-      })();
-      this.recordings.set(key, pending);
-      pending.catch(() => this.recordings.delete(key));
+    if (this.recordings.has(key)) {
+      const cached = this.recordings.get(key);
+      this.recordings.delete(key);
+      this.recordings.set(key, cached);
+      return cached;
     }
-    return this.recordings.get(key);
+    const pending = (async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      try {
+        const response = await fetch(`audio/voices/${voiceId}/${id}.mp3?v=0.4.1`, { signal: controller.signal });
+        if (!response.ok) throw new Error("audio-load");
+        const Decoder = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        const decoder = new Decoder(1, 1, this.sampleRate);
+        const decoded = await decoder.decodeAudioData(await response.arrayBuffer());
+        return { samples: trimRecording(decoded), originalDuration: decoded.duration };
+      } finally { clearTimeout(timer); }
+    })();
+    this.recordings.set(key, pending);
+    this.pendingRecordings.add(key);
+    pending.then(() => {
+      this.pendingRecordings.delete(key);
+      this.trimRecordings();
+    }, () => {
+      this.pendingRecordings.delete(key);
+      if (this.recordings.get(key) === pending) this.recordings.delete(key);
+      this.trimRecordings();
+    });
+    this.trimRecordings();
+    return pending;
   },
   async prepare(ids, voiceId = "XiaoYu") {
     const key = `${voiceId}|${ids.join("|")}`;
@@ -90,6 +110,7 @@ const continuousAudio = {
     return this.phrases.get(key);
   },
   preload(ids, voiceId = "XiaoYu") {
-    if (this.supported) ids.forEach(id => { this.recording(id, voiceId).catch(() => {}); });
+    if (!this.supported) return Promise.resolve();
+    return Promise.all(ids.map(id => this.recording(id, voiceId).catch(() => {})));
   }
 };

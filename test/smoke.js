@@ -81,10 +81,22 @@ async function main() {
     assert.deepEqual(await run("[...document.querySelectorAll('#voice-options [data-voice]')].map(button => [button.dataset.voice, button.disabled])"), [["XiaoYu", false], ["XiaoYou", false], ["XiaoXia", false]], "the three voices with uploaded audio are selectable, without XiaoRou");
     await run("window.buttonSoundCalls = 0; window.originalButtonSoundPlay = buttonSound.play; buttonSound.play = function() { if (narrator.enabled) window.buttonSoundCalls++; return window.originalButtonSoundPlay.call(this); }");
     assert.equal(await run("document.querySelector('.sound-panel, #sound-test, .voice-note')"), null, "remove the sound preview and voice description panel");
+    assert.equal(await run("document.querySelector('#voice-menu .voice-hint')"), null, "do not show the obsolete missing-audio hint");
     assert.equal(await run("document.querySelector('[data-subject=songs], #song-settings')"), null, "remove the songs section");
     assert.equal(await run("document.querySelector('#screen-home #object-settings')"), null, "object choices belong in the lesson, not home settings");
+    await run("window.nativeFetch = window.fetch; window.voiceFetchPaths = []; window.fetch = (input, ...args) => { window.voiceFetchPaths.push(new URL(input, location.href).pathname); return window.nativeFetch(input, ...args); }");
+    await run("document.querySelector('#voice-picker-button').click(); document.querySelector('[data-voice=XiaoYou]').click()");
+    for (let n = 0; n < 20 && !(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/hello.mp3')")); n++) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    assert.equal(await run("state.voiceId === 'XiaoYou' && !narrator.enabled && document.querySelector('#voice-menu').hidden && window.voiceFetchPaths.includes('/audio/voices/XiaoYou/hello.mp3')"), true, "selecting a voice previews its own greeting without changing the sound toggle");
+    await run("narrator.stop()");
     if (fs.existsSync(path.join(root, "audio/voices/XiaoYu/hello.mp3"))) {
       await run("document.querySelector('#sound-button').click()");
+      for (let n = 0; n < 20 && !(await run("buttonSound.context?.state === 'running'")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 25));
+      }
+      assert.equal(await run("buttonSound.context?.state"), "running", "enabling sound unlocks the button audio context immediately");
       for (let n = 0; n < 80 && !(await run("narrator.audio.currentTime > .1")); n++) {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
@@ -100,17 +112,36 @@ async function main() {
       assert.equal(await run("continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question']).then(async p => p.url === (await continuousAudio.prepare(['n-2', 'plus', 'n-3', 'question'])).url)"), true, "replay reuses prepared audio");
       assert.equal(await run("document.querySelector('#voice-profile')"), null);
       assert.equal(await run("narrator.audio.playbackRate"), 1, "fixed voice must not be pitch-shifted or sped up");
-      await run("window.nativeFetch = window.fetch; window.voiceFetchPaths = []; window.fetch = (input, ...args) => { window.voiceFetchPaths.push(new URL(input, location.href).pathname); return window.nativeFetch(input, ...args); }");
+      await run("window.voiceFetchPaths.length = 0");
+      await run("continuousAudio.recordings.delete('XiaoYou|en-1-0')");
       await run("continuousAudio.recording('en-1-0', 'XiaoYou')");
       assert.ok(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/en-1-0.mp3')"), "selected voice loads its own audio directory");
       await run("continuousAudio.recording('n-82', 'XiaoYou'); continuousAudio.recording('en-1-0', 'XiaoXia')");
       assert.ok(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/n-82.mp3') && window.voiceFetchPaths.includes('/audio/voices/XiaoXia/en-1-0.mp3')"), "each selectable voice loads its own recordings");
       await run("(async () => { window.directVoiceUrls = []; window.originalPlaySource = narrator.playSource; narrator.playSource = async url => window.directVoiceUrls.push(url); await narrator.playSelectedTrack('n-82', 'XiaoXia'); narrator.playSource = window.originalPlaySource; })()");
       assert.deepEqual(await run("window.directVoiceUrls"), ["audio/voices/XiaoXia/n-82.mp3?v=0.4.1"], "direct playback never substitutes another voice");
-      await run(`window.preloads = []; window.originalPreload = continuousAudio.preload; continuousAudio.preload = (ids, voiceId) => window.preloads.push({ids, voiceId}); state.voiceId = 'XiaoXia'; state.subject = 'math'; state.items = [{a:2,b:3,op:'+',answer:5},{a:1,b:2,op:'−',answer:1}]; state.index = 0; narrator.enabled = false; renderLesson()`);
+      await run(`window.preloads = []; window.originalPreload = continuousAudio.preload; continuousAudio.preload = (ids, voiceId) => { window.preloads.push({ids, voiceId}); return new Promise(resolve => setTimeout(resolve, 80)); }; window.originalNarratorPlay = narrator.play; window.narrationCalls = []; narrator.play = ids => window.narrationCalls.push(ids); state.voiceId = 'XiaoXia'; state.subject = 'math'; state.items = [{a:2,b:3,op:'+',answer:5},{a:1,b:2,op:'−',answer:1}]; state.index = 0; narrator.enabled = false; renderLesson()`);
+      assert.equal(await run("window.preloads.length"), 0, "muted lessons do not preload course audio");
+      await run("narrator.enabled = true; window.preloads.length = 0; renderLesson()");
+      assert.equal(await run("window.preloads.length === 0 && window.narrationCalls.at(-1).join('|') === 'n-2|plus|n-3|question'"), true, "the current question starts before background preloading");
+      for (let n = 0; n < 100 && !(await run("window.preloads.length > 0")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 20));
+      }
+      assert.equal(await run("window.preloads.length"), 1, "the explanation is the first background audio batch");
       assert.equal(await run("window.preloads.some(({ids, voiceId}) => voiceId === 'XiaoXia' && ids.includes('first') && ids.includes('object-candy') && ids.includes('together'))"), true, "math question and explanation audio are preloaded for the selected voice");
+      assert.equal(await run("!window.preloads[0].ids.includes('question')"), true, "next-question audio is not mixed into explanation preloading");
+      for (let n = 0; n < 100 && !(await run("window.preloads.length > 1")); n++) {
+        await new Promise(resolve => setTimeout(resolve, 20));
+      }
+      assert.equal(await run("window.preloads.length"), 2, "next-question audio starts after explanation audio is ready");
+      assert.equal(await run("window.preloads[1].ids.includes('question')"), true);
       assert.equal(await run("window.preloads.every(({voiceId}) => voiceId === 'XiaoXia')"), true, "next-question preloads use the selected voice too");
-      await run("continuousAudio.preload = window.originalPreload; narrator.enabled = true; state.voiceId = 'XiaoYu'; state.subject = 'zh'; state.items = []; state.index = 0; renderHome()");
+      await run("window.preloads.length = 0; renderLesson(); document.querySelector('#sound-button').click()");
+      await new Promise(resolve => setTimeout(resolve, 150));
+      assert.equal(await run("window.preloads.length === 0 && !narrator.enabled"), true, "muting cancels background preloading that has not started");
+      await run("narrator.enabled = false; window.preloads.length = 0; state.explanationStep = 0; state.objectId = 'candy'; renderExplanation(); window.narrationCalls.length = 0; document.querySelector('.star-token').click()");
+      assert.equal(await run("window.preloads.length === 0 && window.narrationCalls.length === 0 && !narrator.enabled"), true, "counting objects stay silent when sound is off");
+      await run("narrator.play = window.originalNarratorPlay; continuousAudio.preload = window.originalPreload; narrator.enabled = true; updateSound(); state.voiceId = 'XiaoYu'; state.subject = 'zh'; state.items = []; state.index = 0; renderHome()");
       await run("document.querySelector('#voice-picker-button').click()");
       assert.equal(await run("document.querySelector('#voice-menu').hidden"), false, "voice control opens its choices");
       await run("document.querySelector('[data-voice=XiaoYou]').click()");
@@ -129,6 +160,7 @@ async function main() {
         return invalid;
       })()`);
       assert.deepEqual(invalidRecordings, [], "every generated narration asset must decode and contain audible samples");
+      assert.equal(await run("continuousAudio.recordings.size <= continuousAudio.recordingCacheLimit"), true, "decoded recordings stay within the cache limit");
       await run("narrator.play(['hello']); window.OfflineDecoder = window.OfflineAudioContext; window.OfflineAudioContext = undefined; window.LegacyOfflineDecoder = window.webkitOfflineAudioContext; window.webkitOfflineAudioContext = undefined; narrator.play(['n-2'])");
       for (let n = 0; n < 40 && !(await run("new URL(narrator.audio.src).pathname.endsWith('/n-2.mp3') && narrator.audio.currentTime > .1")); n++) {
         await new Promise(resolve => setTimeout(resolve, 100));
