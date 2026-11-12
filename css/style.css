@@ -41,6 +41,7 @@ h2 { font-size: 21px; }
 .star-badge { font-size: 17px; font-weight: 800; white-space: nowrap; padding: 4px 6px; border-radius: 12px; background: var(--highlight); }
 [hidden] { display: none !important; }
 .screen { display: none; padding-top: 24px; }
+#screen-home { padding-top: 8px; }
 .screen.active { display: block; animation: arrive .25s ease; }
 .hero { display: flex; align-items: center; gap: 24px; margin: 4px 0 24px; }
 .companion-button { border: 0; box-shadow: none; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
