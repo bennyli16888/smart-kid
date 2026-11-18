@@ -122,7 +122,9 @@ def main():
                 subprocess.run([
                     ffmpeg, "-y", "-loglevel", "error", "-i", str(source),
                     "-ar", "24000", "-ac", "1", "-codec:a", "libmp3lame",
-                    "-b:a", "96k", str(encoded)
+                    # 64 kbps matches the delivered files: see
+                    # test/reencode-audio.sh, which re-encodes the masters.
+                    "-b:a", "64k", str(encoded)
                 ], check=True)
                 target.write_bytes(encoded.read_bytes())
             provenance["tracks"][track["id"]] = {
