@@ -28,10 +28,17 @@ jobs:
       - name: Prepare site files
         run: |
           mkdir -p _site/audio
-          cp index.html _site/
-          cp -R css js _site/
+          cp index.html manifest.webmanifest sw.js _site/
+          cp -R css js icons _site/
           cp -R audio/voices _site/audio/
           touch _site/.nojekyll
+      - name: Check the deployed site is complete
+        run: |
+          test -f _site/manifest.webmanifest
+          test -f _site/sw.js
+          test -f _site/icons/icon-192.png
+          test -f _site/icons/icon-512.png
+          test "$(find _site/audio/voices -name '*.mp3' | wc -l)" = "915"
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
