@@ -75,14 +75,14 @@ function setVoiceMenu(open) {
 }
 
 async function initializeVoicePicker() {
-  const response = await fetch("audio/voices/manifest.json?v=0.4.1");
+  const response = await fetch("audio/voices/manifest.json?v=0.9.0");
   if (!response.ok) throw new Error(`voice-manifest-${response.status}`);
   voiceManifest = await response.json();
   if (!Array.isArray(voiceManifest.voices) || !voiceManifest.voices.length || !voiceManifest.output_template) {
     throw new Error("voice-manifest-invalid");
   }
   const availability = await Promise.all(voiceManifest.voices.map(async voice => {
-    const result = await fetch(`${voiceAudioUrl("zh-1-0", voice.id)}?v=0.4.1`, { method: "HEAD" });
+    const result = await fetch(`${voiceAudioUrl("zh-1-0", voice.id)}?v=0.9.0`, { method: "HEAD" });
     return [voice.id, result.ok];
   }));
   availability.forEach(([id, available]) => voiceAvailability.set(id, available));
@@ -172,7 +172,7 @@ const narrator = {
     }
   },
   async playSelectedTrack(id, voiceId) {
-    await this.playSource(`${voiceAudioUrl(id, voiceId)}?v=0.4.1`);
+    await this.playSource(`${voiceAudioUrl(id, voiceId)}?v=0.9.0`);
   }
 };
 narrator.audio.preload = "auto";
@@ -675,6 +675,18 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#voice-status").textContent = "发音人暂时无法加载，请检查网络后刷新页面。";
     $("#voice-status").hidden = false;
   });
+  // Offline support: the app shell is precached by sw.js and narration is
+  // cached on first play, so a lesson started online keeps working offline.
+  // Registration is deferred to window load so it never competes with the
+  // first paint or the first audio unlock; a failed registration (for
+  // example file:// preview) only logs and the app works online as before.
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(error => {
+        console.error("Could not register offline support", error);
+      });
+    });
+  }
   $("#voice-picker-button").onclick = () => setVoiceMenu($("#voice-menu").hidden);
   document.addEventListener("click", event => {
     if (!event.target.closest(".voice-picker")) setVoiceMenu(false);

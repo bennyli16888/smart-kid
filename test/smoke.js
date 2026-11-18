@@ -8,12 +8,15 @@ const assert = require("node:assert/strict");
 
 const root = path.resolve(__dirname, "..");
 const server = http.createServer((req, res) => {
-  const file = path.join(root, decodeURIComponent((req.url || "/").split("?")[0]));
+  let file = path.join(root, decodeURIComponent((req.url || "/").split("?")[0]));
+  // Like GitHub Pages, a directory request serves its index.html, so the
+  // service worker can precache "./" as the app shell.
+  if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
   if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
     res.writeHead(404).end();
     return;
   }
-  res.setHeader("Content-Type", file.endsWith(".mp3") ? "audio/mpeg" : file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : file.endsWith(".svg") ? "image/svg+xml" : "text/html");
+  res.setHeader("Content-Type", file.endsWith(".mp3") ? "audio/mpeg" : file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : file.endsWith(".svg") ? "image/svg+xml" : file.endsWith(".webmanifest") ? "application/manifest+json" : file.endsWith(".png") ? "image/png" : file.endsWith(".json") ? "application/json" : "text/html");
   fs.createReadStream(file).pipe(res);
 });
 
@@ -73,7 +76,14 @@ async function main() {
     }
     await run("window.appReady");
     assert.ok(await run("document.querySelector('#screen-home') !== null"), `Page not loaded: ${JSON.stringify(navigation)}, ${await run("location.href + ': ' + document.body?.textContent?.slice(0, 100)")}`);
-    assert.equal(await run("(() => { const button = document.querySelector('#home-button'); const icon = button.querySelector('.home-button-icon'); return document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.png?v=0.8.0' && icon.complete && icon.naturalWidth === 256 && getComputedStyle(button).width === '60px' && getComputedStyle(button).borderRadius === '50%' && document.querySelector('.brand small').textContent === 'v0.8' && !document.querySelector('.brand-icon'); })()"), true, "the complete user-provided v0.8 icon is used in the enlarged circular Home button");
+    assert.equal(await run("(() => { const button = document.querySelector('#home-button'); const icon = button.querySelector('.home-button-icon'); return document.querySelector('link[rel=icon]').getAttribute('href') === 'css/favicon.png?v=0.9.0' && icon.complete && icon.naturalWidth === 256 && getComputedStyle(button).width === '60px' && getComputedStyle(button).borderRadius === '50%' && document.querySelector('.brand small').textContent === 'v0.9' && !document.querySelector('.brand-icon'); })()"), true, "the complete user-provided v0.9 icon is used in the enlarged circular Home button");
+    assert.equal(await run("document.querySelector('link[rel=manifest]')?.getAttribute('href')"), "manifest.webmanifest", "PWA manifest is linked for installable offline use");
+    assert.equal(await run("document.querySelector('link[rel=apple-touch-icon]')?.getAttribute('href')"), "icons/apple-touch-icon.png", "iOS home-screen icon is linked");
+    assert.equal(await run("document.querySelector('meta[property=\"og:image\"]')?.getAttribute('content')"), "https://bennyli16888.github.io/smart-kid/icons/icon-512.png", "shared links carry a preview image");
+    for (let n = 0; n < 100 && !(await run("(async () => { const registration = await navigator.serviceWorker.getRegistration(); return Boolean(registration?.active) && (await caches.keys()).some(key => key.startsWith('smartkid-v0.9.0')); })()")); n++) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    assert.equal(await run("(async () => { const registration = await navigator.serviceWorker.getRegistration(); return Boolean(registration?.active) && (await caches.keys()).some(key => key.startsWith('smartkid-v0.9.0')); })()"), true, "service worker registers and precaches the app shell for offline use");
     assert.equal(await run("document.querySelector('#screen-home').classList.contains('active')"), true);
     assert.equal(await run("typeof CHARACTERS"), "object", `Page script error: ${browserErrors.join("; ")}`);
     assert.equal(await run("CHARACTERS.length"), 10);
@@ -122,7 +132,7 @@ async function main() {
       await run("continuousAudio.recording('n-82', 'XiaoYou'); continuousAudio.recording('en-1-0', 'XiaoXia')");
       assert.ok(await run("window.voiceFetchPaths.includes('/audio/voices/XiaoYou/n-82.mp3') && window.voiceFetchPaths.includes('/audio/voices/XiaoXia/en-1-0.mp3')"), "each selectable voice loads its own recordings");
       await run("(async () => { window.directVoiceUrls = []; window.originalPlaySource = narrator.playSource; narrator.playSource = async url => window.directVoiceUrls.push(url); await narrator.playSelectedTrack('n-82', 'XiaoXia'); narrator.playSource = window.originalPlaySource; })()");
-      assert.deepEqual(await run("window.directVoiceUrls"), ["audio/voices/XiaoXia/n-82.mp3?v=0.4.1"], "direct playback never substitutes another voice");
+      assert.deepEqual(await run("window.directVoiceUrls"), ["audio/voices/XiaoXia/n-82.mp3?v=0.9.0"], "direct playback never substitutes another voice");
       await run(`window.preloads = []; window.originalPreload = continuousAudio.preload; continuousAudio.preload = (ids, voiceId) => { window.preloads.push({ids, voiceId}); return new Promise(resolve => setTimeout(resolve, 80)); }; window.originalNarratorPlay = narrator.play; window.narrationCalls = []; narrator.play = ids => window.narrationCalls.push(ids); state.voiceId = 'XiaoXia'; state.subject = 'math'; state.items = [{a:2,b:3,op:'+',answer:5},{a:1,b:2,op:'−',answer:1}]; state.index = 0; narrator.enabled = false; renderLesson()`);
       assert.equal(await run("window.preloads.length"), 0, "muted lessons do not preload course audio");
       await run("narrator.enabled = true; window.preloads.length = 0; renderLesson()");
